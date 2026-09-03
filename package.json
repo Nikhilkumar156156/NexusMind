@@ -1,0 +1,29 @@
+{
+  "name": "nexusmind-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Autonomous Cognitive Knowledge Network & Multi-Agent Intelligence Platform",
+  "workspaces": [
+    "frontend",
+    "backend",
+    "tests"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "test:all": "npm run test && npm run test:e2e --workspace=tests"
+  },
+  "keywords": [
+    "knowledge-graph",
+    "multi-agent",
+    "rag",
+    "pgvector",
+    "nextjs",
+    "fastify"
+  ],
+  "author": "NexusMind Core Team",
+  "license": "UNLICENSED"
+}

@@ -1,0 +1,1070 @@
+import http from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import { AssessTriageUseCase } from '../backend/src/application/use-cases/assess-triage.use-case.ts';
+import { ResearchHospitalsUseCase } from '../backend/src/application/use-cases/research-hospitals.use-case.ts';
+import { RankFacilitiesUseCase } from '../backend/src/application/use-cases/rank-facilities.use-case.ts';
+import { CareNavigationPipelineUseCase } from '../backend/src/application/use-cases/pipeline.use-case.ts';
+import { InMemoryHospitalCacheAdapter } from '../backend/src/infrastructure/cache/in-memory-hospital.cache.ts';
+import { GoogleSearchMcpAdapter } from '../backend/src/infrastructure/mcp/google-search-mcp.adapter.ts';
+
+import { InMemoryTeleconsultStore } from '../backend/src/infrastructure/cache/teleconsult.cache.ts';
+import { TeleconsultBookingUseCase } from '../backend/src/application/use-cases/teleconsult-booking.use-case.ts';
+import { TeleconsultQueueUseCase } from '../backend/src/application/use-cases/teleconsult-queue.use-case.ts';
+import { TeleconsultSessionUseCase } from '../backend/src/application/use-cases/teleconsult-session.use-case.ts';
+
+import { InMemoryReferralStore } from '../backend/src/infrastructure/cache/referral.store.ts';
+import { ManageReferralUseCase } from '../backend/src/application/use-cases/manage-referral.use-case.ts';
+
+import { InMemoryFollowUpStore } from '../backend/src/infrastructure/cache/followup.store.ts';
+import { ManageFollowUpUseCase } from '../backend/src/application/use-cases/manage-followup.use-case.ts';
+
+import { InMemoryRecordsStore } from '../backend/src/infrastructure/cache/records.store.ts';
+import { ManageRecordsUseCase } from '../backend/src/application/use-cases/manage-records.use-case.ts';
+
+import { InMemoryMedicineDiagnosticStore } from '../backend/src/infrastructure/cache/medicine-diagnostic.store.ts';
+import { ManageMedicineDiagnosticUseCase } from '../backend/src/application/use-cases/manage-medicine-diagnostic.use-case.ts';
+
+import { InMemoryFacilityDashboardStore } from '../backend/src/infrastructure/cache/facility-dashboard.store.ts';
+import { ManageFacilityDashboardUseCase } from '../backend/src/application/use-cases/manage-facility-dashboard.use-case.ts';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const PORT = process.env.PORT || 3000;
+const PUBLIC_DIR = path.join(__dirname, 'public');
+
+// Initialize Domain Pipeline (Feature 01)
+const triageUseCase = new AssessTriageUseCase();
+const cacheAdapter = new InMemoryHospitalCacheAdapter();
+const searchAdapter = new GoogleSearchMcpAdapter();
+const researchUseCase = new ResearchHospitalsUseCase(searchAdapter, cacheAdapter);
+const rankUseCase = new RankFacilitiesUseCase();
+const pipelineUseCase = new CareNavigationPipelineUseCase(triageUseCase, researchUseCase, rankUseCase);
+
+// Initialize Teleconsultation & Queue Store & Use Cases (Feature 02)
+const teleconsultStore = new InMemoryTeleconsultStore();
+const bookingUseCase = new TeleconsultBookingUseCase(teleconsultStore);
+const queueUseCase = new TeleconsultQueueUseCase(teleconsultStore);
+const sessionUseCase = new TeleconsultSessionUseCase(teleconsultStore);
+
+// Initialize Referral Store & Use Case (Feature 03)
+const referralStore = new InMemoryReferralStore();
+const referralUseCase = new ManageReferralUseCase(referralStore);
+
+// Initialize Follow-Up Store & Use Case (Feature 04)
+const followUpStore = new InMemoryFollowUpStore();
+const followUpUseCase = new ManageFollowUpUseCase(followUpStore);
+
+// Initialize Interoperable Health Records Store & Use Case (Feature 05)
+const recordsStore = new InMemoryRecordsStore();
+const recordsUseCase = new ManageRecordsUseCase(recordsStore);
+
+// Initialize Medicine Availability & Diagnostic Coordination Store & Use Case (Feature 06)
+const medicineStore = new InMemoryMedicineDiagnosticStore();
+const medicineUseCase = new ManageMedicineDiagnosticUseCase(medicineStore);
+
+// Initialize Facility Dashboard Store & Use Case (Feature 07)
+const dashboardStore = new InMemoryFacilityDashboardStore();
+const dashboardUseCase = new ManageFacilityDashboardUseCase(
+  dashboardStore,
+  teleconsultStore,
+  referralStore,
+  followUpStore,
+  recordsStore,
+  medicineStore
+);
+
+const MIME_TYPES = {
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'application/javascript; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.svg': 'image/svg+xml',
+  '.ico': 'image/x-icon'
+};
+
+async function readJsonBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+    req.on('data', (chunk) => {
+      body += chunk;
+    });
+    req.on('end', () => {
+      try {
+        resolve(body ? JSON.parse(body) : {});
+      } catch (err) {
+        reject(err);
+      }
+    });
+    req.on('error', reject);
+  });
+}
+
+const server = http.createServer(async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, X-Requested-With');
+
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204);
+    res.end();
+    return;
+  }
+
+  const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  const reqPath = urlObj.pathname;
+
+  // --- API ROUTING (/api/v1/* and /api/*) ---
+  if (reqPath.startsWith('/api/')) {
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+
+    try {
+      // normalize path without /v1/ if present
+      const normPath = reqPath.replace(/^\/api\/v1\//, '/api/');
+
+      // === FEATURE 01: SMART CARE NAVIGATOR ENDPOINTS ===
+      if ((normPath === '/api/navigate/pipeline') && req.method === 'POST') {
+        const body = await readJsonBody(req);
+        const result = await pipelineUseCase.execute(body);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: result }));
+        return;
+      }
+
+      if ((normPath === '/api/triage/assess') && req.method === 'POST') {
+        const body = await readJsonBody(req);
+        const triage = await triageUseCase.execute(body);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: triage }));
+        return;
+      }
+
+      if ((normPath === '/api/hospitals/research') && req.method === 'POST') {
+        const body = await readJsonBody(req);
+        const research = await researchUseCase.execute(body);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: research }));
+        return;
+      }
+
+      if ((normPath === '/api/recommendations/rank') && req.method === 'POST') {
+        const body = await readJsonBody(req);
+        const ranking = await rankUseCase.execute(body);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: ranking }));
+        return;
+      }
+
+      // === FEATURE 02: TELECONSULTATION & QUEUE ENDPOINTS ===
+      // 1. Doctor Roster: GET /api/doctors/roster
+      if (normPath === '/api/doctors/roster' && req.method === 'GET') {
+        const facilityId = urlObj.searchParams.get('facility_id') || undefined;
+        const specialty = urlObj.searchParams.get('specialty') || undefined;
+        const roster = await bookingUseCase.getRoster(facilityId, specialty);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: roster }));
+        return;
+      }
+
+      // 2. Slots: GET /api/teleconsult/slots
+      if (normPath === '/api/teleconsult/slots' && req.method === 'GET') {
+        const doctorId = urlObj.searchParams.get('doctor_id') || undefined;
+        const specialty = urlObj.searchParams.get('specialty') || undefined;
+        const date = urlObj.searchParams.get('date') || undefined;
+        const slots = await bookingUseCase.getSlots(doctorId, specialty, date);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: slots }));
+        return;
+      }
+
+      // 3. Book: POST /api/teleconsult/book
+      if (normPath === '/api/teleconsult/book' && req.method === 'POST') {
+        const body = await readJsonBody(req);
+        const booking = await bookingUseCase.bookAppointment(body);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: booking }));
+        return;
+      }
+
+      // 4. Join Queue: POST /api/teleconsult/queue/join
+      if (normPath === '/api/teleconsult/queue/join' && req.method === 'POST') {
+        const body = await readJsonBody(req);
+        const entry = await queueUseCase.joinQueue(body);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: entry }));
+        return;
+      }
+
+      // 5. Queue Status: GET /api/teleconsult/queue/status?queue_id=
+      if (normPath === '/api/teleconsult/queue/status' && req.method === 'GET') {
+        const queueId = urlObj.searchParams.get('queue_id') || '';
+        const status = await queueUseCase.getQueueStatus(queueId);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: status }));
+        return;
+      }
+
+      // 6. Doctor Queue: GET /api/teleconsult/queue/doctor?doctor_id=
+      if (normPath === '/api/teleconsult/queue/doctor' && req.method === 'GET') {
+        const doctorId = urlObj.searchParams.get('doctor_id') || 'doc_1';
+        const queue = await queueUseCase.getDoctorQueue(doctorId);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: queue }));
+        return;
+      }
+
+      // 7. Call Next Patient: POST /api/teleconsult/queue/call-next
+      if (normPath === '/api/teleconsult/queue/call-next' && req.method === 'POST') {
+        const body = await readJsonBody(req);
+        const nextPatient = await queueUseCase.callNextPatient(body.doctorId || 'doc_1');
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: nextPatient }));
+        return;
+      }
+
+      // 8. Session Start: POST /api/teleconsult/session/start
+      if (normPath === '/api/teleconsult/session/start' && req.method === 'POST') {
+        const body = await readJsonBody(req);
+        const session = await sessionUseCase.startSession(
+          body.consultationId,
+          body.appointmentId,
+          body.patientName,
+          body.doctorId,
+          body.doctorName,
+          body.specialty,
+          body.mode || 'video'
+        );
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: session }));
+        return;
+      }
+
+      // 9. Session Mode Switch: POST /api/teleconsult/session/mode
+      if (normPath === '/api/teleconsult/session/mode' && req.method === 'POST') {
+        const body = await readJsonBody(req);
+        const updated = await sessionUseCase.switchMode(body.consultationId, body.mode);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: updated }));
+        return;
+      }
+
+      // 10. Record Vitals: POST /api/teleconsult/session/vitals
+      if (normPath === '/api/teleconsult/session/vitals' && req.method === 'POST') {
+        const body = await readJsonBody(req);
+        const vital = await sessionUseCase.recordVitals(body);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: vital }));
+        return;
+      }
+
+      // 11. Get Vitals: GET /api/teleconsult/session/vitals?consultation_id=
+      if (normPath === '/api/teleconsult/session/vitals' && req.method === 'GET') {
+        const consultationId = urlObj.searchParams.get('consultation_id') || '';
+        const vitals = await sessionUseCase.getSessionVitals(consultationId);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: vitals }));
+        return;
+      }
+
+      // 12. Send Message: POST /api/teleconsult/consultation/:id/message
+      if (normPath.includes('/message') && req.method === 'POST') {
+        const body = await readJsonBody(req);
+        const msg = await sessionUseCase.sendMessage(body);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: msg }));
+        return;
+      }
+
+      // 13. Get Messages: GET /api/teleconsult/consultation/:id/messages
+      if (normPath.includes('/messages') && req.method === 'GET') {
+        const consultationId = urlObj.searchParams.get('consultation_id') || '';
+        const messages = await sessionUseCase.getMessages(consultationId);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: messages }));
+        return;
+      }
+
+      // 14. Finalize Consultation / Notes: POST /api/teleconsult/consultation/notes
+      if (normPath === '/api/teleconsult/consultation/notes' && req.method === 'POST') {
+        const body = await readJsonBody(req);
+        const finalized = await sessionUseCase.finalizeConsultation(body);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: finalized }));
+        return;
+      }
+
+      // === FEATURE 03: SMART REFERRAL MANAGEMENT ENDPOINTS ===
+
+      // 15. Create Referral: POST /api/referrals
+      if (normPath === '/api/referrals' && req.method === 'POST') {
+        const body = await readJsonBody(req);
+        const referral = await referralUseCase.createReferral(body);
+        res.writeHead(201);
+        res.end(JSON.stringify({ success: true, data: referral }));
+        return;
+      }
+
+      // 16. Get Pending Referrals (ASHA Worker Queue): GET /api/referrals/pending
+      if (normPath === '/api/referrals/pending' && req.method === 'GET') {
+        const pending = await referralUseCase.getPendingReferrals();
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: pending }));
+        return;
+      }
+
+      // 17. Get Completed Referrals: GET /api/referrals/completed
+      if (normPath === '/api/referrals/completed' && req.method === 'GET') {
+        const completed = await referralUseCase.getCompletedReferrals();
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: completed }));
+        return;
+      }
+
+      // 18. Get Referral Stats (KPIs): GET /api/referrals/stats
+      if (normPath === '/api/referrals/stats' && req.method === 'GET') {
+        const stats = await referralUseCase.getStats();
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: stats }));
+        return;
+      }
+
+      // 19. Get Referral History: GET /api/referrals/:referral_id/history
+      if (normPath.startsWith('/api/referrals/') && normPath.endsWith('/history') && req.method === 'GET') {
+        const parts = normPath.split('/');
+        const refId = decodeURIComponent(parts[3] || '');
+        const history = await referralUseCase.getHistory(refId);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: history }));
+        return;
+      }
+
+      // 20. Update Referral Status: PATCH /api/referrals/:referral_id/status
+      if (normPath.startsWith('/api/referrals/') && normPath.endsWith('/status') && (req.method === 'PATCH' || req.method === 'POST')) {
+        const parts = normPath.split('/');
+        const refId = decodeURIComponent(parts[3] || '');
+        const body = await readJsonBody(req);
+        const updated = await referralUseCase.updateReferralStatus(refId, body);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: updated }));
+        return;
+      }
+
+      // 21. Get Single Referral by ID: GET /api/referrals/:referral_id
+      if (normPath.startsWith('/api/referrals/') && req.method === 'GET') {
+        const parts = normPath.split('/');
+        const refId = decodeURIComponent(parts[3] || '');
+        const ref = await referralUseCase.getReferral(refId);
+        if (!ref) {
+          res.writeHead(404);
+          res.end(JSON.stringify({ success: false, error: `Referral '${refId}' not found` }));
+          return;
+        }
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: ref }));
+        return;
+      }
+
+      // 22. List Referrals with Filters: GET /api/referrals
+      if (normPath === '/api/referrals' && req.method === 'GET') {
+        const status = urlObj.searchParams.get('status') || undefined;
+        const role = urlObj.searchParams.get('role') || undefined;
+        const facilityId = urlObj.searchParams.get('facility_id') || undefined;
+        const doctorId = urlObj.searchParams.get('doctor_id') || undefined;
+        const patientId = urlObj.searchParams.get('patient_id') || undefined;
+        const search = urlObj.searchParams.get('search') || undefined;
+
+        const list = await referralUseCase.listReferrals({
+          status: status,
+          role: role,
+          facilityId,
+          doctorId,
+          patientId,
+          search
+        });
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: list }));
+        return;
+      }
+
+      // === FEATURE 04: HIGH-RISK PATIENT FOLLOW-UP SYSTEM ENDPOINTS ===
+
+      // 23. Create Follow-Up Plan: POST /api/followups/plans
+      if (normPath === '/api/followups/plans' && req.method === 'POST') {
+        const body = await readJsonBody(req);
+        const result = await followUpUseCase.createPlan(body);
+        res.writeHead(201);
+        res.end(JSON.stringify({ success: true, data: result }));
+        return;
+      }
+
+      // 24. List / Get Follow-Up Plans: GET /api/followups/plans/:id or GET /api/followups/plans
+      if (normPath.startsWith('/api/followups/plans/') && req.method === 'GET') {
+        const parts = normPath.split('/');
+        const planId = decodeURIComponent(parts[4] || '');
+        const plan = await followUpUseCase.getPlan(planId);
+        if (!plan) {
+          res.writeHead(404);
+          res.end(JSON.stringify({ success: false, error: `Plan '${planId}' not found` }));
+          return;
+        }
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: plan }));
+        return;
+      }
+
+      if (normPath === '/api/followups/plans' && req.method === 'GET') {
+        const plans = await followUpUseCase.listPlans();
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: plans }));
+        return;
+      }
+
+      // 25. Worker Follow-Up Task Queue: GET /api/followups/tasks
+      if (normPath === '/api/followups/tasks' && req.method === 'GET') {
+        const workerId = urlObj.searchParams.get('worker_id') || undefined;
+        const status = urlObj.searchParams.get('status') || undefined;
+        const tasks = await followUpUseCase.listWorkerTasks(workerId, status);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: tasks }));
+        return;
+      }
+
+      // 26. Submit Follow-Up Report: POST /api/followups/tasks/:id/report
+      if (normPath.startsWith('/api/followups/tasks/') && normPath.endsWith('/report') && req.method === 'POST') {
+        const parts = normPath.split('/');
+        const taskId = decodeURIComponent(parts[4] || '');
+        const body = await readJsonBody(req);
+        const result = await followUpUseCase.submitReport({ ...body, taskId });
+        res.writeHead(201);
+        res.end(JSON.stringify({ success: true, data: result }));
+        return;
+      }
+
+      // 27. Patient Longitudinal Follow-Ups: GET /api/patients/:id/followups
+      if (normPath.startsWith('/api/patients/') && normPath.endsWith('/followups') && req.method === 'GET') {
+        const parts = normPath.split('/');
+        const patientId = decodeURIComponent(parts[3] || '');
+        const reports = await followUpUseCase.getPatientFollowUps(patientId);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: reports }));
+        return;
+      }
+
+      // 28. Patient Risk History: GET /api/patients/:id/risk-history
+      if (normPath.startsWith('/api/patients/') && normPath.endsWith('/risk-history') && req.method === 'GET') {
+        const parts = normPath.split('/');
+        const patientId = decodeURIComponent(parts[3] || '');
+        const riskHistory = await followUpUseCase.getPatientRiskHistory(patientId);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: riskHistory }));
+        return;
+      }
+
+      // 29. High-Risk Patients Overview: GET /api/high-risk-patients
+      if (normPath === '/api/high-risk-patients' && req.method === 'GET') {
+        const highRisk = await followUpUseCase.getHighRiskPatients();
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: highRisk }));
+        return;
+      }
+
+      // 30. Facility Alerts: GET /api/facility/alerts
+      if (normPath === '/api/facility/alerts' && req.method === 'GET') {
+        const facilityId = urlObj.searchParams.get('facility_id') || undefined;
+        const alerts = await followUpUseCase.getFacilityAlerts(facilityId);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: alerts }));
+        return;
+      }
+
+      // 31. Acknowledge Facility Alert: PATCH /api/facility/alerts/:id/ack
+      if (normPath.startsWith('/api/facility/alerts/') && normPath.endsWith('/ack') && (req.method === 'PATCH' || req.method === 'POST')) {
+        const parts = normPath.split('/');
+        const alertId = decodeURIComponent(parts[4] || '');
+        const ack = await followUpUseCase.acknowledgeAlert(alertId);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: ack }));
+        return;
+      }
+
+      // ==========================================
+      // --- FEATURE 05: INTEROPERABLE HEALTH RECORDS APIS ---
+      // ==========================================
+
+      // 32. Register Patient: POST /api/patient/register
+      if (normPath === '/api/patient/register' && req.method === 'POST') {
+        const body = await readJsonBody(req);
+        const patient = await recordsUseCase.registerPatient(body);
+        res.writeHead(201);
+        res.end(JSON.stringify({ success: true, data: patient }));
+        return;
+      }
+
+      // 33. Get Patient by ID: GET /api/patient/:id
+      if (normPath.startsWith('/api/patient/') && !normPath.includes('/records') && !normPath.includes('/link-abha') && !normPath.includes('/consent') && !normPath.includes('/emergency-override') && req.method === 'GET') {
+        const parts = normPath.split('/');
+        const patientId = decodeURIComponent(parts[3] || '');
+        const patient = recordsStore.getPatientById(patientId);
+        if (!patient) {
+          res.writeHead(404);
+          res.end(JSON.stringify({ success: false, error: 'Patient Not Found' }));
+          return;
+        }
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: patient }));
+        return;
+      }
+
+      // 34. List All Registered Patients: GET /api/patients
+      if (normPath === '/api/patients' && req.method === 'GET') {
+        const patients = recordsStore.getAllPatients();
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: patients }));
+        return;
+      }
+
+      // 35. Link ABHA ID: POST /api/patient/:id/link-abha
+      if (normPath.startsWith('/api/patient/') && normPath.endsWith('/link-abha') && req.method === 'POST') {
+        const parts = normPath.split('/');
+        const patientId = decodeURIComponent(parts[3] || '');
+        const body = await readJsonBody(req);
+        const updated = await recordsUseCase.linkAbhaId(patientId, body.abhaId || '');
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: updated }));
+        return;
+      }
+
+      // 36. Manual Record Capture: POST /api/patient/:id/records/manual
+      if (normPath.startsWith('/api/patient/') && normPath.endsWith('/records/manual') && req.method === 'POST') {
+        const parts = normPath.split('/');
+        const patientId = decodeURIComponent(parts[3] || '');
+        const body = await readJsonBody(req);
+        const record = await recordsUseCase.captureManualRecord({
+          ...body,
+          internalMedicalId: patientId
+        });
+        res.writeHead(201);
+        res.end(JSON.stringify({ success: true, data: record }));
+        return;
+      }
+
+      // 37. Unified Record Timeline: GET /api/patient/:id/records/timeline
+      if (normPath.startsWith('/api/patient/') && normPath.endsWith('/records/timeline') && req.method === 'GET') {
+        const parts = normPath.split('/');
+        const patientId = decodeURIComponent(parts[3] || '');
+        const requesterId = urlObj.searchParams.get('requester_id') || 'self';
+        const requesterRole = (urlObj.searchParams.get('requester_role') || 'patient');
+        const isEmergency = urlObj.searchParams.get('emergency') === 'true';
+        const emergencyReason = urlObj.searchParams.get('emergency_reason') || '';
+
+        const timeline = await recordsUseCase.getUnifiedTimeline(patientId, {
+          requesterId,
+          requesterRole,
+          isEmergencyOverride: isEmergency,
+          emergencyReason
+        });
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: timeline }));
+        return;
+      }
+
+      // 38. Create Consent Request: POST /api/patient/:id/consent/request
+      if (normPath.startsWith('/api/patient/') && normPath.endsWith('/consent/request') && req.method === 'POST') {
+        const parts = normPath.split('/');
+        const patientId = decodeURIComponent(parts[3] || '');
+        const body = await readJsonBody(req);
+        const consent = await recordsUseCase.createConsentRequest({
+          ...body,
+          internalMedicalId: patientId
+        });
+        res.writeHead(201);
+        res.end(JSON.stringify({ success: true, data: consent }));
+        return;
+      }
+
+      // 39. Grant / Revoke Consent: POST /api/consents/:id/grant or /revoke
+      if (normPath.startsWith('/api/consents/') && (normPath.endsWith('/grant') || normPath.endsWith('/revoke')) && req.method === 'POST') {
+        const parts = normPath.split('/');
+        const consentId = decodeURIComponent(parts[3] || '');
+        const isGrant = normPath.endsWith('/grant');
+        const result = isGrant
+          ? await recordsUseCase.grantConsent(consentId)
+          : await recordsUseCase.revokeConsent(consentId);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: result }));
+        return;
+      }
+
+      // 40. List Consents: GET /api/consents
+      if (normPath === '/api/consents' && req.method === 'GET') {
+        const patientId = urlObj.searchParams.get('patient_id') || undefined;
+        const consents = patientId
+          ? recordsStore.getConsentsByMedicalId(patientId)
+          : recordsStore.getAllConsents();
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: consents }));
+        return;
+      }
+
+      // 41. Pull ABDM Sandbox FHIR Records: GET /api/abdm/fetch-records/:consent_id
+      if (normPath.startsWith('/api/abdm/fetch-records/') && req.method === 'GET') {
+        const parts = normPath.split('/');
+        const consentId = decodeURIComponent(parts[4] || '');
+        const patientId = urlObj.searchParams.get('patient_id') || 'MV-MED-2026-1024';
+        const records = await recordsUseCase.fetchAbdmSandboxRecords(patientId, consentId);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: records }));
+        return;
+      }
+
+      // 42. Sync CoWIN Vaccination: GET or POST /api/cowin/vaccination/:id
+      if (normPath.startsWith('/api/cowin/vaccination/') && (req.method === 'GET' || req.method === 'POST')) {
+        const parts = normPath.split('/');
+        const patientId = decodeURIComponent(parts[4] || '');
+        const beneficiaryId = urlObj.searchParams.get('beneficiary_id') || '';
+        const vaccineRecord = await recordsUseCase.syncCowinVaccinationRecords(patientId, beneficiaryId);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: vaccineRecord }));
+        return;
+      }
+
+      // 43. Emergency Access Override: POST /api/patient/:id/emergency-override
+      if (normPath.startsWith('/api/patient/') && normPath.endsWith('/emergency-override') && req.method === 'POST') {
+        const parts = normPath.split('/');
+        const patientId = decodeURIComponent(parts[3] || '');
+        const body = await readJsonBody(req);
+        const log = await recordsUseCase.executeEmergencyOverride(patientId, body);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: log }));
+        return;
+      }
+
+      // 44. Audit Emergency Overrides: GET /api/audit/emergency-overrides
+      if (normPath === '/api/audit/emergency-overrides' && req.method === 'GET') {
+        const patientId = urlObj.searchParams.get('patient_id') || undefined;
+        const logs = recordsStore.getEmergencyLogs(patientId);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: logs }));
+        return;
+      }
+
+      // ==========================================
+      // --- FEATURE 06: MEDICINE AVAILABILITY & DIAGNOSTIC COORDINATION ---
+      // ==========================================
+
+      // 45. List Medical Shops: GET /api/shops
+      if (normPath === '/api/shops' && req.method === 'GET') {
+        const shops = medicineStore.getAllShops();
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: shops }));
+        return;
+      }
+
+      // 46. Get Shop Inventory: GET /api/shop/:id/inventory
+      if (normPath.startsWith('/api/shop/') && normPath.endsWith('/inventory') && req.method === 'GET') {
+        const parts = normPath.split('/');
+        const shopId = decodeURIComponent(parts[3] || '');
+        const data = await medicineUseCase.getShopInventory(shopId);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data }));
+        return;
+      }
+
+      // 47. Add Inventory Item: POST /api/shop/:id/inventory (Owner-only)
+      if (normPath.startsWith('/api/shop/') && normPath.endsWith('/inventory') && req.method === 'POST') {
+        const parts = normPath.split('/');
+        const shopId = decodeURIComponent(parts[3] || '');
+        const body = await readJsonBody(req);
+        const actor = body.actor || { id: 'owner_pharma_1', role: 'shop_owner', shopId };
+        const item = await medicineUseCase.addInventoryItem(shopId, actor, body);
+        res.writeHead(201);
+        res.end(JSON.stringify({ success: true, data: item }));
+        return;
+      }
+
+      // 48. Update Inventory Item: PUT /api/shop/:id/inventory/:med_id (Owner-only)
+      if (normPath.startsWith('/api/shop/') && normPath.includes('/inventory/') && req.method === 'PUT') {
+        const parts = normPath.split('/');
+        const shopId = decodeURIComponent(parts[3] || '');
+        const medId = decodeURIComponent(parts[5] || '');
+        const body = await readJsonBody(req);
+        const actor = body.actor || { id: 'owner_pharma_1', role: 'shop_owner', shopId };
+        const updated = await medicineUseCase.updateInventoryItem(shopId, medId, actor, body);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: updated }));
+        return;
+      }
+
+      // 49. Delete Inventory Item: DELETE /api/shop/:id/inventory/:med_id (Owner-only)
+      if (normPath.startsWith('/api/shop/') && normPath.includes('/inventory/') && req.method === 'DELETE') {
+        const parts = normPath.split('/');
+        const shopId = decodeURIComponent(parts[3] || '');
+        const medId = decodeURIComponent(parts[5] || '');
+        const body = (await readJsonBody(req).catch(() => ({}))) || {};
+        const actor = body.actor || { id: 'owner_pharma_1', role: 'shop_owner', shopId };
+        const result = await medicineUseCase.deleteInventoryItem(shopId, medId, actor);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: result }));
+        return;
+      }
+
+      // 50. Medicine Geo Search: GET /api/medicine/search?query=&lat=&lng=&radius=
+      if (normPath === '/api/medicine/search' && req.method === 'GET') {
+        const query = urlObj.searchParams.get('query') || '';
+        const lat = parseFloat(urlObj.searchParams.get('lat') || '23.998');
+        const lng = parseFloat(urlObj.searchParams.get('lng') || '85.345');
+        const radius = parseFloat(urlObj.searchParams.get('radius') || '25');
+        const searchRes = await medicineUseCase.searchMedicines(query, lat, lng, radius);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: searchRes }));
+        return;
+      }
+
+      // 51. Create Medicine Order Reservation: POST /api/medicine/order
+      if (normPath === '/api/medicine/order' && req.method === 'POST') {
+        const body = await readJsonBody(req);
+        const order = await medicineUseCase.createMedicineOrder(body);
+        res.writeHead(201);
+        res.end(JSON.stringify({ success: true, data: order }));
+        return;
+      }
+
+      // 52. Get Shop Orders: GET /api/shop/:id/orders (Owner)
+      if (normPath.startsWith('/api/shop/') && normPath.endsWith('/orders') && req.method === 'GET') {
+        const parts = normPath.split('/');
+        const shopId = decodeURIComponent(parts[3] || '');
+        const actorId = urlObj.searchParams.get('actor_id') || 'owner_pharma_1';
+        const actor = { id: actorId, role: 'shop_owner', shopId };
+        const orders = await medicineUseCase.getShopOrders(shopId, actor);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: orders }));
+        return;
+      }
+
+      // 53. Update Medicine Order Status: PUT /api/shop/:id/orders/:order_id (Owner)
+      if (normPath.startsWith('/api/shop/') && normPath.includes('/orders/') && req.method === 'PUT') {
+        const parts = normPath.split('/');
+        const shopId = decodeURIComponent(parts[3] || '');
+        const orderId = decodeURIComponent(parts[5] || '');
+        const body = await readJsonBody(req);
+        const actor = body.actor || { id: 'owner_pharma_1', role: 'shop_owner', shopId };
+        const updated = await medicineUseCase.updateMedicineOrderStatus(
+          shopId,
+          orderId,
+          actor,
+          body.status,
+          body.ownerNotes
+        );
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: updated }));
+        return;
+      }
+
+      // 54. List Diagnostic Centers: GET /api/diagnostic-centers
+      if (normPath === '/api/diagnostic-centers' && req.method === 'GET') {
+        const centers = medicineStore.getAllDiagnosticCenters();
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: centers }));
+        return;
+      }
+
+      // 55. Get Center Test Catalog: GET /api/diagnostic-center/:id/tests
+      if (normPath.startsWith('/api/diagnostic-center/') && normPath.endsWith('/tests') && req.method === 'GET') {
+        const parts = normPath.split('/');
+        const centerId = decodeURIComponent(parts[3] || '');
+        const data = await medicineUseCase.getCenterTestCatalog(centerId);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data }));
+        return;
+      }
+
+      // 56. Add Test Offering: POST /api/diagnostic-center/:id/tests (Owner-only)
+      if (normPath.startsWith('/api/diagnostic-center/') && normPath.endsWith('/tests') && req.method === 'POST') {
+        const parts = normPath.split('/');
+        const centerId = decodeURIComponent(parts[3] || '');
+        const body = await readJsonBody(req);
+        const actor = body.actor || { id: 'owner_lab_1', role: 'lab_staff', centerId };
+        const test = await medicineUseCase.addTestOffering(centerId, actor, body);
+        res.writeHead(201);
+        res.end(JSON.stringify({ success: true, data: test }));
+        return;
+      }
+
+      // 57. Update Test Offering: PUT /api/diagnostic-center/:id/tests/:test_id (Owner-only)
+      if (normPath.startsWith('/api/diagnostic-center/') && normPath.includes('/tests/') && req.method === 'PUT') {
+        const parts = normPath.split('/');
+        const centerId = decodeURIComponent(parts[3] || '');
+        const testId = decodeURIComponent(parts[5] || '');
+        const body = await readJsonBody(req);
+        const actor = body.actor || { id: 'owner_lab_1', role: 'lab_staff', centerId };
+        const updated = await medicineUseCase.updateTestOffering(centerId, testId, actor, body);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: updated }));
+        return;
+      }
+
+      // 58. Delete Test Offering: DELETE /api/diagnostic-center/:id/tests/:test_id (Owner-only)
+      if (normPath.startsWith('/api/diagnostic-center/') && normPath.includes('/tests/') && req.method === 'DELETE') {
+        const parts = normPath.split('/');
+        const centerId = decodeURIComponent(parts[3] || '');
+        const testId = decodeURIComponent(parts[5] || '');
+        const body = (await readJsonBody(req).catch(() => ({}))) || {};
+        const actor = body.actor || { id: 'owner_lab_1', role: 'lab_staff', centerId };
+        const result = await medicineUseCase.deleteTestOffering(centerId, testId, actor);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: result }));
+        return;
+      }
+
+      // 59. Diagnostic Test Geo Search: GET /api/diagnostic/search?test=&lat=&lng=&radius=
+      if (normPath === '/api/diagnostic/search' && req.method === 'GET') {
+        const query = urlObj.searchParams.get('test') || urlObj.searchParams.get('query') || '';
+        const lat = parseFloat(urlObj.searchParams.get('lat') || '23.994');
+        const lng = parseFloat(urlObj.searchParams.get('lng') || '85.364');
+        const radius = parseFloat(urlObj.searchParams.get('radius') || '30');
+        const searchRes = await medicineUseCase.searchDiagnosticTests(query, lat, lng, radius);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: searchRes }));
+        return;
+      }
+
+      // 60. Direct Diagnostic Booking: POST /api/diagnostic/book
+      if (normPath === '/api/diagnostic/book' && req.method === 'POST') {
+        const body = await readJsonBody(req);
+        const booking = await medicineUseCase.bookDiagnosticTest(body);
+        res.writeHead(201);
+        res.end(JSON.stringify({ success: true, data: booking }));
+        return;
+      }
+
+      // 61. Doctor Consultation Diagnostic Order: POST /api/diagnostic/order
+      if (normPath === '/api/diagnostic/order' && req.method === 'POST') {
+        const body = await readJsonBody(req);
+        const order = await medicineUseCase.createDoctorDiagnosticOrder(body);
+        res.writeHead(201);
+        res.end(JSON.stringify({ success: true, data: order }));
+        return;
+      }
+
+      // 62. Get Diagnostic Order Status & Results: GET /api/diagnostic/order/:id/status
+      if (normPath.startsWith('/api/diagnostic/order/') && normPath.endsWith('/status') && req.method === 'GET') {
+        const parts = normPath.split('/');
+        const orderId = decodeURIComponent(parts[4] || '');
+        const order = await medicineUseCase.getDiagnosticOrderById(orderId);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: order }));
+        return;
+      }
+
+      // 63. Update Diagnostic Order Status & Upload Results: PUT /api/diagnostic/order/:id/status (Lab staff)
+      if (normPath.startsWith('/api/diagnostic/order/') && normPath.endsWith('/status') && req.method === 'PUT') {
+        const parts = normPath.split('/');
+        const orderId = decodeURIComponent(parts[4] || '');
+        const body = await readJsonBody(req);
+        const centerId = body.centerId || 'center_01';
+        const actor = body.actor || { id: 'owner_lab_1', role: 'lab_staff', centerId };
+        const updated = await medicineUseCase.updateDiagnosticOrderStatus(
+          centerId,
+          orderId,
+          actor,
+          body.status,
+          body.resultData,
+          body.centerNotes
+        );
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: updated }));
+        return;
+      }
+
+      // 64. Get Center Diagnostic Orders: GET /api/diagnostic-center/:id/orders (Lab staff)
+      if (normPath.startsWith('/api/diagnostic-center/') && normPath.endsWith('/orders') && req.method === 'GET') {
+        const parts = normPath.split('/');
+        const centerId = decodeURIComponent(parts[3] || '');
+        const actorId = urlObj.searchParams.get('actor_id') || 'owner_lab_1';
+        const actor = { id: actorId, role: 'lab_staff', centerId };
+        const orders = await medicineUseCase.getDiagnosticOrdersByCenter(centerId, actor);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: orders }));
+        return;
+      }
+
+      // ==========================================
+      // --- FEATURE 07: FACILITY DASHBOARD ROUTES ---
+      // ==========================================
+
+      // 65. Get Facilities List: GET /api/dashboard/facilities
+      if (normPath === '/api/dashboard/facilities' && req.method === 'GET') {
+        const facilities = dashboardStore.getAllFacilities();
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: facilities }));
+        return;
+      }
+
+      // 66. Section 1 Overview Summary: GET /api/dashboard/overview
+      if (normPath === '/api/dashboard/overview' && req.method === 'GET') {
+        const facilityId = urlObj.searchParams.get('facility_id') || 'fac_01';
+        const role = urlObj.searchParams.get('actor_role') || 'admin';
+        const actorId = urlObj.searchParams.get('actor_id') || 'admin_01';
+        const actor = { actorId, role, facilityId };
+        const data = await dashboardUseCase.getOverview(facilityId, actor);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data }));
+        return;
+      }
+
+      // 67. Section 2 Patient & Care Management: GET /api/dashboard/patient-care
+      if (normPath === '/api/dashboard/patient-care' && req.method === 'GET') {
+        const facilityId = urlObj.searchParams.get('facility_id') || 'fac_01';
+        const role = urlObj.searchParams.get('actor_role') || 'admin';
+        const actorId = urlObj.searchParams.get('actor_id') || 'admin_01';
+        const actor = { actorId, role, facilityId };
+        const data = await dashboardUseCase.getPatientCare(facilityId, actor);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data }));
+        return;
+      }
+
+      // 68. Section 3 Appointment & Queue Management: GET /api/dashboard/appointments-queue
+      if (normPath === '/api/dashboard/appointments-queue' && req.method === 'GET') {
+        const facilityId = urlObj.searchParams.get('facility_id') || 'fac_01';
+        const role = urlObj.searchParams.get('actor_role') || 'admin';
+        const actorId = urlObj.searchParams.get('actor_id') || 'admin_01';
+        const actor = { actorId, role, facilityId };
+        const data = await dashboardUseCase.getAppointmentsQueue(facilityId, actor);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data }));
+        return;
+      }
+
+      // 69. Section 4 Service & Resource Status: GET /api/dashboard/service-resource
+      if (normPath === '/api/dashboard/service-resource' && req.method === 'GET') {
+        const facilityId = urlObj.searchParams.get('facility_id') || 'fac_01';
+        const role = urlObj.searchParams.get('actor_role') || 'admin';
+        const actorId = urlObj.searchParams.get('actor_id') || 'admin_01';
+        const actor = { actorId, role, facilityId };
+        const data = dashboardUseCase.getServiceResource(facilityId, actor);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data }));
+        return;
+      }
+
+      // 70. Section 5 Analytics & Reports: GET /api/dashboard/analytics
+      if (normPath === '/api/dashboard/analytics' && req.method === 'GET') {
+        const facilityId = urlObj.searchParams.get('facility_id') || 'fac_01';
+        const role = urlObj.searchParams.get('actor_role') || 'admin';
+        const actorId = urlObj.searchParams.get('actor_id') || 'admin_01';
+        const startDate = urlObj.searchParams.get('start_date') || undefined;
+        const endDate = urlObj.searchParams.get('end_date') || undefined;
+        const actor = { actorId, role, facilityId };
+        const data = dashboardUseCase.getAnalytics(facilityId, actor, startDate, endDate);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data }));
+        return;
+      }
+
+      // 71. Section 6 Alerts & Notification Center: GET /api/dashboard/alerts
+      if (normPath === '/api/dashboard/alerts' && req.method === 'GET') {
+        const facilityId = urlObj.searchParams.get('facility_id') || 'fac_01';
+        const role = urlObj.searchParams.get('actor_role') || 'admin';
+        const actorId = urlObj.searchParams.get('actor_id') || 'admin_01';
+        const actor = { actorId, role, facilityId };
+        const data = dashboardUseCase.getAlerts(facilityId, actor);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data }));
+        return;
+      }
+
+      // 72. Update Bed / Resource Count: POST /api/dashboard/resource-status/update
+      if (normPath === '/api/dashboard/resource-status/update' && req.method === 'POST') {
+        const body = await readJsonBody(req);
+        const facilityId = body.facilityId || 'fac_01';
+        const actor = body.actor || { actorId: 'admin_01', role: 'admin', facilityId };
+        const updated = dashboardUseCase.updateResourceStatus(
+          facilityId,
+          actor,
+          body.resourceType,
+          body.totalCount,
+          body.availableCount
+        );
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: updated }));
+        return;
+      }
+
+      // 73. Update Alert Status: PUT /api/dashboard/alerts/:id/status
+      if (normPath.startsWith('/api/dashboard/alerts/') && normPath.endsWith('/status') && req.method === 'PUT') {
+        const parts = normPath.split('/');
+        const alertId = decodeURIComponent(parts[4] || '');
+        const body = await readJsonBody(req);
+        const facilityId = body.facilityId || 'fac_01';
+        const actor = body.actor || { actorId: 'admin_01', role: 'admin', facilityId };
+        const updated = dashboardUseCase.updateAlertStatus(facilityId, actor, alertId, body.status);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: updated }));
+        return;
+      }
+
+      // 74. Get Notifications: GET /api/dashboard/notifications
+      if (normPath === '/api/dashboard/notifications' && req.method === 'GET') {
+        const facilityId = urlObj.searchParams.get('facility_id') || 'fac_01';
+        const role = urlObj.searchParams.get('actor_role') || 'admin';
+        const actorId = urlObj.searchParams.get('actor_id') || 'admin_01';
+        const actor = { actorId, role, facilityId };
+        const alerts = dashboardUseCase.getAlerts(facilityId, actor);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: alerts }));
+        return;
+      }
+
+      res.writeHead(404);
+      res.end(JSON.stringify({ success: false, error: 'Endpoint Not Found' }));
+      return;
+    } catch (err) {
+      console.error('API Error:', err);
+      res.writeHead(500);
+      res.end(JSON.stringify({ success: false, error: err.message || 'Internal Server Error' }));
+      return;
+    }
+  }
+
+  // --- STATIC ASSET SERVING ---
+  let filePath = path.join(PUBLIC_DIR, reqPath === '/' || reqPath === '' ? 'index.html' : reqPath);
+
+  fs.stat(filePath, (err, stats) => {
+    if (err || !stats.isFile()) {
+      const indexPath = path.join(PUBLIC_DIR, 'index.html');
+      fs.readFile(indexPath, (indexErr, content) => {
+        if (indexErr) {
+          res.writeHead(404, { 'Content-Type': 'text/plain' });
+          res.end('404 Not Found');
+          return;
+        }
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+        res.end(content);
+      });
+      return;
+    }
+
+    const ext = path.extname(filePath).toLowerCase();
+    const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+
+    fs.readFile(filePath, (readErr, data) => {
+      if (readErr) {
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end('500 Internal Server Error');
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': contentType });
+      res.end(data);
+    });
+  });
+});
+
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Smart Care Navigator unified server running at http://localhost:${PORT}`);
+});
