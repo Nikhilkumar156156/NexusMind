@@ -1,2 +1,3 @@
-2026/09/03-12:14:39.214 510c Creating DB d:\NexusMind\chrome-temp-about\Default\Sync Data\LevelDB since it was missing.
-2026/09/03-12:14:39.226 510c Reusing MANIFEST d:\NexusMind\chrome-temp-about\Default\Sync Data\LevelDB/MANIFEST-000001
+2026/09/03-19:21:51.512 11d4 Reusing MANIFEST d:\NexusMind\chrome-temp-about\Default\Sync Data\LevelDB/MANIFEST-000001
+2026/09/03-19:21:51.515 11d4 Recovering log #3
+2026/09/03-19:21:51.516 11d4 Reusing old log d:\NexusMind\chrome-temp-about\Default\Sync Data\LevelDB/000003.log 

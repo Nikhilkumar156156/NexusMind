@@ -215,9 +215,9 @@ function MedVedaLogo({ className = "h-11 w-11" }) {
       <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="medVedaLeafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#10b981" />
-            <stop offset="60%" stopColor="#059669" />
-            <stop offset="100%" stopColor="#047857" />
+            <stop offset="0%" stopColor="#14b8a6" />
+            <stop offset="60%" stopColor="#0d9488" />
+            <stop offset="100%" stopColor="#0f766e" />
           </linearGradient>
           <linearGradient id="medVedaCrossGrad" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#0891b2" />
@@ -243,7 +243,7 @@ function MedVedaLogo({ className = "h-11 w-11" }) {
           strokeLinejoin="round"
         />
 
-        {/* Vibrant Emerald Ayurvedic Leaf */}
+        {/* Vibrant Teal Ayurvedic Leaf */}
         <path
           d="M48 74 C56 56 74 32 94 20 C94 46 76 72 48 74 Z"
           fill="url(#medVedaLeafGrad)"
@@ -274,6 +274,18 @@ function MedVedaLogo({ className = "h-11 w-11" }) {
 }
 
 function Header({ currentView, setView, currentScreen, setScreen, actorRole, setActorRole }) {
+  const navItems = [
+    { id: 'home', label: 'Home' },
+    { id: 'feature1', label: 'Care Navigator', onSelect: () => { setView('feature1'); setScreen(1); } },
+    { id: 'feature2', label: 'Teleconsult & Queue' },
+    { id: 'feature3', label: 'Smart Referrals' },
+    { id: 'feature4', label: 'High-Risk Follow-Ups' },
+    { id: 'feature5', label: 'Health Records' },
+    { id: 'feature6', label: 'Medicine & Lab' },
+    { id: 'feature7', label: 'Facility Dashboard' },
+    { id: 'about', label: 'About Us' }
+  ];
+
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
       {/* Top Emergency Hotline Strip */}
@@ -291,162 +303,60 @@ function Header({ currentView, setView, currentScreen, setScreen, actorRole, set
       </div>
 
       {/* Main Navigation Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between flex-wrap gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between flex-wrap gap-3">
         {/* Logo & Brand */}
         <div className="flex items-center gap-3 cursor-pointer select-none" onClick={() => setView('home')}>
-          <MedVedaLogo className="h-11 w-11" />
+          <MedVedaLogo className="h-10 w-10" />
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="font-black text-slate-900 text-xl tracking-tight flex items-center">
+              <h1 className="font-black text-slate-900 text-lg tracking-tight flex items-center">
                 <span>MED</span>
-                <span className="text-emerald-700 font-extrabold">VEDA</span>
+                <span className="text-teal-600 font-extrabold">VEDA</span>
               </h1>
-              <span className="text-[10px] uppercase font-black px-1.5 py-0.5 bg-emerald-50 text-emerald-800 rounded border border-emerald-200">
+              <span className="text-[10px] uppercase font-black px-1.5 py-0.5 bg-teal-50 text-teal-800 rounded border border-teal-200">
                 v2.0
               </span>
             </div>
-            <p className="text-xs text-slate-500 font-medium">Smart Care Platform &bull; Telehealth &amp; Triage Grid</p>
+            <p className="text-[11px] text-slate-500 font-medium">Smart Care Platform &bull; Telehealth &amp; Triage Grid</p>
           </div>
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-bold">
-          <button
-            type="button"
-            onClick={() => setView('home')}
-            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
-              currentView === 'home'
-                ? 'bg-white text-slate-900 shadow-sm border border-slate-200/80 font-black'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <span>🏠</span>
-            <span>Home</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              setView('feature1');
-              setScreen(1);
-            }}
-            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
-              currentView === 'feature1'
-                ? 'bg-critical-600 text-white shadow-sm font-black'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <span>🚨</span>
-            <span>Care Navigator (F01)</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setView('feature2')}
-            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
-              currentView === 'feature2'
-                ? 'bg-brand-600 text-white shadow-sm font-black'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <span>🩺</span>
-            <span>Teleconsult &amp; Queue (F02)</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setView('feature3')}
-            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
-              currentView === 'feature3'
-                ? 'bg-emerald-600 text-white shadow-sm font-black'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <span>📋</span>
-            <span>Smart Referrals (F03)</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setView('feature4')}
-            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
-              currentView === 'feature4'
-                ? 'bg-purple-600 text-white shadow-sm font-black'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <span>🔄</span>
-            <span>High-Risk Follow-Ups (F04)</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setView('feature5')}
-            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
-              currentView === 'feature5'
-                ? 'bg-sky-600 text-white shadow-sm font-black'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <span>📁</span>
-            <span>Health Records (F05)</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setView('feature6')}
-            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
-              currentView === 'feature6'
-                ? 'bg-teal-600 text-white shadow-sm font-black'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <span>💊</span>
-            <span>Medicine &amp; Lab (F06)</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setView('feature7')}
-            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
-              currentView === 'feature7'
-                ? 'bg-amber-600 text-white shadow-sm font-black'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <span>🏥</span>
-            <span>Facility Dashboard (F07)</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setView('about')}
-            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
-              currentView === 'about'
-                ? 'bg-indigo-600 text-white shadow-sm font-black'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <span>ℹ️</span>
-            <span>About Us</span>
-          </button>
-        </div>
+        <nav className="flex items-center gap-1 bg-slate-100/90 p-1 rounded-xl border border-slate-200 text-xs font-semibold overflow-x-auto">
+          {navItems.map((item) => {
+            const isActive = currentView === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => (item.onSelect ? item.onSelect() : setView(item.id))}
+                className={`px-3 py-1.5 rounded-lg transition-all text-xs whitespace-nowrap ${
+                  isActive
+                    ? 'bg-slate-900 text-white shadow-sm font-bold'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                }`}
+              >
+                {item.label}
+              </button>
+            );
+          })}
+        </nav>
 
         {/* Actor / Role Switcher */}
         <div className="flex items-center gap-2">
-          <span className="text-[11px] font-bold text-slate-500 uppercase hidden md:inline">Active Role:</span>
+          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider hidden lg:inline">Role:</span>
           <select
             value={actorRole}
             onChange={(e) => setActorRole(e.target.value)}
-            className="text-xs font-bold bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-slate-800 focus:ring-2 focus:ring-brand-500 shadow-sm cursor-pointer"
+            className="text-xs font-semibold bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-800 focus:ring-2 focus:ring-slate-900 focus:border-slate-900 shadow-sm cursor-pointer"
           >
-            <option value="worker">👩‍⚕️ Frontline Worker (ASHA)</option>
-            <option value="patient">👤 Self-Service Patient</option>
-            <option value="doctor">👨‍⚕️ Referring Doctor</option>
-            <option value="shop_owner">🏪 Medical Shop Owner</option>
-            <option value="lab_staff">🧪 Diagnostic Lab Staff</option>
-            <option value="facility">🏥 Receiving Facility Admin</option>
-            <option value="admin">🏢 Facility Coordinator</option>
+            <option value="worker">Frontline Health Worker (ASHA)</option>
+            <option value="patient">Self-Service Patient</option>
+            <option value="doctor">Consulting / Referring Doctor</option>
+            <option value="shop_owner">Medical Shop Owner</option>
+            <option value="lab_staff">Diagnostic Lab Staff</option>
+            <option value="facility">Receiving Facility Administrator</option>
+            <option value="admin">Facility Coordinator / Admin</option>
           </select>
         </div>
       </div>
@@ -598,477 +508,244 @@ function VitalsConfidenceBadge({ source }) {
 }
 
 // ==========================================
-// --- HOMEPAGE COMPONENT ---
+// --- HOMEPAGE COMPONENT (PROFESSIONAL & STREAMLINED) ---
 // ==========================================
-function ScreenHomepage({ onLaunchFeature1, onLaunchFeature2, onLaunchFeature3, onLaunchFeature4, onLaunchFeature5, onLaunchFeature6, onLaunchFeature7, onLaunchAbout, actorRole, setActorRole }) {
+function ScreenHomepage({
+  onLaunchFeature1,
+  onLaunchFeature2,
+  onLaunchFeature3,
+  onLaunchFeature4,
+  onLaunchFeature5,
+  onLaunchFeature6,
+  onLaunchFeature7,
+  onLaunchAbout,
+  actorRole,
+  setActorRole
+}) {
+  const roleDescriptions = {
+    worker: 'Frontline ASHA/ANM Mode: Assisted symptom triage, scheduled follow-up visits, pending referral monitoring, and medicine reservation.',
+    patient: 'Self-Service Patient Mode: Autonomous triage, appointment booking, medicine & lab test search with radius fallback, and digital Health ID.',
+    doctor: 'Clinical Specialist Mode: Prioritized patient queues, video/audio/chat consultations, digital EMR prescriptions, and closed-loop referrals.',
+    shop_owner: 'Medical Shop Mode: Real-time inventory CRUD, stock level updates, and incoming customer reservation fulfillment.',
+    lab_staff: 'Diagnostic Laboratory Mode: Diagnostic test catalog management, sample intake tracking, and dual clinical/patient report publishing.',
+    facility: 'Facility Administrator Mode: Referral intake, arriving patient check-ins, bed/ICU resource status updates, and emergency alerts.',
+    admin: 'System Coordinator Mode: District-wide telehealth telemetry, multi-facility queue metrics, and care continuity index monitoring.'
+  };
+
+  const modules = [
+    {
+      id: 'feature1',
+      code: 'Module 01',
+      title: 'Care Navigator',
+      description: '3-Agent autonomous clinical triage, FAST stroke/STEMI emergency red-flag screening, and verified Golden Hour facility routing.',
+      actionLabel: 'Launch Triage',
+      action: onLaunchFeature1,
+      badge: 'Autonomous Triage'
+    },
+    {
+      id: 'feature2',
+      code: 'Module 02',
+      title: 'Teleconsultation & Queue',
+      description: 'Dynamic urgency-weighted patient queuing with anti-starvation protection, rotating doctor roster, and degrading call modes.',
+      actionLabel: 'Start Teleconsult',
+      action: onLaunchFeature2,
+      badge: 'Prioritized Telehealth'
+    },
+    {
+      id: 'feature3',
+      code: 'Module 03',
+      title: 'Smart Referrals',
+      description: 'Closed-loop digital referral pass (REF-2026-XXXXX) with 5-stage lifecycle tracking from doctor creation to hospital check-in.',
+      actionLabel: 'Open Referrals',
+      action: onLaunchFeature3,
+      badge: 'Closed-Loop Care'
+    },
+    {
+      id: 'feature4',
+      code: 'Module 04',
+      title: 'High-Risk Follow-Ups',
+      description: 'Prescribed follow-up schedules for ASHA workers, longitudinal dynamic risk scoring (0-100), and hospital deterioration alerts.',
+      actionLabel: 'Open Follow-Ups',
+      action: onLaunchFeature4,
+      badge: 'Dynamic Risk Engine'
+    },
+    {
+      id: 'feature5',
+      code: 'Module 05',
+      title: 'Health Records',
+      description: 'Internal Medical ID anchor, camera/upload OCR prescription digitizer, ABDM Sandbox consent integration, and unified timeline.',
+      actionLabel: 'Open Records',
+      action: onLaunchFeature5,
+      badge: 'ABDM Interoperable'
+    },
+    {
+      id: 'feature6',
+      code: 'Module 06',
+      title: 'Medicine & Diagnostics',
+      description: 'Real-time pharmacy inventory with radius fallback, counter pickup reservations, and doctor-ordered diagnostic progression.',
+      actionLabel: 'Open Medicine & Lab',
+      action: onLaunchFeature6,
+      badge: 'Geo Logistics'
+    },
+    {
+      id: 'feature7',
+      code: 'Module 07',
+      title: 'Facility Dashboard',
+      description: 'Multi-source operations overview: Care Continuity Index, live prioritized queue, bed/ICU resource status meters, and alerts.',
+      actionLabel: 'Open Dashboard',
+      action: onLaunchFeature7,
+      badge: 'Operations Control'
+    }
+  ];
+
   return (
     <div className="space-y-8">
-      {/* Hero Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-brand-950 to-slate-900 text-white p-8 sm:p-12 shadow-2xl border border-slate-800">
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 rounded-full bg-brand-500/10 blur-3xl pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-80 h-80 rounded-full bg-critical-500/10 blur-3xl pointer-events-none"></div>
-
-        <div className="max-w-3xl relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-bold text-brand-300 mb-4 backdrop-blur-md">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            Integrated Rural Health Decision &amp; Teleconsultation Grid
+      {/* Executive Hero Banner */}
+      <div className="relative overflow-hidden rounded-3xl bg-slate-950 text-white p-8 sm:p-12 shadow-xl border border-slate-800">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-600/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="max-w-3xl relative z-10 space-y-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/80 border border-slate-700 text-xs font-semibold text-emerald-400">
+            <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+            National Digital Health Mission &bull; Jharkhand District Pilot Grid
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight mb-4">
-            Autonomous Triage, Verified Routing &amp; Smart Teleconsultation.
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tight leading-tight">
+            MedVeda Integrated Clinical Care &amp; Telehealth Platform
           </h2>
 
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed font-medium mb-8">
-            Empowering frontline ASHA healthcare workers and literate rural patients with clinical decision support,
-            urgent red-flag gatekeeping, Google Search MCP hospital discovery, prioritized teleconsultation, closed-loop referrals, high-risk monitoring, interoperable health records, real-time medicine/lab coordination, and unified facility operations.
+          <p className="text-slate-300 text-sm sm:text-base leading-relaxed font-normal">
+            A clinically guarded, end-to-end healthcare orchestration system connecting frontline health workers, patients, specialist doctors, pharmacies, and district facilities through autonomous triage, prioritized queues, closed-loop referrals, and ABDM-interoperable health records.
           </p>
 
-          <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-3 pt-2 flex-wrap">
             <button
               type="button"
               onClick={onLaunchFeature1}
-              className="px-5 py-3 bg-critical-600 hover:bg-critical-500 text-white font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-critical-600/30 transition-all flex items-center gap-2"
+              className="px-5 py-2.5 bg-slate-100 hover:bg-white text-slate-900 font-bold text-xs rounded-xl shadow-sm transition-all"
             >
-              <span>🚨 Launch Care Navigator (F01)</span>
-              <span>→</span>
+              Start Care Navigator
             </button>
 
             <button
               type="button"
               onClick={onLaunchFeature2}
-              className="px-5 py-3 bg-brand-600 hover:bg-brand-500 text-white font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-brand-600/30 transition-all flex items-center gap-2"
+              className="px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs rounded-xl shadow-sm transition-all"
             >
-              <span>🩺 Start Teleconsultation (F02)</span>
-              <span>→</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={onLaunchFeature3}
-              className="px-5 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-emerald-600/30 transition-all flex items-center gap-2"
-            >
-              <span>📋 Smart Referrals (F03)</span>
-              <span>→</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={onLaunchFeature4}
-              className="px-5 py-3 bg-purple-600 hover:bg-purple-500 text-white font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-purple-600/30 transition-all flex items-center gap-2"
-            >
-              <span>🔄 High-Risk Follow-Ups (F04)</span>
-              <span>→</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={onLaunchFeature5}
-              className="px-5 py-3 bg-sky-600 hover:bg-sky-500 text-white font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-sky-600/30 transition-all flex items-center gap-2"
-            >
-              <span>📁 Health Records (F05)</span>
-              <span>→</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={onLaunchFeature6}
-              className="px-5 py-3 bg-teal-600 hover:bg-teal-500 text-white font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-teal-600/30 transition-all flex items-center gap-2"
-            >
-              <span>💊 Medicine &amp; Lab (F06)</span>
-              <span>→</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={onLaunchFeature7}
-              className="px-5 py-3 bg-amber-600 hover:bg-amber-500 text-white font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-amber-600/30 transition-all flex items-center gap-2"
-            >
-              <span>🏥 Facility Dashboard (F07)</span>
-              <span>→</span>
+              Teleconsultation &amp; Queue
             </button>
 
             <button
               type="button"
               onClick={onLaunchAbout}
-              className="px-5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-2"
+              className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-xs rounded-xl border border-slate-700 transition-all"
             >
-              <span>ℹ️ About MedVeda</span>
-              <span>→</span>
+              Platform Overview &rarr;
             </button>
           </div>
         </div>
       </div>
 
-      {/* Active Role Switcher Card */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Active Actor Simulation</span>
-          <h3 className="text-lg font-black text-slate-900 mt-0.5">
-            {actorRole === 'worker' && '👩‍⚕️ Frontline Health Worker (ASHA / ANM Mode)'}
-            {actorRole === 'patient' && '👤 Self-Service Literate Patient Mode'}
-            {actorRole === 'doctor' && '👨‍⚕️ Consulting / Referring Specialist Doctor Mode'}
-            {actorRole === 'shop_owner' && '🏪 Medical Shop Owner (Inventory & Orders CRUD)'}
-            {actorRole === 'lab_staff' && '🧪 Diagnostic Center Lab Staff (Catalog & Orders CRUD)'}
-            {actorRole === 'facility' && '🏥 Receiving Healthcare Facility Admin Mode'}
-            {actorRole === 'admin' && '🏢 Facility Coordinator / Administrator Mode'}
-          </h3>
-          <p className="text-xs text-slate-500 mt-0.5">
-            {actorRole === 'worker' && 'Operates device on patient behalf, tracks pending referrals, reserves medicines, and conducts follow-ups.'}
-            {actorRole === 'patient' && 'Operates independently, searches medicines/labs with fallback, and reserves orders for counter pickup.'}
-            {actorRole === 'doctor' && 'Creates digital referrals, signs EMR prescriptions, and initiates consultation lab orders.'}
-            {actorRole === 'shop_owner' && 'Full CRUD on own shop inventory, manages stock availability, and confirms incoming customer order reservations.'}
-            {actorRole === 'lab_staff' && 'Full CRUD on center diagnostic test offerings, updates test progress, and uploads dual clinical/plain-language results.'}
-            {actorRole === 'facility' && 'Receives incoming referrals, checks in arriving patients, and completes care consultations.'}
-            {actorRole === 'admin' && 'Monitors multi-facility schedules, queue health, regional referral completion, and diagnostic networks.'}
-          </p>
+      {/* Role Simulation Selector (Clean & Professional) */}
+      <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <div>
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Active Persona Simulation</span>
+            <p className="text-xs text-slate-600 font-medium mt-0.5">{roleDescriptions[actorRole] || roleDescriptions.worker}</p>
+          </div>
         </div>
 
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-1.5 flex-wrap pt-1">
           {[
-            { id: 'worker', label: 'ASHA Worker', icon: '👩‍⚕️' },
-            { id: 'patient', label: 'Self Patient', icon: '👤' },
-            { id: 'doctor', label: 'Doctor', icon: '👨‍⚕️' },
-            { id: 'shop_owner', label: 'Shop Owner', icon: '🏪' },
-            { id: 'lab_staff', label: 'Lab Staff', icon: '🧪' },
-            { id: 'facility', label: 'Facility Admin', icon: '🏥' },
-            { id: 'admin', label: 'Admin', icon: '🏢' }
+            { id: 'worker', label: 'Frontline Worker (ASHA)' },
+            { id: 'patient', label: 'Self-Service Patient' },
+            { id: 'doctor', label: 'Doctor / Specialist' },
+            { id: 'shop_owner', label: 'Pharmacy Owner' },
+            { id: 'lab_staff', label: 'Diagnostic Lab' },
+            { id: 'facility', label: 'Facility Administrator' },
+            { id: 'admin', label: 'System Coordinator' }
           ].map((r) => (
             <button
               key={r.id}
               type="button"
               onClick={() => setActorRole(r.id)}
-              className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
                 actorRole === r.id
-                  ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
-                  : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                  ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
+                  : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100 hover:border-slate-300'
               }`}
             >
-              <span>{r.icon}</span>
-              <span>{r.label}</span>
+              {r.label}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Feature Map Showcase Grid (6 Features) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Feature 01 Card */}
-        <div className="bg-white rounded-3xl p-7 border border-slate-200 shadow-sm hover:border-critical-300 transition-all flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-critical-50 text-critical-700 border border-critical-200 uppercase">
-                Feature Map 01
-              </span>
-              <span className="text-xs font-mono font-bold text-slate-400">3-Agent Architecture</span>
-            </div>
-
-            <h3 className="text-2xl font-black text-slate-900 mb-2">Smart Care Navigator</h3>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6 font-medium">
-              Autonomous 3-Agent clinical triage, FAST stroke red-flag screening, real-time Google Search MCP facility research,
-              and verified 24x7 emergency hospital routing prioritizing Golden Hour proximity (&le; 50 km).
-            </p>
-
-            <div className="space-y-2.5 mb-6">
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-800">
-                <span className="w-5 h-5 rounded-full bg-critical-100 text-critical-700 flex items-center justify-center font-bold text-[10px]">1</span>
-                <span>Agent 1: Symptom &amp; Rule-Based Red-Flag Gatekeeper</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-800">
-                <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-[10px]">2</span>
-                <span>Agent 2: Google Search MCP Research (OPD vs Emergency Audit)</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-800">
-                <span className="w-5 h-5 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-[10px]">3</span>
-                <span>Agent 3: Clinical Suitability &gt; Proximity (&le; 50 km Priority)</span>
-              </div>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={onLaunchFeature1}
-            className="w-full py-3.5 bg-critical-600 hover:bg-critical-700 text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-2"
-          >
-            <span>Start Care Navigator Flow</span>
-            <span>→</span>
-          </button>
+      {/* System Modules Grid */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Platform Modules</h3>
+          <span className="text-xs text-slate-500 font-medium">7 Integrated Systems</span>
         </div>
 
-        {/* Feature 02 Card */}
-        <div className="bg-white rounded-3xl p-7 border border-slate-200 shadow-sm hover:border-brand-300 transition-all flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-brand-50 text-brand-700 border border-brand-200 uppercase">
-                Feature Map 02
-              </span>
-              <span className="text-xs font-mono font-bold text-slate-400">Telehealth &amp; Queue</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {modules.map((m) => (
+            <div
+              key={m.id}
+              className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs hover:border-slate-300 hover:shadow-sm transition-all flex flex-col justify-between space-y-4"
+            >
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">
+                    {m.code}
+                  </span>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                    {m.badge}
+                  </span>
+                </div>
+
+                <h4 className="text-base font-bold text-slate-900">{m.title}</h4>
+                <p className="text-xs text-slate-600 leading-relaxed font-normal">{m.description}</p>
+              </div>
+
+              <button
+                type="button"
+                onClick={m.action}
+                className="w-full py-2.5 bg-slate-50 hover:bg-slate-900 hover:text-white text-slate-800 border border-slate-200 font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5"
+              >
+                <span>{m.actionLabel}</span>
+                <span>&rarr;</span>
+              </button>
             </div>
-
-            <h3 className="text-2xl font-black text-slate-900 mb-2">Teleconsultation &amp; Queue Management</h3>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6 font-medium">
-              Connects patients (via ASHA worker or directly) to rotating specialist doctors via a multi-criteria priority queue,
-              degrading video/audio/chat consultation, vitals reliability tagging, and digital EMR prescriptions.
-            </p>
-
-            <div className="space-y-2.5 mb-6">
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-800">
-                <span className="w-5 h-5 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-[10px]">A</span>
-                <span>Dual Path: Assisted (ASHA Worker) &amp; Self-Service (Literate Patient)</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-800">
-                <span className="w-5 h-5 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-[10px]">B</span>
-                <span>Smart Priority Queue: Urgency + Risk Flags + Anti-Starvation Protection</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-800">
-                <span className="w-5 h-5 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-[10px]">C</span>
-                <span>Degrading Modes: Video &rarr; Audio-Only &rarr; Session In-App Chat</span>
-              </div>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={onLaunchFeature2}
-            className="w-full py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-2"
-          >
-            <span>Start Teleconsultation &amp; Booking</span>
-            <span>→</span>
-          </button>
-        </div>
-
-        {/* Feature 03 Card */}
-        <div className="bg-white rounded-3xl p-7 border border-slate-200 shadow-sm hover:border-emerald-300 transition-all flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-50 text-emerald-800 border border-emerald-200 uppercase">
-                Feature Map 03
-              </span>
-              <span className="text-xs font-mono font-bold text-slate-400">Closed-Loop Referrals</span>
-            </div>
-
-            <h3 className="text-2xl font-black text-slate-900 mb-2">Smart Referral Management</h3>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6 font-medium">
-              End-to-end digital tracking from doctor creation to ASHA worker follow-up, hospital intake arrival,
-              and confirmed care completion to prevent patient drop-off between health tiers.
-            </p>
-
-            <div className="space-y-2.5 mb-6">
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-800">
-                <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px]">1</span>
-                <span>Doctor Creates Referral (Auto-prefilled from Care Navigator)</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-800">
-                <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px]">2</span>
-                <span>ASHA Worker Pending Queue &amp; Ground Follow-Up</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-800">
-                <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px]">3</span>
-                <span>Receiving Facility Arrival Check-In &amp; Care Completion Sign-Off</span>
-              </div>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={onLaunchFeature3}
-            className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-2"
-          >
-            <span>Open Referral Management Board</span>
-            <span>→</span>
-          </button>
-        </div>
-
-        {/* Feature 04 Card */}
-        <div className="bg-white rounded-3xl p-7 border border-slate-200 shadow-sm hover:border-purple-300 transition-all flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-purple-50 text-purple-800 border border-purple-200 uppercase">
-                Feature Map 04
-              </span>
-              <span className="text-xs font-mono font-bold text-slate-400">Dynamic Risk Engine</span>
-            </div>
-
-            <h3 className="text-2xl font-black text-slate-900 mb-2">High-Risk Patient Follow-Up</h3>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6 font-medium">
-              Doctor-prescribed follow-up schedules assigned to ASHA workers, transparent dynamic risk scoring on ground vitals &amp; adherence, and automated facility alerts on clinical deterioration.
-            </p>
-
-            <div className="space-y-2.5 mb-6">
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-800">
-                <span className="w-5 h-5 rounded-full bg-purple-100 text-purple-800 flex items-center justify-center font-bold text-[10px]">1</span>
-                <span>Doctor Prescribes Digital Follow-Up Schedule &amp; Required Vitals</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-800">
-                <span className="w-5 h-5 rounded-full bg-purple-100 text-purple-800 flex items-center justify-center font-bold text-[10px]">2</span>
-                <span>Frontline ASHA Worker Records BP, Adherence &amp; Symptoms</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-800">
-                <span className="w-5 h-5 rounded-full bg-purple-100 text-purple-800 flex items-center justify-center font-bold text-[10px]">3</span>
-                <span>Dynamic Risk Engine Updates Score &amp; Alerts Facility</span>
-              </div>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={onLaunchFeature4}
-            className="w-full py-3.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-2"
-          >
-            <span>Open High-Risk Follow-Up System</span>
-            <span>→</span>
-          </button>
-        </div>
-
-        {/* Feature 05 Card */}
-        <div className="bg-white rounded-3xl p-7 border border-slate-200 shadow-sm hover:border-sky-300 transition-all flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-sky-50 text-sky-800 border border-sky-200 uppercase">
-                Feature Map 05
-              </span>
-              <span className="text-xs font-mono font-bold text-slate-400">Interoperable EHR</span>
-            </div>
-
-            <h3 className="text-2xl font-black text-slate-900 mb-2">Interoperable Health Records</h3>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6 font-medium">
-              Patient Medical ID anchor, camera/upload OCR manual capture with human verification, ABDM Sandbox HIU consent flows, CoWIN sync, and unified multi-source timeline.
-            </p>
-
-            <div className="space-y-2.5 mb-6">
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-800">
-                <span className="w-5 h-5 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center font-bold text-[10px]">1</span>
-                <span>Unique Medical ID Anchor (Works standalone + optional ABHA)</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-800">
-                <span className="w-5 h-5 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center font-bold text-[10px]">2</span>
-                <span>Camera / Upload OCR Studio with Human Verification Step</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-800">
-                <span className="w-5 h-5 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center font-bold text-[10px]">3</span>
-                <span>ABDM Sandbox Consent Manager &amp; CoWIN Unified Timeline</span>
-              </div>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={onLaunchFeature5}
-            className="w-full py-3.5 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-2"
-          >
-            <span>Open Health Records &amp; Medical ID</span>
-            <span>→</span>
-          </button>
-        </div>
-
-        {/* Feature 06 Card */}
-        <div className="bg-white rounded-3xl p-7 border border-slate-200 shadow-sm hover:border-teal-300 transition-all flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-teal-50 text-teal-800 border border-teal-200 uppercase">
-                Feature Map 06
-              </span>
-              <span className="text-xs font-mono font-bold text-slate-400">Inventory &amp; Labs</span>
-            </div>
-
-            <h3 className="text-2xl font-black text-slate-900 mb-2">Medicine &amp; Diagnostics</h3>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6 font-medium">
-              Real-time nearby medicine stock search with out-of-radius fallback, owner-only RBAC inventory CRUD, reservation ordering, diagnostic test catalog, and doctor-ordered status progression.
-            </p>
-
-            <div className="space-y-2.5 mb-6">
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-800">
-                <span className="w-5 h-5 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-[10px]">1</span>
-                <span>Medicine Geo Search &amp; Reservation Pickup (Read-only + Order)</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-800">
-                <span className="w-5 h-5 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-[10px]">2</span>
-                <span>Medical Shop &amp; Lab Staff Dashboards (Strict Owner RBAC CRUD)</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-800">
-                <span className="w-5 h-5 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-[10px]">3</span>
-                <span>Doctor Consultation Lab Tracking with Dual Clinical/Plain-Language Results</span>
-              </div>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={onLaunchFeature6}
-            className="w-full py-3.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-2"
-          >
-            <span>Open Medicine &amp; Lab Workspace</span>
-            <span>→</span>
-          </button>
-        </div>
-
-        {/* Feature 07 Card */}
-        <div className="bg-white rounded-3xl p-7 border border-slate-200 shadow-sm hover:border-amber-300 transition-all flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-amber-50 text-amber-800 border border-amber-200 uppercase">
-                Feature Map 07
-              </span>
-              <span className="text-xs font-mono font-bold text-slate-400">Facility Operations</span>
-            </div>
-
-            <h3 className="text-2xl font-black text-slate-900 mb-2">Facility Dashboard</h3>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6 font-medium">
-              Real-time multi-source aggregation layer across Features 01–06: 6 role-gated sections, Care Continuity index, live queue, bed/resource availability, analytics charts, and unified alert inbox.
-            </p>
-
-            <div className="space-y-2.5 mb-6">
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-800">
-                <span className="w-5 h-5 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-[10px]">1</span>
-                <span>Overview KPIs &amp; Care Continuity Index (Triage &rarr; Teleconsult &rarr; Referral &rarr; Follow-up)</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-800">
-                <span className="w-5 h-5 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-[10px]">2</span>
-                <span>Live Priority Queue, Wait Times &amp; Manually Updatable Bed/ICU Resource Meters</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-800">
-                <span className="w-5 h-5 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-[10px]">3</span>
-                <span>Time-Series Footfall/Disease Analytics &amp; Severity-Tagged Rule Alert Engine</span>
-              </div>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={onLaunchFeature7}
-            className="w-full py-3.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-2"
-          >
-            <span>Open Facility Dashboard</span>
-            <span>→</span>
-          </button>
+          ))}
         </div>
       </div>
 
-      {/* Platform Live Telehealth Status Bar */}
-      <div className="bg-slate-900 text-white rounded-2xl p-6 shadow-md border border-slate-800">
-        <div className="flex items-center justify-between mb-4">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Live Telehealth Network Telemetry</h4>
-          <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-400">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-            Operational (Jharkhand District Grid)
+      {/* Real-Time Operational Network Telemetry */}
+      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs space-y-4">
+        <div className="flex items-center justify-between">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-600">Network Telemetry &bull; Jharkhand District Grid</h4>
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700">
+            <span className="w-2 h-2 rounded-full bg-emerald-600"></span>
+            All Services Operational
           </span>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-          <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-            <div className="text-2xl font-black text-brand-400">4</div>
-            <div className="text-[11px] text-slate-400 font-semibold mt-0.5">Specialist Doctors Online</div>
+          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+            <div className="text-2xl font-black text-slate-900">4</div>
+            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Specialist Doctors On-Duty</div>
           </div>
-          <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-            <div className="text-2xl font-black text-emerald-400">4</div>
-            <div className="text-[11px] text-slate-400 font-semibold mt-0.5">Connected Facilities</div>
+          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+            <div className="text-2xl font-black text-slate-900">4</div>
+            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Connected Health Facilities</div>
           </div>
-          <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-            <div className="text-2xl font-black text-amber-400">8.5 min</div>
-            <div className="text-[11px] text-slate-400 font-semibold mt-0.5">Avg. Priority Queue Wait</div>
+          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+            <div className="text-2xl font-black text-slate-900">8.5 min</div>
+            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Avg. Priority Queue Wait</div>
           </div>
-          <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-            <div className="text-2xl font-black text-purple-400">100%</div>
-            <div className="text-[11px] text-slate-400 font-semibold mt-0.5">Verified EMR Audit Trail</div>
+          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+            <div className="text-2xl font-black text-slate-900">100%</div>
+            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Closed-Loop EMR Traceability</div>
           </div>
         </div>
       </div>
