@@ -526,17 +526,88 @@ function MedVedaLogo({ className = "h-11 w-11" }) {
 }
 
 function Header({ currentView, setView, currentScreen, setScreen, actorRole, setActorRole }) {
-  const navItems = [
-    { id: 'home', label: 'Home' },
-    { id: 'feature1', label: 'Care Navigator', onSelect: () => { setView('feature1'); setScreen(1); } },
-    { id: 'feature2', label: 'Teleconsult & Queue' },
-    { id: 'feature3', label: 'Smart Referrals' },
-    { id: 'feature4', label: 'High-Risk Follow-Ups' },
-    { id: 'feature5', label: 'Health Records' },
-    { id: 'feature6', label: 'Medicine & Lab' },
-    { id: 'feature7', label: 'Facility Dashboard' },
-    { id: 'about', label: 'About Us' }
+  const [featuresOpen, setFeaturesOpen] = useState(false);
+  const featuresRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (featuresRef.current && !featuresRef.current.contains(event.target)) {
+        setFeaturesOpen(false);
+      }
+    }
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') {
+        setFeaturesOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  const featureItems = [
+    {
+      id: 'feature1',
+      code: 'Module 01',
+      icon: '🧭',
+      label: 'Care Navigator',
+      description: 'Autonomous symptom triage & emergency facility matching',
+      onSelect: () => { setView('feature1'); setScreen(1); }
+    },
+    {
+      id: 'feature2',
+      code: 'Module 02',
+      icon: '👨‍⚕️',
+      label: 'Teleconsult & Queue',
+      description: 'Multi-specialty doctor roster & priority booking',
+      onSelect: () => setView('feature2')
+    },
+    {
+      id: 'feature3',
+      code: 'Module 03',
+      icon: '🔄',
+      label: 'Smart Referrals',
+      description: 'Closed-loop digital referral passes & facility network',
+      onSelect: () => setView('feature3')
+    },
+    {
+      id: 'feature4',
+      code: 'Module 04',
+      icon: '📋',
+      label: 'High-Risk Follow-Ups',
+      description: 'Longitudinal ASHA field tracking & escalation',
+      onSelect: () => setView('feature4')
+    },
+    {
+      id: 'feature5',
+      code: 'Module 05',
+      icon: '📑',
+      label: 'Health Records (ABDM)',
+      description: 'Interoperable FHIR health records & emergency override',
+      onSelect: () => setView('feature5')
+    },
+    {
+      id: 'feature6',
+      code: 'Module 06',
+      icon: '💊',
+      label: 'Medicine & Diagnostic Lab',
+      description: 'Pharmacy inventory reservations & diagnostic tracking',
+      onSelect: () => setView('feature6')
+    },
+    {
+      id: 'feature7',
+      code: 'Module 07',
+      icon: '🏥',
+      label: 'Facility Dashboard',
+      description: 'Readiness Index, ICU beds, oxygen buffer & triage meters',
+      onSelect: () => setView('feature7')
+    }
   ];
+
+  const isFeatureActive = currentView.startsWith('feature');
 
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
@@ -573,25 +644,120 @@ function Header({ currentView, setView, currentScreen, setScreen, actorRole, set
           </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <nav className="flex items-center gap-1 bg-slate-100/90 p-1 rounded-xl border border-slate-200 text-xs font-semibold overflow-x-auto">
-          {navItems.map((item) => {
-            const isActive = currentView === item.id;
-            return (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => (item.onSelect ? item.onSelect() : setView(item.id))}
-                className={`px-3 py-1.5 rounded-lg transition-all text-xs whitespace-nowrap ${
-                  isActive
-                    ? 'bg-slate-900 text-white shadow-sm font-bold'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-                }`}
+        {/* Navigation Tabs - Exactly 3 Sections: Home, Features (with Dropdown), About Us */}
+        <nav className="flex items-center gap-1.5 bg-slate-100/90 p-1 rounded-xl border border-slate-200 text-xs font-semibold relative">
+          {/* Section 1: Home */}
+          <button
+            type="button"
+            onClick={() => {
+              setView('home');
+              setFeaturesOpen(false);
+            }}
+            className={`px-3.5 py-1.5 rounded-lg transition-all text-xs font-bold whitespace-nowrap ${
+              currentView === 'home'
+                ? 'bg-[#0b2b82] text-white shadow-sm'
+                : 'text-slate-600 hover:text-[#0b2b82] hover:bg-blue-50/70'
+            }`}
+          >
+            Home
+          </button>
+
+          {/* Section 2: Features (Dropdown containing all feature map options) */}
+          <div className="relative" ref={featuresRef}>
+            <button
+              type="button"
+              onClick={() => setFeaturesOpen(!featuresOpen)}
+              className={`px-3.5 py-1.5 rounded-lg transition-all text-xs font-bold whitespace-nowrap flex items-center gap-1.5 ${
+                isFeatureActive
+                  ? 'bg-[#0b2b82] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-[#0b2b82] hover:bg-blue-50/70'
+              }`}
+              aria-expanded={featuresOpen}
+              aria-haspopup="true"
+            >
+              <span>Features</span>
+              <svg
+                className={`w-3.5 h-3.5 transition-transform duration-200 ${featuresOpen ? 'rotate-180' : ''}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-                {item.label}
-              </button>
-            );
-          })}
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            {/* Dropdown Menu with all Feature Map options */}
+            {featuresOpen && (
+              <div className="absolute top-full left-0 sm:left-1/2 sm:-translate-x-1/2 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 p-2 z-50 animate-in fade-in slide-in-from-top-1">
+                <div className="px-3 py-2 border-b border-slate-100 flex items-center justify-between mb-1">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                    Platform Feature Modules
+                  </span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-[#0b2b82] border border-blue-100">
+                    7 Systems
+                  </span>
+                </div>
+
+                <div className="space-y-1 max-h-[70vh] overflow-y-auto">
+                  {featureItems.map((item) => {
+                    const isActive = currentView === item.id;
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => {
+                          item.onSelect();
+                          setFeaturesOpen(false);
+                        }}
+                        className={`w-full text-left p-2.5 rounded-xl transition-all flex items-start gap-3 group ${
+                          isActive
+                            ? 'bg-blue-50/90 border border-blue-200 text-[#0b2b82]'
+                            : 'hover:bg-slate-50 border border-transparent text-slate-800'
+                        }`}
+                      >
+                        <div
+                          className={`w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0 transition-transform group-hover:scale-110 ${
+                            isActive ? 'bg-[#0b2b82] text-white shadow-xs' : 'bg-slate-100'
+                          }`}
+                        >
+                          {item.icon}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-1">
+                            <span className="text-xs font-bold leading-tight group-hover:text-[#0b2b82]">
+                              {item.label}
+                            </span>
+                            <span className="text-[9px] font-mono font-semibold px-1.5 py-0.5 rounded bg-slate-100 text-slate-500">
+                              {item.code}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-slate-500 leading-snug font-normal mt-0.5 line-clamp-1">
+                            {item.description}
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Section 3: About Us */}
+          <button
+            type="button"
+            onClick={() => {
+              setView('about');
+              setFeaturesOpen(false);
+            }}
+            className={`px-3.5 py-1.5 rounded-lg transition-all text-xs font-bold whitespace-nowrap ${
+              currentView === 'about'
+                ? 'bg-[#0b2b82] text-white shadow-sm'
+                : 'text-slate-600 hover:text-[#0b2b82] hover:bg-blue-50/70'
+            }`}
+          >
+            About Us
+          </button>
         </nav>
 
         {/* Actor / Role Switcher */}
@@ -600,7 +766,7 @@ function Header({ currentView, setView, currentScreen, setScreen, actorRole, set
           <select
             value={actorRole}
             onChange={(e) => setActorRole(e.target.value)}
-            className="text-xs font-semibold bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-800 focus:ring-2 focus:ring-slate-900 focus:border-slate-900 shadow-sm cursor-pointer"
+            className="text-xs font-semibold bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-800 focus:ring-2 focus:ring-[#0b2b82] focus:border-[#0b2b82] shadow-sm cursor-pointer"
           >
             <option value="worker">Frontline Health Worker (ASHA)</option>
             <option value="patient">Self-Service Patient</option>
@@ -788,6 +954,7 @@ function ScreenHomepage({
     {
       id: 'feature1',
       code: 'Module 01',
+      icon: '🧭',
       title: 'Care Navigator',
       description: '3-Agent autonomous clinical triage, FAST stroke/STEMI emergency red-flag screening, and verified Golden Hour facility routing.',
       actionLabel: 'Launch Triage',
@@ -797,6 +964,7 @@ function ScreenHomepage({
     {
       id: 'feature2',
       code: 'Module 02',
+      icon: '👨‍⚕️',
       title: 'Teleconsultation & Queue',
       description: 'Dynamic urgency-weighted patient queuing with anti-starvation protection, rotating doctor roster, and degrading call modes.',
       actionLabel: 'Start Teleconsult',
@@ -806,6 +974,7 @@ function ScreenHomepage({
     {
       id: 'feature3',
       code: 'Module 03',
+      icon: '🔄',
       title: 'Smart Referrals',
       description: 'Closed-loop digital referral pass (REF-2026-XXXXX) with 5-stage lifecycle tracking from doctor creation to hospital check-in.',
       actionLabel: 'Open Referrals',
@@ -815,6 +984,7 @@ function ScreenHomepage({
     {
       id: 'feature4',
       code: 'Module 04',
+      icon: '📋',
       title: 'High-Risk Follow-Ups',
       description: 'Prescribed follow-up schedules for ASHA workers, longitudinal dynamic risk scoring (0-100), and hospital deterioration alerts.',
       actionLabel: 'Open Follow-Ups',
@@ -824,6 +994,7 @@ function ScreenHomepage({
     {
       id: 'feature5',
       code: 'Module 05',
+      icon: '📑',
       title: 'Health Records',
       description: 'Internal Medical ID anchor, camera/upload OCR prescription digitizer, ABDM Sandbox consent integration, and unified timeline.',
       actionLabel: 'Open Records',
@@ -833,6 +1004,7 @@ function ScreenHomepage({
     {
       id: 'feature6',
       code: 'Module 06',
+      icon: '💊',
       title: 'Medicine & Diagnostics',
       description: 'Real-time pharmacy inventory with radius fallback, counter pickup reservations, and doctor-ordered diagnostic progression.',
       actionLabel: 'Open Medicine & Lab',
@@ -842,6 +1014,7 @@ function ScreenHomepage({
     {
       id: 'feature7',
       code: 'Module 07',
+      icon: '🏥',
       title: 'Facility Dashboard',
       description: 'Multi-source operations overview: Care Continuity Index, live prioritized queue, bed/ICU resource status meters, and alerts.',
       actionLabel: 'Open Dashboard',
@@ -853,19 +1026,19 @@ function ScreenHomepage({
   return (
     <div className="space-y-8">
       {/* Executive Hero Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-slate-950 text-white p-8 sm:p-12 shadow-xl border border-slate-800">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-600/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="max-w-3xl relative z-10 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/80 border border-slate-700 text-xs font-semibold text-emerald-400">
-            <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#061d5c] via-[#0b2b82] to-[#123eab] text-white p-8 sm:p-12 shadow-xl border border-blue-900/40">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-sky-400/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="max-w-4xl xl:max-w-5xl relative z-10 space-y-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-xs font-semibold text-sky-200">
+            <span className="w-2 h-2 rounded-full bg-sky-300 animate-pulse"></span>
             National Digital Health Mission &bull; Jharkhand District Pilot Grid
           </div>
 
-          <h2 className="text-3xl sm:text-4xl font-black tracking-tight leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-black tracking-tight leading-tight max-w-4xl">
             MedVeda Integrated Clinical Care &amp; Telehealth Platform
           </h2>
 
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed font-normal">
+          <p className="text-blue-100/90 text-sm sm:text-base leading-relaxed font-normal max-w-3xl">
             A clinically guarded, end-to-end healthcare orchestration system connecting frontline health workers, patients, specialist doctors, pharmacies, and district facilities through autonomous triage, prioritized queues, closed-loop referrals, and ABDM-interoperable health records.
           </p>
 
@@ -873,7 +1046,7 @@ function ScreenHomepage({
             <button
               type="button"
               onClick={onLaunchFeature1}
-              className="px-5 py-2.5 bg-slate-100 hover:bg-white text-slate-900 font-bold text-xs rounded-xl shadow-sm transition-all"
+              className="px-5 py-2.5 bg-white hover:bg-blue-50 text-[#0b2b82] font-bold text-xs rounded-xl shadow-sm transition-all"
             >
               Start Care Navigator
             </button>
@@ -881,7 +1054,7 @@ function ScreenHomepage({
             <button
               type="button"
               onClick={onLaunchFeature2}
-              className="px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs rounded-xl shadow-sm transition-all"
+              className="px-5 py-2.5 bg-[#0284c7] hover:bg-[#0369a1] text-white font-bold text-xs rounded-xl shadow-sm transition-all"
             >
               Teleconsultation &amp; Queue
             </button>
@@ -889,7 +1062,7 @@ function ScreenHomepage({
             <button
               type="button"
               onClick={onLaunchAbout}
-              className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-xs rounded-xl border border-slate-700 transition-all"
+              className="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl border border-white/20 transition-all"
             >
               Platform Overview &rarr;
             </button>
@@ -922,8 +1095,8 @@ function ScreenHomepage({
               onClick={() => setActorRole(r.id)}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
                 actorRole === r.id
-                  ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
-                  : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100 hover:border-slate-300'
+                  ? 'bg-[#0b2b82] text-white border-[#0b2b82] shadow-sm'
+                  : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-blue-50 hover:text-[#0b2b82] hover:border-blue-200'
               }`}
             >
               {r.label}
@@ -933,39 +1106,66 @@ function ScreenHomepage({
       </div>
 
       {/* System Modules Grid */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Platform Modules</h3>
-          <span className="text-xs text-slate-500 font-medium">7 Integrated Systems</span>
+      <div className="space-y-6">
+        <div className="space-y-1">
+          <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#0284c7] block">
+            PLATFORM
+          </span>
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Platform Modules
+            </h3>
+            <span className="text-xs text-slate-500 font-semibold px-3 py-1 rounded-full bg-slate-100 border border-slate-200">
+              7 Integrated Systems
+            </span>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {modules.map((m) => (
             <div
               key={m.id}
-              className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs hover:border-slate-300 hover:shadow-sm transition-all flex flex-col justify-between space-y-4"
+              onClick={m.action}
+              className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:shadow-xl hover:border-blue-300 transition-all duration-300 flex flex-col justify-between space-y-5 group cursor-pointer"
             >
-              <div className="space-y-2.5">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">
-                    {m.code}
-                  </span>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
-                    {m.badge}
-                  </span>
+              <div className="space-y-4">
+                {/* Top Row: Soft-Blue Squircle Icon Container + Module Code & Badge */}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-50/90 text-[#0284c7] border border-blue-100 flex items-center justify-center text-xl shrink-0 shadow-xs group-hover:bg-[#0b2b82] group-hover:text-white group-hover:scale-105 transition-all duration-300">
+                    {m.icon}
+                  </div>
+                  <div className="flex flex-col items-end gap-1">
+                    <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
+                      {m.code}
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#f0f7ff] text-[#0b2b82] border border-blue-100/80">
+                      {m.badge}
+                    </span>
+                  </div>
                 </div>
 
-                <h4 className="text-base font-bold text-slate-900">{m.title}</h4>
-                <p className="text-xs text-slate-600 leading-relaxed font-normal">{m.description}</p>
+                {/* Title & Description */}
+                <div className="space-y-1.5">
+                  <h4 className="text-base sm:text-lg font-extrabold text-slate-900 group-hover:text-[#0b2b82] transition-colors leading-snug">
+                    {m.title}
+                  </h4>
+                  <p className="text-xs text-slate-500 leading-relaxed font-normal">
+                    {m.description}
+                  </p>
+                </div>
               </div>
 
+              {/* Action Button */}
               <button
                 type="button"
-                onClick={m.action}
-                className="w-full py-2.5 bg-slate-50 hover:bg-slate-900 hover:text-white text-slate-800 border border-slate-200 font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  m.action();
+                }}
+                className="w-full py-2.5 px-4 bg-slate-50 hover:bg-[#0b2b82] hover:text-white group-hover:bg-[#0b2b82] group-hover:text-white text-slate-700 font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-2 border border-slate-100 group-hover:border-[#0b2b82] shadow-2xs group-hover:shadow-sm"
               >
                 <span>{m.actionLabel}</span>
-                <span>&rarr;</span>
+                <span className="transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
               </button>
             </div>
           ))}
@@ -2590,7 +2790,7 @@ function ScreenTeleconsultBooking({ pathActor, onBookSuccess, onBack, onEmergenc
                 onClick={() => setSelectedSlot(slot)}
                 className={`py-2.5 px-2 rounded-xl text-xs font-bold border transition-all text-center ${
                   selectedSlot === slot
-                    ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
+                    ? 'bg-[#0b2b82] text-white border-[#0b2b82] shadow-sm'
                     : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                 }`}
               >
@@ -7743,7 +7943,7 @@ function ScreenMedicineDiagnostics({
       {activeTab === 'shop_owner' && (
         <div className="space-y-6">
           {/* Shop Selector & RBAC Invariant Card */}
-          <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-800 space-y-4">
+          <div className="bg-gradient-to-r from-[#061d5c] via-[#0b2b82] to-[#123eab] text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-blue-900/40 space-y-4">
             <div className="flex items-center justify-between flex-wrap gap-3">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-2xl bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-2xl">
@@ -8148,7 +8348,7 @@ function ScreenMedicineDiagnostics({
       {/* ========================================================= */}
       {activeTab === 'lab_dashboard' && (
         <div className="space-y-6">
-          <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-800 space-y-4">
+          <div className="bg-gradient-to-r from-[#061d5c] via-[#0b2b82] to-[#123eab] text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-blue-900/40 space-y-4">
             <div className="flex items-center justify-between flex-wrap gap-3">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-2xl">
@@ -9662,7 +9862,7 @@ function ScreenFacilityDashboard({
       {activeSection === 'service_resource' && serviceResourceData && (
         <div className="space-y-6">
           {/* Emergency Readiness Banner */}
-          <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-800 flex items-center justify-between flex-wrap gap-4">
+          <div className="bg-gradient-to-r from-[#061d5c] via-[#0b2b82] to-[#123eab] text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-blue-900/40 flex items-center justify-between flex-wrap gap-4">
             <div>
               <span className="text-[10px] font-black uppercase tracking-widest text-teal-400 block">
                 FACILITY EMERGENCY READINESS SCORE
@@ -10402,7 +10602,7 @@ function ScreenAboutUs({
       </div>
 
       {/* 3-Agent AI Architecture Deep Dive */}
-      <div className="bg-slate-900 text-white rounded-3xl p-8 sm:p-10 shadow-xl border border-slate-800 space-y-6">
+      <div className="bg-gradient-to-r from-[#061d5c] via-[#0b2b82] to-[#123eab] text-white rounded-3xl p-8 sm:p-10 shadow-xl border border-blue-900/40 space-y-6">
         <div>
           <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400 block">
             CORE AI ENGINE
@@ -10534,7 +10734,7 @@ function ScreenAboutUs({
       </div>
 
       {/* Call to Action Banner */}
-      <div className="text-center bg-slate-900 text-white rounded-3xl p-8 sm:p-12 shadow-xl border border-slate-800 space-y-4">
+      <div className="text-center bg-gradient-to-r from-[#061d5c] via-[#0b2b82] to-[#123eab] text-white rounded-3xl p-8 sm:p-12 shadow-xl border border-blue-900/40 space-y-4">
         <h3 className="text-2xl sm:text-3xl font-black">Experience the Future of Rural Healthcare</h3>
         <p className="text-xs sm:text-sm text-slate-400 max-w-xl mx-auto font-medium">
           Explore any of the 7 features in the MedVeda ecosystem, simulate different stakeholder roles, and see how intelligent care navigation transforms patient outcomes.
@@ -10697,7 +10897,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900">
+    <div className="min-h-screen flex flex-col bg-white text-slate-900">
       <Header
         currentView={view}
         setView={setView}
@@ -10707,7 +10907,7 @@ function App() {
         setActorRole={setActorRole}
       />
 
-      <main className="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 md:p-8">
+      <main className="flex-1 max-w-6xl xl:max-w-7xl w-full mx-auto p-4 sm:p-6 md:p-8">
         {/* VIEW 1: HOMEPAGE */}
         {view === 'home' && (
           <ScreenHomepage
@@ -11023,7 +11223,7 @@ function App() {
       </main>
 
       <footer className="bg-white border-t border-slate-200 py-6 px-4 text-center text-xs text-slate-500 font-medium">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="max-w-6xl xl:max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div>
             MedVeda Smart Care Platform &bull; Autonomous Care Navigation &bull; Priority Telehealth &bull; Closed-Loop Referrals &bull; High-Risk Follow-Up &bull; Interoperable Health Records &bull; Medicine &amp; Diagnostic Coordination &bull; Facility Operations Dashboard
           </div>
@@ -11031,7 +11231,7 @@ function App() {
             <button
               type="button"
               onClick={() => setView('home')}
-              className="hover:text-indigo-600 transition-colors"
+              className="hover:text-[#0b2b82] transition-colors"
             >
               Home
             </button>
@@ -11039,7 +11239,7 @@ function App() {
             <button
               type="button"
               onClick={() => setView('about')}
-              className="text-indigo-600 hover:text-indigo-800 transition-colors underline underline-offset-2 font-black"
+              className="text-[#0b2b82] hover:text-[#071a4f] transition-colors underline underline-offset-2 font-black"
             >
               ℹ️ About MedVeda
             </button>
