@@ -525,8 +525,337 @@ function MedVedaLogo({ className = "h-11 w-11" }) {
   );
 }
 
+function getRoleBadgeLabel(role) {
+  const map = {
+    worker: 'ASHA Worker',
+    patient: 'Patient',
+    doctor: 'Doctor',
+    shop_owner: 'Pharmacy',
+    lab_staff: 'Diagnostic Lab',
+    facility: 'Facility Admin',
+    admin: 'Coordinator'
+  };
+  return map[role] || 'User';
+}
+
+function AuthModal({ initialTab = 'login', onClose, onAuthSuccess }) {
+  const [activeTab, setActiveTab] = useState(initialTab);
+  const [loginForm, setLoginForm] = useState({ identifier: '', password: '', role: 'worker' });
+  const [signUpForm, setSignUpForm] = useState({ name: '', mobile: '', abhaId: '', role: 'patient', district: 'Hazaribagh', password: '' });
+  const [authSuccessMsg, setAuthSuccessMsg] = useState('');
+
+  const handleQuickLogin = (name, role, abhaId) => {
+    setAuthSuccessMsg(`Logged in as ${name}`);
+    setTimeout(() => {
+      onAuthSuccess({ name, role, abhaId });
+    }, 400);
+  };
+
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+    const name = loginForm.identifier ? loginForm.identifier.split('@')[0] : 'Dr. Priya Sharma';
+    setAuthSuccessMsg(`Welcome back, ${name}!`);
+    setTimeout(() => {
+      onAuthSuccess({
+        name: name.charAt(0).toUpperCase() + name.slice(1),
+        role: loginForm.role,
+        abhaId: loginForm.identifier.includes('@') ? loginForm.identifier : `${loginForm.identifier}@abdm`
+      });
+    }, 400);
+  };
+
+  const handleSignUpSubmit = (e) => {
+    e.preventDefault();
+    setAuthSuccessMsg(`ABDM Account registered for ${signUpForm.name}!`);
+    setTimeout(() => {
+      onAuthSuccess({
+        name: signUpForm.name,
+        role: signUpForm.role,
+        abhaId: signUpForm.abhaId || `${signUpForm.mobile}@abdm`
+      });
+    }, 400);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-150">
+      <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-200 space-y-5">
+        {/* Modal Header */}
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-3">
+            <MedVedaLogo className="h-9 w-9" />
+            <div>
+              <h3 className="text-lg font-black text-slate-900 leading-tight">MedVeda Portal Access</h3>
+              <p className="text-[11px] text-slate-500 font-medium">National Digital Health Mission &bull; ABDM Integrated</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-slate-400 hover:text-slate-600 text-2xl font-black leading-none p-1"
+            aria-label="Close"
+          >
+            &times;
+          </button>
+        </div>
+
+        {/* Tab Switcher: Log In vs Sign Up */}
+        <div className="grid grid-cols-2 p-1 bg-slate-100 rounded-xl gap-1 text-xs font-bold">
+          <button
+            type="button"
+            onClick={() => setActiveTab('login')}
+            className={`py-2 rounded-lg transition-all ${
+              activeTab === 'login'
+                ? 'bg-[#0b2b82] text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            🔐 Log In
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('signup')}
+            className={`py-2 rounded-lg transition-all ${
+              activeTab === 'signup'
+                ? 'bg-[#0b2b82] text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            ✨ Sign Up (ABDM)
+          </button>
+        </div>
+
+        {authSuccessMsg ? (
+          <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-center space-y-2 animate-in zoom-in-95">
+            <div className="w-10 h-10 mx-auto rounded-full bg-emerald-600 text-white flex items-center justify-center text-lg font-bold">
+              ✓
+            </div>
+            <p className="text-xs font-bold text-emerald-900">{authSuccessMsg}</p>
+            <p className="text-[11px] text-emerald-700">Connecting role session...</p>
+          </div>
+        ) : activeTab === 'login' ? (
+          /* ================= LOGIN FORM ================= */
+          <div className="space-y-4">
+            {/* Quick Demo Login Personas */}
+            <div className="space-y-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                Quick 1-Click Simulation Login
+              </span>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleQuickLogin('Anita Devi', 'worker', '9876543210@abdm')}
+                  className="p-2 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-left transition-all cursor-pointer"
+                >
+                  <span className="text-sm block">👩‍⚕️</span>
+                  <span className="text-[11px] font-extrabold text-purple-900 block truncate">Anita Devi</span>
+                  <span className="text-[9px] text-purple-700 font-semibold block">ASHA Worker</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleQuickLogin('Dr. Priya Sharma', 'doctor', 'priya.sharma@abdm')}
+                  className="p-2 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-left transition-all cursor-pointer"
+                >
+                  <span className="text-sm block">👨‍⚕️</span>
+                  <span className="text-[11px] font-extrabold text-[#0b2b82] block truncate">Dr. Priya</span>
+                  <span className="text-[9px] text-blue-700 font-semibold block">Doctor</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleQuickLogin('Ramesh Mahto', 'patient', 'ramesh.mahto@abdm')}
+                  className="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-left transition-all cursor-pointer"
+                >
+                  <span className="text-sm block">👤</span>
+                  <span className="text-[11px] font-extrabold text-emerald-900 block truncate">Ramesh M.</span>
+                  <span className="text-[9px] text-emerald-700 font-semibold block">Patient</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="relative flex py-1 items-center">
+              <div className="flex-grow border-t border-slate-200"></div>
+              <span className="flex-shrink mx-2 text-[10px] font-bold uppercase text-slate-400">or enter credentials</span>
+              <div className="flex-grow border-t border-slate-200"></div>
+            </div>
+
+            <form onSubmit={handleLoginSubmit} className="space-y-3 text-xs">
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">ABHA ID / Mobile Number / Email</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. 9876543210 or name@abdm"
+                  value={loginForm.identifier}
+                  onChange={(e) => setLoginForm({ ...loginForm, identifier: e.target.value })}
+                  className="w-full border border-slate-300 rounded-xl p-2.5 font-medium focus:ring-2 focus:ring-[#0b2b82] focus:border-[#0b2b82]"
+                />
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">Password or OTP</label>
+                <input
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  value={loginForm.password}
+                  onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+                  className="w-full border border-slate-300 rounded-xl p-2.5 font-medium focus:ring-2 focus:ring-[#0b2b82] focus:border-[#0b2b82]"
+                />
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">Select Portal Role</label>
+                <select
+                  value={loginForm.role}
+                  onChange={(e) => setLoginForm({ ...loginForm, role: e.target.value })}
+                  className="w-full border border-slate-300 rounded-xl p-2.5 font-bold focus:ring-2 focus:ring-[#0b2b82]"
+                >
+                  <option value="worker">Frontline Health Worker (ASHA)</option>
+                  <option value="patient">Self-Service Patient</option>
+                  <option value="doctor">Consulting / Referring Doctor</option>
+                  <option value="shop_owner">Medical Shop Owner</option>
+                  <option value="lab_staff">Diagnostic Lab Staff</option>
+                  <option value="facility">Receiving Facility Administrator</option>
+                  <option value="admin">Facility Coordinator / Admin</option>
+                </select>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-2.5 bg-[#0b2b82] hover:bg-[#061d5c] text-white font-extrabold text-xs rounded-xl shadow-md transition-all mt-2 cursor-pointer"
+              >
+                Log In to MedVeda Portal &rarr;
+              </button>
+            </form>
+
+            <p className="text-center text-[11px] text-slate-500 pt-1">
+              New to MedVeda?{' '}
+              <button
+                type="button"
+                onClick={() => setActiveTab('signup')}
+                className="text-[#0b2b82] font-bold hover:underline cursor-pointer"
+              >
+                Create an Account
+              </button>
+            </p>
+          </div>
+        ) : (
+          /* ================= SIGN UP FORM ================= */
+          <div className="space-y-3 text-xs">
+            <form onSubmit={handleSignUpSubmit} className="space-y-3">
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">Full Legal Name</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Dr. Rajesh Kumar or Sunita Devi"
+                  value={signUpForm.name}
+                  onChange={(e) => setSignUpForm({ ...signUpForm, name: e.target.value })}
+                  className="w-full border border-slate-300 rounded-xl p-2.5 font-medium focus:ring-2 focus:ring-[#0b2b82]"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1">Mobile (Linked to Aadhaar)</label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="9876543210"
+                    value={signUpForm.mobile}
+                    onChange={(e) => setSignUpForm({ ...signUpForm, mobile: e.target.value })}
+                    className="w-full border border-slate-300 rounded-xl p-2.5 font-medium focus:ring-2 focus:ring-[#0b2b82]"
+                  />
+                </div>
+
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1">ABHA Health Address</label>
+                  <input
+                    type="text"
+                    placeholder="username@abdm"
+                    value={signUpForm.abhaId}
+                    onChange={(e) => setSignUpForm({ ...signUpForm, abhaId: e.target.value })}
+                    className="w-full border border-slate-300 rounded-xl p-2.5 font-mono text-[11px] focus:ring-2 focus:ring-[#0b2b82]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1">Role / Persona</label>
+                  <select
+                    value={signUpForm.role}
+                    onChange={(e) => setSignUpForm({ ...signUpForm, role: e.target.value })}
+                    className="w-full border border-slate-300 rounded-xl p-2.5 font-bold focus:ring-2 focus:ring-[#0b2b82]"
+                  >
+                    <option value="patient">Patient</option>
+                    <option value="worker">ASHA Worker</option>
+                    <option value="doctor">Specialist Doctor</option>
+                    <option value="shop_owner">Pharmacy</option>
+                    <option value="lab_staff">Diagnostic Lab</option>
+                    <option value="facility">Facility Admin</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1">District Grid</label>
+                  <select
+                    value={signUpForm.district}
+                    onChange={(e) => setSignUpForm({ ...signUpForm, district: e.target.value })}
+                    className="w-full border border-slate-300 rounded-xl p-2.5 font-bold focus:ring-2 focus:ring-[#0b2b82]"
+                  >
+                    <option value="Hazaribagh">Hazaribagh</option>
+                    <option value="Ranchi">Ranchi</option>
+                    <option value="Dhanbad">Dhanbad</option>
+                    <option value="Bokaro">Bokaro</option>
+                    <option value="Ramgarh">Ramgarh</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">Create Secure Password / PIN</label>
+                <input
+                  type="password"
+                  required
+                  placeholder="At least 6 characters"
+                  value={signUpForm.password}
+                  onChange={(e) => setSignUpForm({ ...signUpForm, password: e.target.value })}
+                  className="w-full border border-slate-300 rounded-xl p-2.5 font-medium focus:ring-2 focus:ring-[#0b2b82]"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-2.5 bg-[#0b2b82] hover:bg-[#061d5c] text-white font-extrabold text-xs rounded-xl shadow-md transition-all mt-1 cursor-pointer"
+              >
+                Register ABDM Account &rarr;
+              </button>
+            </form>
+
+            <p className="text-center text-[11px] text-slate-500 pt-1">
+              Already have an ABHA profile?{' '}
+              <button
+                type="button"
+                onClick={() => setActiveTab('login')}
+                className="text-[#0b2b82] font-bold hover:underline cursor-pointer"
+              >
+                Log In
+              </button>
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function Header({ currentView, setView, currentScreen, setScreen, actorRole, setActorRole }) {
   const [featuresOpen, setFeaturesOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authTab, setAuthTab] = useState('login');
+  const [currentUser, setCurrentUser] = useState(null);
   const featuresRef = useRef(null);
 
   useEffect(() => {
@@ -760,28 +1089,98 @@ function Header({ currentView, setView, currentScreen, setScreen, actorRole, set
           </button>
         </nav>
 
-        {/* Actor / Role Switcher */}
-        <div className="flex items-center gap-2">
-          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider hidden lg:inline">Role:</span>
-          <select
-            value={actorRole}
-            onChange={(e) => setActorRole(e.target.value)}
-            className="text-xs font-semibold bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-800 focus:ring-2 focus:ring-[#0b2b82] focus:border-[#0b2b82] shadow-sm cursor-pointer"
-          >
-            <option value="worker">Frontline Health Worker (ASHA)</option>
-            <option value="patient">Self-Service Patient</option>
-            <option value="doctor">Consulting / Referring Doctor</option>
-            <option value="shop_owner">Medical Shop Owner</option>
-            <option value="lab_staff">Diagnostic Lab Staff</option>
-            <option value="facility">Receiving Facility Administrator</option>
-            <option value="admin">Facility Coordinator / Admin</option>
-          </select>
+        {/* Right Controls: Role Switcher & Auth (Login / Sign Up) */}
+        <div className="flex items-center gap-2.5 flex-wrap">
+          {/* Role Switcher */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider hidden xl:inline">Role:</span>
+            <select
+              value={actorRole}
+              onChange={(e) => {
+                setActorRole(e.target.value);
+                if (currentUser) {
+                  setCurrentUser(prev => ({ ...prev, role: e.target.value, roleLabel: getRoleBadgeLabel(e.target.value) }));
+                }
+              }}
+              className="text-xs font-semibold bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-slate-800 focus:ring-2 focus:ring-[#0b2b82] focus:border-[#0b2b82] shadow-xs cursor-pointer"
+            >
+              <option value="worker">Frontline Health Worker (ASHA)</option>
+              <option value="patient">Self-Service Patient</option>
+              <option value="doctor">Consulting / Referring Doctor</option>
+              <option value="shop_owner">Medical Shop Owner</option>
+              <option value="lab_staff">Diagnostic Lab Staff</option>
+              <option value="facility">Receiving Facility Administrator</option>
+              <option value="admin">Facility Coordinator / Admin</option>
+            </select>
+          </div>
+
+          {/* Login & Sign Up Option Buttons / User Profile Chip */}
+          {currentUser ? (
+            <div className="flex items-center gap-2 bg-blue-50/80 border border-blue-200/80 rounded-lg px-2.5 py-1 shadow-xs">
+              <div className="w-6 h-6 rounded-full bg-[#0b2b82] text-white text-[11px] font-black flex items-center justify-center">
+                {currentUser.name.charAt(0)}
+              </div>
+              <div className="flex flex-col text-left">
+                <span className="text-[11px] font-extrabold text-slate-900 leading-none truncate max-w-[110px] sm:max-w-[140px]">
+                  {currentUser.name}
+                </span>
+                <span className="text-[9px] text-[#0b2b82] font-bold uppercase leading-tight mt-0.5">
+                  {currentUser.roleLabel || getRoleBadgeLabel(actorRole)}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setCurrentUser(null)}
+                className="text-[10px] font-bold text-slate-400 hover:text-critical-600 ml-1 px-1 py-0.5 rounded hover:bg-white transition-colors cursor-pointer"
+                title="Log out"
+              >
+                Log Out
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => {
+                  setAuthTab('login');
+                  setAuthModalOpen(true);
+                }}
+                className="px-3 py-1.5 text-xs font-bold text-[#0b2b82] hover:bg-blue-50 rounded-lg transition-all border border-blue-200/80 cursor-pointer"
+              >
+                Log In
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setAuthTab('signup');
+                  setAuthModalOpen(true);
+                }}
+                className="px-3.5 py-1.5 text-xs font-bold bg-[#0b2b82] hover:bg-[#061d5c] text-white rounded-lg shadow-xs transition-all flex items-center gap-1 cursor-pointer"
+              >
+                <span>Sign Up</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Feature 01 Stepper Banner (shown when in Feature 01) */}
       {currentView === 'feature1' && (
         <WorkflowStepper currentScreen={currentScreen} setScreen={setScreen} />
+      )}
+
+      {/* MedVeda Authentication Modal (Log In / Sign Up) */}
+      {authModalOpen && (
+        <AuthModal
+          initialTab={authTab}
+          onClose={() => setAuthModalOpen(false)}
+          onAuthSuccess={(user) => {
+            setCurrentUser(user);
+            setActorRole(user.role);
+            setAuthModalOpen(false);
+          }}
+        />
       )}
     </header>
   );
@@ -955,8 +1354,8 @@ function ScreenHomepage({
       id: 'feature1',
       code: 'Module 01',
       icon: '🧭',
-      title: 'Care Navigator',
-      description: '3-Agent autonomous clinical triage, FAST stroke/STEMI emergency red-flag screening, and verified Golden Hour facility routing.',
+      title: 'Smart Care Navigator',
+      description: 'Answer a few questions and get routed to the right level of care — self-care, teleconsult, or in-person — in seconds.',
       actionLabel: 'Launch Triage',
       action: onLaunchFeature1,
       badge: 'Autonomous Triage'
@@ -965,8 +1364,8 @@ function ScreenHomepage({
       id: 'feature2',
       code: 'Module 02',
       icon: '👨‍⚕️',
-      title: 'Teleconsultation & Queue',
-      description: 'Dynamic urgency-weighted patient queuing with anti-starvation protection, rotating doctor roster, and degrading call modes.',
+      title: 'Teleconsultation',
+      description: 'Secure video visits with licensed clinicians, with notes and prescriptions synced straight to your record.',
       actionLabel: 'Start Teleconsult',
       action: onLaunchFeature2,
       badge: 'Prioritized Telehealth'
@@ -975,8 +1374,8 @@ function ScreenHomepage({
       id: 'feature3',
       code: 'Module 03',
       icon: '🔄',
-      title: 'Smart Referrals',
-      description: 'Closed-loop digital referral pass (REF-2026-XXXXX) with 5-stage lifecycle tracking from doctor creation to hospital check-in.',
+      title: 'Referral Routing',
+      description: 'Automatically match patients to the right specialist and facility, with status tracked end to end.',
       actionLabel: 'Open Referrals',
       action: onLaunchFeature3,
       badge: 'Closed-Loop Care'
@@ -985,8 +1384,8 @@ function ScreenHomepage({
       id: 'feature4',
       code: 'Module 04',
       icon: '📋',
-      title: 'High-Risk Follow-Ups',
-      description: 'Prescribed follow-up schedules for ASHA workers, longitudinal dynamic risk scoring (0-100), and hospital deterioration alerts.',
+      title: 'Health Monitoring',
+      description: 'Track vitals and trends from connected devices, with smart alerts when something needs attention.',
       actionLabel: 'Open Follow-Ups',
       action: onLaunchFeature4,
       badge: 'Dynamic Risk Engine'
@@ -995,8 +1394,8 @@ function ScreenHomepage({
       id: 'feature5',
       code: 'Module 05',
       icon: '📑',
-      title: 'Health Records',
-      description: 'Internal Medical ID anchor, camera/upload OCR prescription digitizer, ABDM Sandbox consent integration, and unified timeline.',
+      title: 'Unified Health Records',
+      description: 'Every visit, lab, and prescription in one encrypted timeline you can share with any provider.',
       actionLabel: 'Open Records',
       action: onLaunchFeature5,
       badge: 'ABDM Interoperable'
@@ -1005,8 +1404,8 @@ function ScreenHomepage({
       id: 'feature6',
       code: 'Module 06',
       icon: '💊',
-      title: 'Medicine & Diagnostics',
-      description: 'Real-time pharmacy inventory with radius fallback, counter pickup reservations, and doctor-ordered diagnostic progression.',
+      title: 'Medicine Search',
+      description: 'Look up medicines, dosages, and interactions, then order refills without leaving the app.',
       actionLabel: 'Open Medicine & Lab',
       action: onLaunchFeature6,
       badge: 'Geo Logistics'
@@ -1015,7 +1414,7 @@ function ScreenHomepage({
       id: 'feature7',
       code: 'Module 07',
       icon: '🏥',
-      title: 'Facility Dashboard',
+      title: 'Facility Operations Dashboard',
       description: 'Multi-source operations overview: Care Continuity Index, live prioritized queue, bed/ICU resource status meters, and alerts.',
       actionLabel: 'Open Dashboard',
       action: onLaunchFeature7,
@@ -1025,47 +1424,109 @@ function ScreenHomepage({
 
   return (
     <div className="space-y-8">
-      {/* Executive Hero Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#061d5c] via-[#0b2b82] to-[#123eab] text-white p-8 sm:p-12 shadow-xl border border-blue-900/40">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-sky-400/15 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="max-w-4xl xl:max-w-5xl relative z-10 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-xs font-semibold text-sky-200">
-            <span className="w-2 h-2 rounded-full bg-sky-300 animate-pulse"></span>
-            National Digital Health Mission &bull; Jharkhand District Pilot Grid
+      {/* Enhanced Interactive Smart Care Navigator Hero Banner */}
+      <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-r from-white via-slate-50/40 to-blue-50/30 border border-slate-200/80 shadow-[0_12px_40px_rgba(8,35,95,0.06)] hover:shadow-[0_20px_50px_rgba(8,35,95,0.1)] transition-all duration-500 group">
+        {/* Subtle Ambient Radial Glows */}
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-sky-200/25 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute -bottom-24 right-1/4 w-80 h-80 bg-blue-100/30 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between min-h-[420px]">
+          {/* Left Column: Interactive Typography, CTA Buttons, and Badges */}
+          <div className="p-8 sm:p-12 lg:py-14 lg:pl-14 lg:pr-6 lg:w-[54%] xl:w-[52%] space-y-6">
+            {/* Pill Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50/90 border border-sky-200/80 text-[#0b2b82] text-xs font-bold shadow-2xs hover:bg-sky-100/80 transition-colors">
+              <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span>
+              <span>Smart care navigation, powered by your data</span>
+            </div>
+
+            {/* Headline */}
+            <h1 className="text-3xl sm:text-4xl lg:text-[44px] xl:text-[48px] font-black tracking-tight text-slate-900 leading-[1.12]">
+              The right care, <span className="text-[#1a66b8]">at</span><br />
+              <span className="text-[#1a66b8]">the right time.</span>
+            </h1>
+
+            {/* Description */}
+            <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-normal max-w-xl">
+              Meet MedVeda’s Smart Care Navigator. Simply describe the symptoms. MedVeda assesses the urgency, identifies the care required, and guides you to the right nearby facility—especially when every minute matters.
+            </p>
+
+            {/* Interactive Button Group */}
+            <div className="flex items-center gap-3.5 pt-1 flex-wrap">
+              <button
+                type="button"
+                onClick={onLaunchFeature1}
+                className="px-6 py-3 bg-[#183b7b] hover:bg-[#0b2b82] text-white font-bold text-sm rounded-xl shadow-md hover:shadow-lg hover:shadow-blue-900/25 active:scale-95 transition-all flex items-center gap-2.5 group/btn cursor-pointer"
+              >
+                <span>Get started</span>
+                <span className="group-hover/btn:translate-x-1 transition-transform">&rarr;</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={onLaunchFeature2}
+                className="px-5 py-3 bg-white hover:bg-slate-50 text-slate-700 font-bold text-sm rounded-xl border border-slate-200/90 hover:border-slate-300 shadow-2xs hover:shadow-xs active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <span>Doctor Queue &rarr;</span>
+              </button>
+            </div>
+
+            {/* Security & Compliance Footer */}
+            <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 pt-2 flex-wrap">
+              <div className="flex items-center gap-1.5">
+                <svg className="w-4 h-4 text-slate-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                <span>End-to-end encrypted</span>
+              </div>
+              <span className="text-slate-300">&bull;</span>
+              <span className="text-slate-500 font-medium">ABDM Digital Health Record</span>
+              <span className="text-slate-300">&bull;</span>
+              <span className="text-emerald-700 font-bold">Ayushman Bharat Interoperable</span>
+            </div>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-black tracking-tight leading-tight max-w-4xl">
-            MedVeda Integrated Clinical Care &amp; Telehealth Platform
-          </h2>
+          {/* Right Column: Feathered Seamless Doctors Graphic with Floating Interactive Cards */}
+          <div className="relative lg:w-[46%] xl:w-[48%] self-stretch flex items-center justify-end overflow-hidden">
+            {/* Soft Edge Blending Overlay to eliminate any boxy lines */}
+            <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none hidden lg:block"></div>
+            <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white/60 to-transparent z-10 pointer-events-none"></div>
+            <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white/60 to-transparent z-10 pointer-events-none"></div>
 
-          <p className="text-blue-100/90 text-sm sm:text-base leading-relaxed font-normal max-w-3xl">
-            A clinically guarded, end-to-end healthcare orchestration system connecting frontline health workers, patients, specialist doctors, pharmacies, and district facilities through autonomous triage, prioritized queues, closed-loop referrals, and ABDM-interoperable health records.
-          </p>
+            <img
+              src="/hero-doctors.png"
+              alt="MedVeda Clinical Care Specialists"
+              className="w-full h-auto max-h-[460px] object-cover object-left sm:object-center transform transition-transform duration-700 group-hover:scale-[1.02] select-none block"
+            />
 
-          <div className="flex items-center gap-3 pt-2 flex-wrap">
-            <button
-              type="button"
-              onClick={onLaunchFeature1}
-              className="px-5 py-2.5 bg-white hover:bg-blue-50 text-[#0b2b82] font-bold text-xs rounded-xl shadow-sm transition-all"
-            >
-              Start Care Navigator
-            </button>
-
-            <button
-              type="button"
+            {/* Floating Interactive Micro-Badge 1: On-Duty Specialists */}
+            <div
               onClick={onLaunchFeature2}
-              className="px-5 py-2.5 bg-[#0284c7] hover:bg-[#0369a1] text-white font-bold text-xs rounded-xl shadow-sm transition-all"
+              className="absolute top-6 right-6 z-20 bg-white/90 hover:bg-white backdrop-blur-md px-3.5 py-2 rounded-2xl border border-slate-200/80 shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 group/tag"
+              title="View on-duty specialist doctors"
             >
-              Teleconsultation &amp; Queue
-            </button>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+              <div className="text-left">
+                <div className="text-[11px] font-black text-slate-900 group-hover/tag:text-[#0b2b82]">
+                  4 Specialists On-Duty
+                </div>
+                <div className="text-[9px] text-slate-500 font-semibold">Live Teleconsult Roster &rarr;</div>
+              </div>
+            </div>
 
-            <button
-              type="button"
-              onClick={onLaunchAbout}
-              className="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl border border-white/20 transition-all"
+            {/* Floating Interactive Micro-Badge 2: Autonomous Care Triage */}
+            <div
+              onClick={onLaunchFeature1}
+              className="absolute bottom-6 left-12 lg:left-4 z-20 bg-white/90 hover:bg-white backdrop-blur-md px-3.5 py-2 rounded-2xl border border-blue-200/80 shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 group/tag"
+              title="Launch Smart Care Triage"
             >
-              Platform Overview &rarr;
-            </button>
+              <span className="text-base">⚡</span>
+              <div className="text-left">
+                <div className="text-[11px] font-black text-[#0b2b82]">
+                  Instant Clinical Triage
+                </div>
+                <div className="text-[9px] text-slate-500 font-semibold">&lt; 2 min facility matching &rarr;</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1105,20 +1566,48 @@ function ScreenHomepage({
         </div>
       </div>
 
+      {/* Real-Time Operational Network Telemetry (Moved in-between Active Persona and Platform Modules) */}
+      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs space-y-4">
+        <div className="flex items-center justify-between">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-600">Network Telemetry &bull; Jharkhand District Grid</h4>
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700">
+            <span className="w-2 h-2 rounded-full bg-emerald-600"></span>
+            All Services Operational
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+            <div className="text-2xl font-black text-slate-900">4</div>
+            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Specialist Doctors On-Duty</div>
+          </div>
+          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+            <div className="text-2xl font-black text-slate-900">4</div>
+            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Connected Health Facilities</div>
+          </div>
+          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+            <div className="text-2xl font-black text-slate-900">8.5 min</div>
+            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Avg. Priority Queue Wait</div>
+          </div>
+          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+            <div className="text-2xl font-black text-slate-900">100%</div>
+            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Closed-Loop EMR Traceability</div>
+          </div>
+        </div>
+      </div>
+
       {/* System Modules Grid */}
       <div className="space-y-6">
         <div className="space-y-1">
-          <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#0284c7] block">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-[#0284c7] block mb-1">
             PLATFORM
           </span>
-          <div className="flex items-center justify-between flex-wrap gap-2">
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Platform Modules
-            </h3>
-            <span className="text-xs text-slate-500 font-semibold px-3 py-1 rounded-full bg-slate-100 border border-slate-200">
-              7 Integrated Systems
-            </span>
-          </div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            One connected system for the whole care journey
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-500 font-normal mt-1 max-w-2xl">
+            MedVeda brings navigation, care delivery, and records together — so patients move forward and clinicians stay in the loop.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1169,36 +1658,6 @@ function ScreenHomepage({
               </button>
             </div>
           ))}
-        </div>
-      </div>
-
-      {/* Real-Time Operational Network Telemetry */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs space-y-4">
-        <div className="flex items-center justify-between">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-600">Network Telemetry &bull; Jharkhand District Grid</h4>
-          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700">
-            <span className="w-2 h-2 rounded-full bg-emerald-600"></span>
-            All Services Operational
-          </span>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-            <div className="text-2xl font-black text-slate-900">4</div>
-            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Specialist Doctors On-Duty</div>
-          </div>
-          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-            <div className="text-2xl font-black text-slate-900">4</div>
-            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Connected Health Facilities</div>
-          </div>
-          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-            <div className="text-2xl font-black text-slate-900">8.5 min</div>
-            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Avg. Priority Queue Wait</div>
-          </div>
-          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-            <div className="text-2xl font-black text-slate-900">100%</div>
-            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Closed-Loop EMR Traceability</div>
-          </div>
         </div>
       </div>
     </div>
@@ -4789,13 +5248,13 @@ function ScreenHighRiskFollowUp({
           <div className="text-[11px] text-amber-700 mt-0.5">Score &ge; 60 (Escalated)</div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-critical-200 bg-critical-50/20 shadow-sm">
-          <div className="text-xs font-bold uppercase tracking-wider text-critical-700">Active Facility Alerts</div>
-          <div className="text-3xl font-black text-critical-900 mt-1 flex items-center gap-2">
+        <div className="bg-gradient-to-br from-[#061d5c] to-[#0b2b82] text-white p-5 rounded-2xl border border-blue-900/40 shadow-sm">
+          <div className="text-xs font-bold uppercase tracking-wider text-sky-200">Active Facility Alerts</div>
+          <div className="text-3xl font-black text-white mt-1 flex items-center gap-2">
             <span>{activeAlerts.length}</span>
-            {activeAlerts.length > 0 && <span className="w-2.5 h-2.5 rounded-full bg-critical-600 animate-ping"></span>}
+            {activeAlerts.length > 0 && <span className="w-2.5 h-2.5 rounded-full bg-sky-300 animate-ping"></span>}
           </div>
-          <div className="text-[11px] text-critical-700 mt-0.5">Intervention required</div>
+          <div className="text-[11px] text-blue-200 mt-0.5">Intervention required</div>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-emerald-200 bg-emerald-50/20 shadow-sm">
@@ -9310,19 +9769,19 @@ function ScreenFacilityDashboard({
       </div>
 
       {/* Role Context Bar */}
-      <div className="bg-slate-900 text-white p-4 rounded-2xl flex items-center justify-between flex-wrap gap-3 text-xs shadow-md border border-slate-800">
+      <div className="bg-gradient-to-r from-[#061d5c] via-[#0b2b82] to-[#123eab] text-white p-4 rounded-2xl flex items-center justify-between flex-wrap gap-3 text-xs shadow-md border border-blue-900/40">
         <div className="flex items-center gap-3">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
           <div>
-            <span className="text-slate-400 font-medium">Active Facility:</span>{' '}
-            <strong className="text-white">{activeFacilityObj.name}</strong> &bull;{' '}
+            <span className="text-sky-200 font-medium">Active Facility:</span>{' '}
+            <strong className="text-white font-bold">{activeFacilityObj.name}</strong> &bull;{' '}
             <span className="text-amber-300 font-bold">{activeFacilityObj.type || 'District Hospital'}</span>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-slate-400 font-medium">Logged Role:</span>
-          <span className="px-2.5 py-1 rounded-lg bg-white/10 text-white font-mono font-bold uppercase text-[10px]">
+          <span className="text-sky-200 font-medium">Logged Role:</span>
+          <span className="px-2.5 py-1 rounded-lg bg-white/15 text-white font-mono font-bold uppercase text-[10px] border border-white/20">
             {actorRole}
           </span>
           {actorRole === 'worker' && (
@@ -9489,34 +9948,35 @@ function ScreenFacilityDashboard({
           </div>
 
           {/* Care Continuity Index Gauge Card */}
-          <div className="bg-gradient-to-br from-slate-900 to-brand-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-800 space-y-4">
-            <div className="flex items-center justify-between flex-wrap gap-2">
+          <div className="relative overflow-hidden bg-gradient-to-r from-[#061d5c] via-[#0b2b82] to-[#123eab] text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-blue-900/40 space-y-4">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-sky-400/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div className="flex items-center justify-between flex-wrap gap-2 relative z-10">
               <div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400 block">
+                <span className="text-[10px] font-black uppercase tracking-widest text-sky-300 block">
                   LONGITUDINAL RECORD CONTINUITY
                 </span>
                 <h3 className="text-xl font-black text-white mt-0.5">
                   Care Continuity Index: {overviewData.careContinuityIndex}%
                 </h3>
               </div>
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-sky-200 border border-white/20 backdrop-blur-sm">
                 ✓ High Continuity Grid
               </span>
             </div>
 
-            <p className="text-xs text-slate-300 font-medium max-w-2xl leading-relaxed">
+            <p className="text-xs text-blue-100/90 font-normal max-w-2xl leading-relaxed relative z-10">
               Measures percentage of patients with complete longitudinal record chains without drop-offs between stages: <strong>Triage &rarr; Teleconsultation &rarr; Referral &rarr; Follow-Up</strong>.
             </p>
 
             {/* Progress Bar */}
-            <div className="space-y-1.5 pt-2">
+            <div className="space-y-1.5 pt-2 relative z-10">
               <div className="w-full h-3.5 bg-white/10 rounded-full overflow-hidden p-0.5 border border-white/20">
                 <div
-                  className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-500 shadow-sm"
+                  className="h-full bg-gradient-to-r from-sky-400 to-emerald-400 rounded-full transition-all duration-500 shadow-sm"
                   style={{ width: `${overviewData.careContinuityIndex}%` }}
                 ></div>
               </div>
-              <div className="flex items-center justify-between text-[10px] text-slate-400 font-bold">
+              <div className="flex items-center justify-between text-[10px] text-blue-200/80 font-bold">
                 <span>0% Disconnected</span>
                 <span>Target: 80%+</span>
                 <span>100% Fully Connected</span>
