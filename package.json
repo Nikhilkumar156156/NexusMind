@@ -5,8 +5,7 @@
   "description": "Autonomous Cognitive Knowledge Network & Multi-Agent Intelligence Platform",
   "workspaces": [
     "frontend",
-    "backend",
-    "tests"
+    "backend"
   ],
   "scripts": {
     "dev": "npm run dev --workspaces --if-present",

@@ -142,14 +142,74 @@ const MOCK_FACILITIES = [
   }
 ];
 
-// --- FEATURE 02 DOCTOR ROSTER SEED ---
+// --- SPECIALTY MATCHING HELPER ---
+function matchesSpecialty(docSpecialty, targetSpecialty) {
+  if (!docSpecialty || !targetSpecialty) return false;
+  const doc = docSpecialty.toLowerCase().trim();
+  const target = targetSpecialty.toLowerCase().trim();
+  if (doc === target) return true;
+
+  // Protect against General Medicine vs General Surgery
+  if (target.startsWith('general ') && doc.startsWith('general ')) {
+    return target === doc;
+  }
+
+  // Protect against Neurosurgery vs Neurology
+  if (target.includes('neuro') && doc.includes('neuro')) {
+    const isTargetSurg = target.includes('surg');
+    const isDocSurg = doc.includes('surg');
+    if (isTargetSurg !== isDocSurg) return false;
+  }
+
+  // Protect "ENT" - must match whole word \bent\b or explicit synonyms
+  if (target === 'ent') {
+    return /\bent\b/i.test(doc) || doc.includes('otorhinolaryngology') || doc.includes('ear, nose') || doc.includes('throat');
+  }
+  if (doc === 'ent') {
+    return /\bent\b/i.test(target) || target.includes('otorhinolaryngology') || target.includes('ear, nose') || target.includes('throat');
+  }
+
+  // Protect "Urology" - do NOT match "neurology"
+  if (target.includes('uro') && !target.includes('neuro')) {
+    if (doc.includes('neuro')) return false;
+  }
+  if (doc.includes('uro') && !doc.includes('neuro')) {
+    if (target.includes('neuro')) return false;
+  }
+
+  // Exact phrase containment
+  if (doc.includes(target) || target.includes(doc)) {
+    return true;
+  }
+
+  // Token matching for compound specialties (e.g., "Pulmonology / Respiratory Medicine")
+  const targetTokens = target.split(/[\/&]/).map((t) => t.trim().toLowerCase()).filter(Boolean);
+  const docTokens = doc.split(/[\/&]/).map((t) => t.trim().toLowerCase()).filter(Boolean);
+
+  for (const tt of targetTokens) {
+    if (tt === 'ent') {
+      if (docTokens.some((dt) => /\bent\b/i.test(dt))) return true;
+      continue;
+    }
+    for (const dt of docTokens) {
+      if (dt === tt) return true;
+      if (dt.includes('neuro') && tt.includes('uro') && !tt.includes('neuro')) continue;
+      if (tt.includes('neuro') && dt.includes('uro') && !dt.includes('neuro')) continue;
+      if (dt.includes(tt) || tt.includes(dt)) return true;
+    }
+  }
+
+  return false;
+}
+
+// --- FEATURE 02 DOCTOR ROSTER SEED (20 SPECIALIST DOCTORS) ---
 const MOCK_DOCTORS = [
   {
     id: 'doc_1',
     name: 'Dr. Priya Sharma',
     qualification: 'MD, DM (Neurology), DNB',
     registrationNumber: 'JH-MED-4421',
-    specialties: ['Neurology', 'Stroke Care', 'General Medicine'],
+    specialties: ['Neurology', 'Stroke Care', 'Neuro-Medicine'],
     facilityNames: ['SBMC&H Hazaribagh', 'Sadar Hospital'],
     experience: '14 years exp.',
     isAvailableOnline: true,
@@ -161,7 +221,7 @@ const MOCK_DOCTORS = [
     name: 'Dr. Rajesh Verma',
     qualification: 'MD (Medicine), DM (Cardiology)',
     registrationNumber: 'JH-MED-3890',
-    specialties: ['Cardiology', 'Emergency Medicine', 'General Medicine'],
+    specialties: ['Cardiology', 'Interventional Cardiology', 'Cardiac Care'],
     facilityNames: ['SBMC&H Hazaribagh', 'Arogyam Critical Care'],
     experience: '18 years exp.',
     isAvailableOnline: true,
@@ -173,7 +233,7 @@ const MOCK_DOCTORS = [
     name: 'Dr. Ananya Sen',
     qualification: 'MD (Pediatrics), DCH',
     registrationNumber: 'JH-MED-5102',
-    specialties: ['Pediatrics', 'Neonatal Care', 'General Medicine'],
+    specialties: ['Pediatrics', 'Neonatal Care', 'Child Health'],
     facilityNames: ['Sadar Hospital', 'Kalyani Trauma Centre'],
     experience: '11 years exp.',
     isAvailableOnline: true,
@@ -185,12 +245,204 @@ const MOCK_DOCTORS = [
     name: 'Dr. Kavita Murmu',
     qualification: 'MS (Obstetrics & Gynecology)',
     registrationNumber: 'JH-MED-6218',
-    specialties: ['Obstetrics & Gynecology', 'Maternal Health', 'General Medicine'],
+    specialties: ['Obstetrics & Gynecology', 'Maternal Health', 'High-Risk Pregnancy'],
     facilityNames: ['Sadar Hospital', 'SBMC&H Hazaribagh'],
     experience: '15 years exp.',
     isAvailableOnline: true,
     nextSlot: 'Today, 02:00 PM',
     avatar: '👩‍⚕️'
+  },
+  {
+    id: 'doc_gm',
+    name: 'Dr. Arvind Sinha',
+    qualification: 'MD (Internal Medicine), FACP',
+    registrationNumber: 'JH-MED-3105',
+    specialties: ['General Medicine', 'Internal Medicine', 'Primary Care'],
+    facilityNames: ['Sadar Hospital Hazaribagh', 'SBMC&H Hazaribagh'],
+    experience: '16 years exp.',
+    isAvailableOnline: true,
+    nextSlot: 'Today, 09:30 AM',
+    avatar: '👨‍⚕️'
+  },
+  {
+    id: 'doc_gs',
+    name: 'Dr. Manoj K. Pandey',
+    qualification: 'MS (General Surgery), FIAGES',
+    registrationNumber: 'JH-MED-4912',
+    specialties: ['General Surgery', 'Laparoscopy', 'Trauma Surgery'],
+    facilityNames: ['SBMC&H Hazaribagh', 'Arogyam Critical Care'],
+    experience: '17 years exp.',
+    isAvailableOnline: true,
+    nextSlot: 'Today, 11:30 AM',
+    avatar: '👨‍⚕️'
+  },
+  {
+    id: 'doc_ortho',
+    name: 'Dr. Vikramaditya Roy',
+    qualification: 'MS (Orthopedics), DNB (Ortho)',
+    registrationNumber: 'JH-MED-5540',
+    specialties: ['Orthopedics', 'Joint Replacement', 'Bone Trauma'],
+    facilityNames: ['Kalyani Trauma Centre', 'SBMC&H Hazaribagh'],
+    experience: '13 years exp.',
+    isAvailableOnline: true,
+    nextSlot: 'Today, 10:45 AM',
+    avatar: '👨‍⚕️'
+  },
+  {
+    id: 'doc_ns',
+    name: 'Dr. Alok Nath Tripathy',
+    qualification: 'MCh (Neurosurgery), MS (Surgery)',
+    registrationNumber: 'JH-MED-7120',
+    specialties: ['Neurosurgery', 'Spine Surgery', 'Brain Trauma'],
+    facilityNames: ['SBMC&H Hazaribagh', 'RIMS Super Specialty'],
+    experience: '15 years exp.',
+    isAvailableOnline: true,
+    nextSlot: 'Today, 01:15 PM',
+    avatar: '👨‍⚕️'
+  },
+  {
+    id: 'doc_ent',
+    name: 'Dr. Sunita Baskey',
+    qualification: 'MS (ENT / Otorhinolaryngology)',
+    registrationNumber: 'JH-MED-4688',
+    specialties: ['ENT', 'Otorhinolaryngology', 'Head & Neck Care'],
+    facilityNames: ['Sadar Hospital', 'SBMC&H Hazaribagh'],
+    experience: '12 years exp.',
+    isAvailableOnline: true,
+    nextSlot: 'Today, 11:15 AM',
+    avatar: '👩‍⚕️'
+  },
+  {
+    id: 'doc_opht',
+    name: 'Dr. Hemant Soreng',
+    qualification: 'MS (Ophthalmology), FICO',
+    registrationNumber: 'JH-MED-5391',
+    specialties: ['Ophthalmology', 'Cataract & Eye Microsurgery'],
+    facilityNames: ['Sadar Hospital', 'Netralaya Eye Care'],
+    experience: '14 years exp.',
+    isAvailableOnline: true,
+    nextSlot: 'Today, 10:15 AM',
+    avatar: '👨‍⚕️'
+  },
+  {
+    id: 'doc_derm',
+    name: 'Dr. Neha Agarwal',
+    qualification: 'MD (Dermatology, Venereology & Leprosy)',
+    registrationNumber: 'JH-MED-6734',
+    specialties: ['Dermatology', 'Skin Allergy', 'Cosmetology'],
+    facilityNames: ['Arogyam Multi-Specialty', 'Sadar Hospital'],
+    experience: '9 years exp.',
+    isAvailableOnline: true,
+    nextSlot: 'Today, 12:00 PM',
+    avatar: '👩‍⚕️'
+  },
+  {
+    id: 'doc_psych',
+    name: 'Dr. Tariq Anwar',
+    qualification: 'MD (Psychiatry), DPM',
+    registrationNumber: 'JH-MED-4819',
+    specialties: ['Psychiatry', 'Neuropsychiatry', 'Behavioral Health'],
+    facilityNames: ['RINPAS Ranchi', 'Sadar Hospital Hazaribagh'],
+    experience: '13 years exp.',
+    isAvailableOnline: true,
+    nextSlot: 'Today, 02:30 PM',
+    avatar: '👨‍⚕️'
+  },
+  {
+    id: 'doc_pulm',
+    name: 'Dr. Devendra Prasad',
+    qualification: 'MD (Pulmonary Medicine), DTCD',
+    registrationNumber: 'JH-MED-5902',
+    specialties: ['Pulmonology / Respiratory Medicine', 'Pulmonology', 'Respiratory Medicine', 'Chest Medicine'],
+    facilityNames: ['SBMC&H Hazaribagh', 'Arogyam Critical Care'],
+    experience: '16 years exp.',
+    isAvailableOnline: true,
+    nextSlot: 'Today, 10:45 AM',
+    avatar: '👨‍⚕️'
+  },
+  {
+    id: 'doc_gastro',
+    name: 'Dr. Sanjay Khalkho',
+    qualification: 'DM (Gastroenterology), MD',
+    registrationNumber: 'JH-MED-7450',
+    specialties: ['Gastroenterology', 'Hepatology', 'GI Endoscopy'],
+    facilityNames: ['SBMC&H Hazaribagh', 'Arogyam Multi-Specialty'],
+    experience: '12 years exp.',
+    isAvailableOnline: true,
+    nextSlot: 'Today, 01:30 PM',
+    avatar: '👨‍⚕️'
+  },
+  {
+    id: 'doc_uro',
+    name: 'Dr. Pradeep Minz',
+    qualification: 'MCh (Urology), MS',
+    registrationNumber: 'JH-MED-6831',
+    specialties: ['Urology', 'Endourology', 'Renal Surgery'],
+    facilityNames: ['SBMC&H Hazaribagh', 'Kalyani Super Specialty'],
+    experience: '14 years exp.',
+    isAvailableOnline: true,
+    nextSlot: 'Today, 11:45 AM',
+    avatar: '👨‍⚕️'
+  },
+  {
+    id: 'doc_neph',
+    name: 'Dr. Meenakshi Sundaram',
+    qualification: 'DM (Nephrology), MD',
+    registrationNumber: 'JH-MED-8104',
+    specialties: ['Nephrology', 'Dialysis Care', 'Renal Medicine'],
+    facilityNames: ['SBMC&H Dialysis Unit', 'Arogyam Multi-Specialty'],
+    experience: '11 years exp.',
+    isAvailableOnline: true,
+    nextSlot: 'Today, 12:15 PM',
+    avatar: '👩‍⚕️'
+  },
+  {
+    id: 'doc_endo',
+    name: 'Dr. Rashmi Rekha Topno',
+    qualification: 'DM (Endocrinology), MD',
+    registrationNumber: 'JH-MED-7622',
+    specialties: ['Endocrinology', 'Diabetology', 'Thyroid Care'],
+    facilityNames: ['SBMC&H Hazaribagh', 'Sadar Hospital'],
+    experience: '10 years exp.',
+    isAvailableOnline: true,
+    nextSlot: 'Today, 03:00 PM',
+    avatar: '👩‍⚕️'
+  },
+  {
+    id: 'doc_onco',
+    name: 'Dr. Abhishek Mukherjee',
+    qualification: 'DM (Medical Oncology), MD, ECMO',
+    registrationNumber: 'JH-MED-8319',
+    specialties: ['Oncology', 'Cancer Care', 'Chemotherapy'],
+    facilityNames: ['HCG Cancer Centre Ranchi', 'SBMC&H Oncology Unit'],
+    experience: '15 years exp.',
+    isAvailableOnline: true,
+    nextSlot: 'Today, 02:15 PM',
+    avatar: '👨‍⚕️'
+  },
+  {
+    id: 'doc_dent',
+    name: 'Dr. Pooja Kumari',
+    qualification: 'MDS (Oral & Maxillofacial Surgery), BDS',
+    registrationNumber: 'JH-DENT-2291',
+    specialties: ['Dentistry', 'Oral Surgery', 'Dental Care'],
+    facilityNames: ['Sadar Hospital Dental Wing', 'SBMC&H Dental OPD'],
+    experience: '8 years exp.',
+    isAvailableOnline: true,
+    nextSlot: 'Today, 09:30 AM',
+    avatar: '👩‍⚕️'
+  },
+  {
+    id: 'doc_em',
+    name: 'Dr. Rakesh Ranjan',
+    qualification: 'MEM (Emergency Medicine), MRCEM',
+    registrationNumber: 'JH-MED-5034',
+    specialties: ['Emergency Medicine', 'Critical Care', 'Trauma Stabilization'],
+    facilityNames: ['SBMC&H Trauma Centre', 'Arogyam Emergency ER'],
+    experience: '11 years exp.',
+    isAvailableOnline: true,
+    nextSlot: 'Today, Immediate / On-Duty',
+    avatar: '👨‍⚕️'
   }
 ];
 
@@ -1931,11 +2183,52 @@ function ScreenTeleconsultBooking({ pathActor, onBookSuccess, onBack, onEmergenc
   const [showEmergencyModal, setShowEmergencyModal] = useState(false);
   const [bookingConfirmed, setBookingConfirmed] = useState(null);
 
-  const specialties = ['Neurology', 'Cardiology', 'Pediatrics', 'Obstetrics & Gynecology', 'General Medicine'];
+  const SPECIALTY_OPTIONS = [
+    { id: 'General Medicine', label: 'General Medicine', icon: '🩺', desc: 'Primary diagnosis, fevers, infections & chronic illness' },
+    { id: 'General Surgery', label: 'General Surgery', icon: '🩹', desc: 'Surgical consults, hernia, appendix & acute trauma' },
+    { id: 'Orthopedics', label: 'Orthopedics', icon: '🦴', desc: 'Bone fractures, joint pain, arthritis & spine trauma' },
+    { id: 'Pediatrics', label: 'Pediatrics', icon: '👶', desc: 'Infant, child health, immunization & development' },
+    { id: 'Obstetrics & Gynecology', label: 'Obstetrics & Gynecology', icon: '🤰', desc: "Maternal health, high-risk pregnancy & women's care" },
+    { id: 'Cardiology', label: 'Cardiology', icon: '❤️', desc: 'Heart disease, hypertension, ECG & chest distress' },
+    { id: 'Neurology', label: 'Neurology', icon: '🧠', desc: 'Brain, stroke, epilepsy, nerve disorders & migraine' },
+    { id: 'Neurosurgery', label: 'Neurosurgery', icon: '🔬', desc: 'Brain tumors, neuro-trauma, spine surgery & aneurysms' },
+    { id: 'ENT', label: 'ENT', icon: '👂', desc: 'Ear, nose, throat, sinusitis & hearing loss' },
+    { id: 'Ophthalmology', label: 'Ophthalmology', icon: '👁️', desc: 'Eye pain, vision impairment, glaucoma & cataract' },
+    { id: 'Dermatology', label: 'Dermatology', icon: '🧴', desc: 'Skin rash, eczema, psoriasis, acne & hair loss' },
+    { id: 'Psychiatry', label: 'Psychiatry', icon: '🧘', desc: 'Mental wellness, anxiety, depression & psychosis' },
+    { id: 'Pulmonology / Respiratory Medicine', label: 'Pulmonology / Respiratory Medicine', icon: '🫁', desc: 'Asthma, COPD, chronic cough, TB & respiratory care' },
+    { id: 'Gastroenterology', label: 'Gastroenterology', icon: '🥗', desc: 'Liver, stomach, jaundice, ulcers & digestive disorders' },
+    { id: 'Urology', label: 'Urology', icon: '💧', desc: 'Kidney stones, prostate, urinary tract & bladder care' },
+    { id: 'Nephrology', label: 'Nephrology', icon: '🧪', desc: 'Kidney failure, dialysis, creatinine & renal wellness' },
+    { id: 'Endocrinology', label: 'Endocrinology', icon: '⚖️', desc: 'Diabetes, thyroid disorders, hormonal imbalance & PCOS' },
+    { id: 'Oncology', label: 'Oncology', icon: '🎗️', desc: 'Cancer screening, chemotherapy, tumors & palliative care' },
+    { id: 'Dentistry', label: 'Dentistry', icon: '🦷', desc: 'Toothache, oral surgery, dental caries & gum disease' },
+    { id: 'Emergency Medicine', label: 'Emergency Medicine', icon: '🚑', desc: 'Acute stabilization, trauma, poisoning & critical triage' }
+  ];
+
+  const specialties = SPECIALTY_OPTIONS.map((s) => s.id);
+  const [isSpecialtyDropdownOpen, setIsSpecialtyDropdownOpen] = useState(false);
+  const specialtyDropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (specialtyDropdownRef.current && !specialtyDropdownRef.current.contains(event.target)) {
+        setIsSpecialtyDropdownOpen(false);
+      }
+    }
+    if (isSpecialtyDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [isSpecialtyDropdownOpen]);
 
   const filteredDoctors = useMemo(() => {
     return MOCK_DOCTORS.filter((d) =>
-      d.specialties.some((s) => s.toLowerCase().includes(selectedSpecialty.toLowerCase()))
+      d.specialties.some((s) => matchesSpecialty(s, selectedSpecialty))
     );
   }, [selectedSpecialty]);
 
@@ -2121,25 +2414,143 @@ function ScreenTeleconsultBooking({ pathActor, onBookSuccess, onBack, onEmergenc
           </div>
         </div>
 
-        {/* Specialty Selector */}
-        <div>
-          <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">Select Medical Specialty</label>
-          <div className="flex gap-2 flex-wrap">
-            {specialties.map((spec) => (
-              <button
-                key={spec}
-                type="button"
-                onClick={() => setSelectedSpecialty(spec)}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-all ${
-                  selectedSpecialty === spec
-                    ? 'bg-brand-600 text-white border-brand-600 shadow-sm'
-                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                {spec}
-              </button>
-            ))}
+        {/* Specialty Selector Dropdown */}
+        <div className="relative" ref={specialtyDropdownRef}>
+          <div className="flex items-center justify-between mb-1.5">
+            <label id="specialty-dropdown-label" className="block text-xs font-bold text-slate-700 uppercase">
+              Select Medical Specialty
+            </label>
+            <span className="text-[11px] font-semibold text-brand-700 bg-brand-50 px-2 py-0.5 rounded-md border border-brand-200">
+              {SPECIALTY_OPTIONS.length} Specialties
+            </span>
           </div>
+
+          {/* Trigger Button */}
+          <button
+            type="button"
+            id="specialty-dropdown-button"
+            aria-haspopup="listbox"
+            aria-expanded={isSpecialtyDropdownOpen}
+            aria-labelledby="specialty-dropdown-label specialty-dropdown-button"
+            onClick={() => setIsSpecialtyDropdownOpen((prev) => !prev)}
+            className={`w-full px-3.5 py-2.5 rounded-xl border text-left flex items-center justify-between transition-all duration-150 bg-white ${
+              isSpecialtyDropdownOpen
+                ? 'border-brand-500 ring-2 ring-brand-500/20 shadow-md'
+                : 'border-slate-300 hover:border-slate-400 hover:bg-slate-50/50 shadow-sm'
+            }`}
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <span className="w-9 h-9 rounded-lg bg-brand-50 border border-brand-100 flex items-center justify-center text-lg shrink-0">
+                {(SPECIALTY_OPTIONS.find((s) => s.id === selectedSpecialty) || {}).icon || '🩺'}
+              </span>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="font-extrabold text-slate-900 text-sm truncate">
+                    {selectedSpecialty}
+                  </span>
+                  <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    Selected
+                  </span>
+                </div>
+                <p className="text-xs text-slate-500 truncate mt-0.5">
+                  {(SPECIALTY_OPTIONS.find((s) => s.id === selectedSpecialty) || {}).desc || 'Medical Specialty'}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 ml-3 shrink-0">
+              <span className="text-xs font-semibold text-slate-400 hidden sm:inline">
+                {isSpecialtyDropdownOpen ? 'Close menu' : 'Change specialty'}
+              </span>
+              <div className={`w-7 h-7 rounded-lg flex items-center justify-center transition-transform duration-200 ${
+                isSpecialtyDropdownOpen ? 'bg-brand-100 text-brand-700 rotate-180' : 'bg-slate-100 text-slate-600'
+              }`}>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+          </button>
+
+          {/* Dropdown Menu Panel */}
+          {isSpecialtyDropdownOpen && (
+            <div
+              role="listbox"
+              aria-label="Medical Specialties"
+              className="absolute left-0 right-0 top-full mt-2 z-40 bg-white rounded-2xl border border-slate-200 shadow-2xl overflow-hidden"
+            >
+              <div className="p-2.5 border-b border-slate-100 bg-slate-50/90 flex items-center justify-between text-[11px] font-bold text-slate-500 uppercase tracking-wider px-3.5">
+                <span>Select Department Roster</span>
+                <span className="text-brand-600 font-semibold">Live Doctor Matching</span>
+              </div>
+
+              <div className="max-h-72 overflow-y-auto divide-y divide-slate-100 p-1.5 focus:outline-none">
+                {SPECIALTY_OPTIONS.map((spec) => {
+                  const isSelected = selectedSpecialty === spec.id;
+                  const matchingDoc = MOCK_DOCTORS.find((d) =>
+                    d.specialties.some((s) => matchesSpecialty(s, spec.id))
+                  );
+
+                  return (
+                    <button
+                      key={spec.id}
+                      type="button"
+                      role="option"
+                      aria-selected={isSelected}
+                      onClick={() => {
+                        setSelectedSpecialty(spec.id);
+                        if (matchingDoc && matchingDoc.nextSlot) {
+                          setSelectedSlot(matchingDoc.nextSlot);
+                        }
+                        setIsSpecialtyDropdownOpen(false);
+                      }}
+                      className={`w-full p-2.5 rounded-xl text-left flex items-center justify-between transition-colors group ${
+                        isSelected
+                          ? 'bg-brand-50 border border-brand-200 text-brand-900 font-bold'
+                          : 'hover:bg-slate-50 text-slate-700 font-medium'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0 ${
+                          isSelected ? 'bg-brand-100' : 'bg-slate-100 group-hover:bg-brand-50'
+                        }`}>
+                          {spec.icon}
+                        </span>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className={`text-sm ${isSelected ? 'font-extrabold text-brand-900' : 'text-slate-800'}`}>
+                              {spec.label}
+                            </span>
+                            {matchingDoc && (
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-900 shrink-0 flex items-center gap-1 border border-emerald-200">
+                                <span>{matchingDoc.avatar}</span>
+                                <span>{matchingDoc.name}</span>
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-slate-400 group-hover:text-slate-500 truncate">
+                            {spec.desc}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="shrink-0 ml-2">
+                        {isSelected ? (
+                          <div className="w-5 h-5 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-bold">
+                            ✓
+                          </div>
+                        ) : (
+                          <span className="text-xs text-slate-300 group-hover:text-brand-600 font-semibold">
+                            Select
+                          </span>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Doctor Roster Card */}
@@ -2172,7 +2583,7 @@ function ScreenTeleconsultBooking({ pathActor, onBookSuccess, onBack, onEmergenc
         <div>
           <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">Available Time Slot</label>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            {['Today, 10:00 AM', 'Today, 10:30 AM', 'Today, 11:00 AM', 'Today, 02:00 PM'].map((slot) => (
+            {[activeDoctor.nextSlot || 'Today, 10:00 AM', 'Today, 11:30 AM', 'Today, 02:00 PM', 'Today, 04:30 PM'].filter((v, i, a) => a.indexOf(v) === i).slice(0, 4).map((slot) => (
               <button
                 key={slot}
                 type="button"
@@ -2559,7 +2970,33 @@ function ScreenTeleconsultCall({ appointment, pathActor, onCompleteConsultation 
                 })}
               </div>
 
-              <div className="pt-3 border-t border-slate-100 flex gap-2">
+              <div className="pt-3 border-t border-slate-100 flex gap-2 items-center">
+                <input
+                  type="file"
+                  id="chat-attachment"
+                  className="hidden"
+                  accept="image/*,video/*"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files.length > 0) {
+                      const file = e.target.files[0];
+                      setMessages(prev => [...prev, {
+                        id: Date.now().toString(),
+                        sender: 'patient',
+                        senderName: patientName,
+                        text: `Attached file: ${file.name}`,
+                        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                      }]);
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => document.getElementById('chat-attachment').click()}
+                  className="p-2 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-xl transition-colors"
+                  title="Attach Photo/Video"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
+                </button>
                 <input
                   type="text"
                   value={chatInput}

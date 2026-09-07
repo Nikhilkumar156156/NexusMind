@@ -27,7 +27,7 @@ export const SEED_DOCTORS: readonly Doctor[] = [
     name: 'Dr. Priya Sharma',
     qualification: 'MD, DM (Neurology), DNB',
     registrationNumber: 'JH-MED-4421',
-    specialties: ['Neurology', 'Stroke Care', 'General Medicine'],
+    specialties: ['Neurology', 'Stroke Care', 'Neuro-Medicine'],
     facilityIds: ['fac_sbmch', 'fac_sadar'],
     availabilityWindows: [
       { dayOfWeek: 'Monday', facilityId: 'fac_sbmch', facilityName: 'SBMC&H Hazaribagh', startTime: '09:00', endTime: '13:00', slotDurationMinutes: 20 },
@@ -43,7 +43,7 @@ export const SEED_DOCTORS: readonly Doctor[] = [
     name: 'Dr. Rajesh Verma',
     qualification: 'MD (Medicine), DM (Cardiology)',
     registrationNumber: 'JH-MED-3890',
-    specialties: ['Cardiology', 'Emergency Medicine', 'General Medicine'],
+    specialties: ['Cardiology', 'Interventional Cardiology', 'Cardiac Care'],
     facilityIds: ['fac_sbmch', 'fac_arogyam'],
     availabilityWindows: [
       { dayOfWeek: 'Tuesday', facilityId: 'fac_sbmch', facilityName: 'SBMC&H Hazaribagh', startTime: '09:00', endTime: '14:00', slotDurationMinutes: 20 },
@@ -58,7 +58,7 @@ export const SEED_DOCTORS: readonly Doctor[] = [
     name: 'Dr. Ananya Sen',
     qualification: 'MD (Pediatrics), DCH',
     registrationNumber: 'JH-MED-5102',
-    specialties: ['Pediatrics', 'Neonatal Care', 'General Medicine'],
+    specialties: ['Pediatrics', 'Neonatal Care', 'Child Health'],
     facilityIds: ['fac_sadar', 'fac_kalyani'],
     availabilityWindows: [
       { dayOfWeek: 'Monday', facilityId: 'fac_sadar', facilityName: 'Sadar Hospital', startTime: '09:00', endTime: '13:00', slotDurationMinutes: 15 },
@@ -73,13 +73,237 @@ export const SEED_DOCTORS: readonly Doctor[] = [
     name: 'Dr. Kavita Murmu',
     qualification: 'MS (Obstetrics & Gynecology)',
     registrationNumber: 'JH-MED-6218',
-    specialties: ['Obstetrics & Gynecology', 'Maternal Health', 'General Medicine'],
+    specialties: ['Obstetrics & Gynecology', 'Maternal Health', 'High-Risk Pregnancy'],
     facilityIds: ['fac_sadar', 'fac_sbmch'],
     availabilityWindows: [
       { dayOfWeek: 'Tuesday', facilityId: 'fac_sadar', facilityName: 'Sadar Hospital', startTime: '09:00', endTime: '13:00', slotDurationMinutes: 20 },
       { dayOfWeek: 'Saturday', facilityId: 'fac_sbmch', facilityName: 'SBMC&H Hazaribagh', startTime: '09:00', endTime: '14:00', slotDurationMinutes: 20 }
     ],
     maxDailyLoad: 25,
+    isAvailableOnline: true,
+    currentActiveConsultations: 0
+  },
+  {
+    id: 'doc_gm',
+    name: 'Dr. Arvind Sinha',
+    qualification: 'MD (Internal Medicine), FACP',
+    registrationNumber: 'JH-MED-3105',
+    specialties: ['General Medicine', 'Internal Medicine', 'Primary Care'],
+    facilityIds: ['fac_sadar', 'fac_sbmch'],
+    availabilityWindows: [
+      { dayOfWeek: 'Monday', facilityId: 'fac_sadar', facilityName: 'Sadar Hospital', startTime: '09:00', endTime: '13:00', slotDurationMinutes: 15 }
+    ],
+    maxDailyLoad: 35,
+    isAvailableOnline: true,
+    currentActiveConsultations: 0
+  },
+  {
+    id: 'doc_gs',
+    name: 'Dr. Manoj K. Pandey',
+    qualification: 'MS (General Surgery), FIAGES',
+    registrationNumber: 'JH-MED-4912',
+    specialties: ['General Surgery', 'Laparoscopy', 'Trauma Surgery'],
+    facilityIds: ['fac_sbmch', 'fac_arogyam'],
+    availabilityWindows: [
+      { dayOfWeek: 'Tuesday', facilityId: 'fac_sbmch', facilityName: 'SBMC&H Hazaribagh', startTime: '10:00', endTime: '14:00', slotDurationMinutes: 20 }
+    ],
+    maxDailyLoad: 20,
+    isAvailableOnline: true,
+    currentActiveConsultations: 0
+  },
+  {
+    id: 'doc_ortho',
+    name: 'Dr. Vikramaditya Roy',
+    qualification: 'MS (Orthopedics), DNB (Ortho)',
+    registrationNumber: 'JH-MED-5540',
+    specialties: ['Orthopedics', 'Joint Replacement', 'Bone Trauma'],
+    facilityIds: ['fac_kalyani', 'fac_sbmch'],
+    availabilityWindows: [
+      { dayOfWeek: 'Wednesday', facilityId: 'fac_kalyani', facilityName: 'Kalyani Trauma Centre', startTime: '09:00', endTime: '13:00', slotDurationMinutes: 20 }
+    ],
+    maxDailyLoad: 25,
+    isAvailableOnline: true,
+    currentActiveConsultations: 0
+  },
+  {
+    id: 'doc_ns',
+    name: 'Dr. Alok Nath Tripathy',
+    qualification: 'MCh (Neurosurgery), MS (Surgery)',
+    registrationNumber: 'JH-MED-7120',
+    specialties: ['Neurosurgery', 'Spine Surgery', 'Brain Trauma'],
+    facilityIds: ['fac_sbmch'],
+    availabilityWindows: [
+      { dayOfWeek: 'Thursday', facilityId: 'fac_sbmch', facilityName: 'SBMC&H Hazaribagh', startTime: '11:00', endTime: '15:00', slotDurationMinutes: 30 }
+    ],
+    maxDailyLoad: 15,
+    isAvailableOnline: true,
+    currentActiveConsultations: 0
+  },
+  {
+    id: 'doc_ent',
+    name: 'Dr. Sunita Baskey',
+    qualification: 'MS (ENT / Otorhinolaryngology)',
+    registrationNumber: 'JH-MED-4688',
+    specialties: ['ENT', 'Otorhinolaryngology', 'Head & Neck Care'],
+    facilityIds: ['fac_sadar', 'fac_sbmch'],
+    availabilityWindows: [
+      { dayOfWeek: 'Monday', facilityId: 'fac_sadar', facilityName: 'Sadar Hospital', startTime: '10:00', endTime: '14:00', slotDurationMinutes: 20 }
+    ],
+    maxDailyLoad: 25,
+    isAvailableOnline: true,
+    currentActiveConsultations: 0
+  },
+  {
+    id: 'doc_opht',
+    name: 'Dr. Hemant Soreng',
+    qualification: 'MS (Ophthalmology), FICO',
+    registrationNumber: 'JH-MED-5391',
+    specialties: ['Ophthalmology', 'Cataract & Eye Microsurgery'],
+    facilityIds: ['fac_sadar'],
+    availabilityWindows: [
+      { dayOfWeek: 'Friday', facilityId: 'fac_sadar', facilityName: 'Sadar Hospital', startTime: '09:00', endTime: '13:00', slotDurationMinutes: 15 }
+    ],
+    maxDailyLoad: 30,
+    isAvailableOnline: true,
+    currentActiveConsultations: 0
+  },
+  {
+    id: 'doc_derm',
+    name: 'Dr. Neha Agarwal',
+    qualification: 'MD (Dermatology, Venereology & Leprosy)',
+    registrationNumber: 'JH-MED-6734',
+    specialties: ['Dermatology', 'Skin Allergy', 'Cosmetology'],
+    facilityIds: ['fac_arogyam', 'fac_sadar'],
+    availabilityWindows: [
+      { dayOfWeek: 'Wednesday', facilityId: 'fac_arogyam', facilityName: 'Arogyam Multi-Specialty', startTime: '11:00', endTime: '15:00', slotDurationMinutes: 20 }
+    ],
+    maxDailyLoad: 25,
+    isAvailableOnline: true,
+    currentActiveConsultations: 0
+  },
+  {
+    id: 'doc_psych',
+    name: 'Dr. Tariq Anwar',
+    qualification: 'MD (Psychiatry), DPM',
+    registrationNumber: 'JH-MED-4819',
+    specialties: ['Psychiatry', 'Neuropsychiatry', 'Behavioral Health'],
+    facilityIds: ['fac_sadar'],
+    availabilityWindows: [
+      { dayOfWeek: 'Thursday', facilityId: 'fac_sadar', facilityName: 'Sadar Hospital', startTime: '12:00', endTime: '16:00', slotDurationMinutes: 25 }
+    ],
+    maxDailyLoad: 20,
+    isAvailableOnline: true,
+    currentActiveConsultations: 0
+  },
+  {
+    id: 'doc_pulm',
+    name: 'Dr. Devendra Prasad',
+    qualification: 'MD (Pulmonary Medicine), DTCD',
+    registrationNumber: 'JH-MED-5902',
+    specialties: ['Pulmonology / Respiratory Medicine', 'Pulmonology', 'Respiratory Medicine', 'Chest Medicine'],
+    facilityIds: ['fac_sbmch', 'fac_arogyam'],
+    availabilityWindows: [
+      { dayOfWeek: 'Tuesday', facilityId: 'fac_sbmch', facilityName: 'SBMC&H Hazaribagh', startTime: '09:00', endTime: '13:00', slotDurationMinutes: 20 }
+    ],
+    maxDailyLoad: 25,
+    isAvailableOnline: true,
+    currentActiveConsultations: 0
+  },
+  {
+    id: 'doc_gastro',
+    name: 'Dr. Sanjay Khalkho',
+    qualification: 'DM (Gastroenterology), MD',
+    registrationNumber: 'JH-MED-7450',
+    specialties: ['Gastroenterology', 'Hepatology', 'GI Endoscopy'],
+    facilityIds: ['fac_sbmch', 'fac_arogyam'],
+    availabilityWindows: [
+      { dayOfWeek: 'Monday', facilityId: 'fac_sbmch', facilityName: 'SBMC&H Hazaribagh', startTime: '10:00', endTime: '14:00', slotDurationMinutes: 20 }
+    ],
+    maxDailyLoad: 20,
+    isAvailableOnline: true,
+    currentActiveConsultations: 0
+  },
+  {
+    id: 'doc_uro',
+    name: 'Dr. Pradeep Minz',
+    qualification: 'MCh (Urology), MS',
+    registrationNumber: 'JH-MED-6831',
+    specialties: ['Urology', 'Endourology', 'Renal Surgery'],
+    facilityIds: ['fac_sbmch', 'fac_kalyani'],
+    availabilityWindows: [
+      { dayOfWeek: 'Wednesday', facilityId: 'fac_sbmch', facilityName: 'SBMC&H Hazaribagh', startTime: '10:00', endTime: '14:00', slotDurationMinutes: 20 }
+    ],
+    maxDailyLoad: 20,
+    isAvailableOnline: true,
+    currentActiveConsultations: 0
+  },
+  {
+    id: 'doc_neph',
+    name: 'Dr. Meenakshi Sundaram',
+    qualification: 'DM (Nephrology), MD',
+    registrationNumber: 'JH-MED-8104',
+    specialties: ['Nephrology', 'Dialysis Care', 'Renal Medicine'],
+    facilityIds: ['fac_sbmch', 'fac_arogyam'],
+    availabilityWindows: [
+      { dayOfWeek: 'Thursday', facilityId: 'fac_sbmch', facilityName: 'SBMC&H Hazaribagh', startTime: '11:00', endTime: '15:00', slotDurationMinutes: 20 }
+    ],
+    maxDailyLoad: 20,
+    isAvailableOnline: true,
+    currentActiveConsultations: 0
+  },
+  {
+    id: 'doc_endo',
+    name: 'Dr. Rashmi Rekha Topno',
+    qualification: 'DM (Endocrinology), MD',
+    registrationNumber: 'JH-MED-7622',
+    specialties: ['Endocrinology', 'Diabetology', 'Thyroid Care'],
+    facilityIds: ['fac_sbmch', 'fac_sadar'],
+    availabilityWindows: [
+      { dayOfWeek: 'Friday', facilityId: 'fac_sbmch', facilityName: 'SBMC&H Hazaribagh', startTime: '10:00', endTime: '14:00', slotDurationMinutes: 20 }
+    ],
+    maxDailyLoad: 25,
+    isAvailableOnline: true,
+    currentActiveConsultations: 0
+  },
+  {
+    id: 'doc_onco',
+    name: 'Dr. Abhishek Mukherjee',
+    qualification: 'DM (Medical Oncology), MD, ECMO',
+    registrationNumber: 'JH-MED-8319',
+    specialties: ['Oncology', 'Cancer Care', 'Chemotherapy'],
+    facilityIds: ['fac_sbmch'],
+    availabilityWindows: [
+      { dayOfWeek: 'Tuesday', facilityId: 'fac_sbmch', facilityName: 'SBMC&H Hazaribagh', startTime: '11:00', endTime: '15:00', slotDurationMinutes: 25 }
+    ],
+    maxDailyLoad: 15,
+    isAvailableOnline: true,
+    currentActiveConsultations: 0
+  },
+  {
+    id: 'doc_dent',
+    name: 'Dr. Pooja Kumari',
+    qualification: 'MDS (Oral & Maxillofacial Surgery), BDS',
+    registrationNumber: 'JH-DENT-2291',
+    specialties: ['Dentistry', 'Oral Surgery', 'Dental Care'],
+    facilityIds: ['fac_sadar', 'fac_sbmch'],
+    availabilityWindows: [
+      { dayOfWeek: 'Saturday', facilityId: 'fac_sadar', facilityName: 'Sadar Hospital', startTime: '09:00', endTime: '13:00', slotDurationMinutes: 20 }
+    ],
+    maxDailyLoad: 30,
+    isAvailableOnline: true,
+    currentActiveConsultations: 0
+  },
+  {
+    id: 'doc_em',
+    name: 'Dr. Rakesh Ranjan',
+    qualification: 'MEM (Emergency Medicine), MRCEM',
+    registrationNumber: 'JH-MED-5034',
+    specialties: ['Emergency Medicine', 'Critical Care', 'Trauma Stabilization'],
+    facilityIds: ['fac_sbmch', 'fac_arogyam'],
+    availabilityWindows: [
+      { dayOfWeek: 'Monday', facilityId: 'fac_sbmch', facilityName: 'SBMC&H Hazaribagh', startTime: '00:00', endTime: '23:59', slotDurationMinutes: 15 }
+    ],
+    maxDailyLoad: 50,
     isAvailableOnline: true,
     currentActiveConsultations: 0
   }
@@ -105,8 +329,43 @@ export class InMemoryTeleconsultStore {
       list = list.filter((d) => d.facilityIds.includes(facilityId));
     }
     if (specialty) {
-      const specLower = specialty.toLowerCase();
-      list = list.filter((d) => d.specialties.some((s) => s.toLowerCase().includes(specLower)));
+      const specLower = specialty.toLowerCase().trim();
+      list = list.filter((d) => d.specialties.some((s) => {
+        const sLower = s.toLowerCase().trim();
+        if (sLower === specLower) return true;
+
+        if (specLower.startsWith('general ') && sLower.startsWith('general ')) {
+          return specLower === sLower;
+        }
+
+        if (specLower.includes('neuro') && sLower.includes('neuro')) {
+          const isTargetSurg = specLower.includes('surg');
+          const isDocSurg = sLower.includes('surg');
+          if (isTargetSurg !== isDocSurg) return false;
+        }
+
+        if (specLower === 'ent') {
+          return /\bent\b/i.test(sLower) || sLower.includes('otorhinolaryngology') || sLower.includes('ear, nose');
+        }
+        if (sLower === 'ent') {
+          return /\bent\b/i.test(specLower) || specLower.includes('otorhinolaryngology') || specLower.includes('ear, nose');
+        }
+
+        if (specLower.includes('uro') && !specLower.includes('neuro')) {
+          if (sLower.includes('neuro')) return false;
+        }
+        if (sLower.includes('uro') && !sLower.includes('neuro')) {
+          if (specLower.includes('neuro')) return false;
+        }
+
+        if (sLower.includes(specLower) || specLower.includes(sLower)) {
+          return true;
+        }
+
+        const targetTokens = specLower.split(/[\/&]/).map((t) => t.trim()).filter(Boolean);
+        const docTokens = sLower.split(/[\/&]/).map((t) => t.trim()).filter(Boolean);
+        return targetTokens.some((tt) => docTokens.some((dt) => dt === tt || dt.includes(tt) || tt.includes(dt)));
+      }));
     }
     return list;
   }
