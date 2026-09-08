@@ -231,4 +231,10 @@ export class InMemoryReferralStore {
   public getNextSequenceNumber(): number {
     return this.referrals.size + 128;
   }
+
+  public delete(referralId: string): boolean {
+    const deleted = this.referrals.delete(referralId);
+    this.historyLogs = this.historyLogs.filter((h) => h.referralId !== referralId);
+    return deleted;
+  }
 }

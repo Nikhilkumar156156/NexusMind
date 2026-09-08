@@ -354,7 +354,17 @@ const server = http.createServer(async (req, res) => {
         return;
       }
 
-      // 21. Get Single Referral by ID: GET /api/referrals/:referral_id
+      // 21. Delete Referral: DELETE /api/referrals/:referral_id
+      if (normPath.startsWith('/api/referrals/') && req.method === 'DELETE') {
+        const parts = normPath.split('/');
+        const refId = decodeURIComponent(parts[3] || '');
+        const deleted = await referralUseCase.deleteReferral(refId);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, data: { referralId: refId, deleted } }));
+        return;
+      }
+
+      // 22. Get Single Referral by ID: GET /api/referrals/:referral_id
       if (normPath.startsWith('/api/referrals/') && req.method === 'GET') {
         const parts = normPath.split('/');
         const refId = decodeURIComponent(parts[3] || '');

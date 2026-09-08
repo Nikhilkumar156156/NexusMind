@@ -138,4 +138,21 @@ describe('Feature 03: Smart Referral Management System & Invariants', () => {
     assert.ok(stats.total >= 3);
     assert.ok(stats.completed >= 1);
   });
+
+  it('should support deleting a referral and clean up associated history logs', async () => {
+    const store = new InMemoryReferralStore();
+    const useCase = new ManageReferralUseCase(store);
+
+    const ref = await useCase.getReferral('REF-2026-00125');
+    assert.ok(ref !== null);
+
+    const deleted = await useCase.deleteReferral('REF-2026-00125');
+    assert.equal(deleted, true);
+
+    const check = await useCase.getReferral('REF-2026-00125');
+    assert.equal(check, null);
+
+    const history = await useCase.getHistory('REF-2026-00125');
+    assert.equal(history.length, 0);
+  });
 });

@@ -198,4 +198,8 @@ export class ManageReferralUseCase {
   public async getHistory(referralId: string): Promise<ReferralStatusHistoryItem[]> {
     return this.store.getHistoryByReferralId(referralId);
   }
+
+  public async deleteReferral(referralId: string): Promise<boolean> {
+    return this.store.delete(referralId);
+  }
 }

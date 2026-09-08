@@ -4008,6 +4008,113 @@ function ScreenConsultationSummary({ consultationData, onRestart, onGoHome }) {
 // --- FEATURE 03: SMART REFERRAL MANAGEMENT ---
 // ==========================================
 
+const REFERRING_DOCTOR_FACILITY_OPTIONS = [
+  {
+    id: 'doc_1',
+    doctorName: 'Dr. Priya Sharma',
+    facilityId: 'fac_phc_katkamsandi',
+    facilityName: 'Katkamsandi Primary Health Centre (PHC)',
+    facilityType: 'PHC',
+    specialty: 'Cardiology / General Medicine'
+  },
+  {
+    id: 'doc_gm_ichak',
+    doctorName: 'Dr. Arvind Sinha',
+    facilityId: 'fac_phc_ichak',
+    facilityName: 'Ichak Primary Health Centre (PHC)',
+    facilityType: 'PHC',
+    specialty: 'Internal Medicine'
+  },
+  {
+    id: 'doc_pulm_churchu',
+    doctorName: 'Dr. Devendra Prasad',
+    facilityId: 'fac_phc_churchu',
+    facilityName: 'Churchu Primary Health Centre (PHC)',
+    facilityType: 'PHC',
+    specialty: 'Pulmonology / Chest Care'
+  },
+  {
+    id: 'doc_ent_padma',
+    doctorName: 'Dr. Sunita Baskey',
+    facilityId: 'fac_phc_padma',
+    facilityName: 'Padma Primary Health Centre (PHC)',
+    facilityType: 'PHC',
+    specialty: 'ENT / Primary Care'
+  },
+  {
+    id: 'doc_derm_daru',
+    doctorName: 'Dr. Neha Agarwal',
+    facilityId: 'fac_phc_daru',
+    facilityName: 'Daru Primary Health Centre (PHC)',
+    facilityType: 'PHC',
+    specialty: 'Dermatology & Skin Care'
+  },
+  {
+    id: 'doc_4',
+    doctorName: 'Dr. Kavita Murmu',
+    facilityId: 'fac_chc_barkagaon',
+    facilityName: 'Barkagaon Community Health Centre (CHC)',
+    facilityType: 'CHC',
+    specialty: 'Obstetrics & Gynecology'
+  },
+  {
+    id: 'doc_3',
+    doctorName: 'Dr. Ananya Sen',
+    facilityId: 'fac_chc_bishnugarh',
+    facilityName: 'Bishnugarh Community Health Centre (CHC)',
+    facilityType: 'CHC',
+    specialty: 'Pediatrics & Neonatal Care'
+  },
+  {
+    id: 'doc_ortho_mandu',
+    doctorName: 'Dr. Vikramaditya Roy',
+    facilityId: 'fac_chc_mandu',
+    facilityName: 'Mandu Community Health Centre (CHC)',
+    facilityType: 'CHC',
+    specialty: 'Orthopedics & Joint Care'
+  },
+  {
+    id: 'doc_2',
+    doctorName: 'Dr. Rajesh Verma',
+    facilityId: 'fac_sadar',
+    facilityName: 'Sadar Hospital Hazaribagh',
+    facilityType: 'HOSPITAL',
+    specialty: 'Cardiology / Emergency'
+  },
+  {
+    id: 'doc_gs_barhi',
+    doctorName: 'Dr. Manoj K. Pandey',
+    facilityId: 'fac_sdh_barhi',
+    facilityName: 'Barhi Sub-Divisional Hospital (SDH)',
+    facilityType: 'HOSPITAL',
+    specialty: 'General Surgery & Trauma'
+  },
+  {
+    id: 'doc_ns_sbmch',
+    doctorName: 'Dr. Alok Nath Tripathy',
+    facilityId: 'fac_sbmch',
+    facilityName: 'Sheikh Bhikhari Medical College & Hospital (SBMC&H)',
+    facilityType: 'HOSPITAL',
+    specialty: 'Neurosurgery & Spine'
+  },
+  {
+    id: 'doc_psych_rinpas',
+    doctorName: 'Dr. Tariq Anwar',
+    facilityId: 'fac_rinpas',
+    facilityName: 'RINPAS Regional Health Network',
+    facilityType: 'OTHER',
+    specialty: 'Psychiatry & Behavioral Health'
+  },
+  {
+    id: 'doc_opht_netralaya',
+    doctorName: 'Dr. Hemant Soreng',
+    facilityId: 'fac_netralaya',
+    facilityName: 'Netralaya Vision Care Centre',
+    facilityType: 'OTHER',
+    specialty: 'Ophthalmology & Eye Microsurgery'
+  }
+];
+
 function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNavigateToCareNavigator }) {
   const [referrals, setReferrals] = useState([]);
   const [stats, setStats] = useState({ total: 0, pending: 0, inProgress: 0, completed: 0, cancelled: 0 });
@@ -4022,6 +4129,11 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
   const [targetReferral, setTargetReferral] = useState(null);
   const [statusRemarks, setStatusRemarks] = useState('');
   const [targetStatus, setTargetStatus] = useState('SENT');
+  const [isCustomReferringDoctor, setIsCustomReferringDoctor] = useState(false);
+  const [selectedDoctorOptionId, setSelectedDoctorOptionId] = useState('doc_1');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [targetDeleteRef, setTargetDeleteRef] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // New Referral Form state
   const [formData, setFormData] = useState({
@@ -4155,7 +4267,7 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
     if (!targetReferral) return;
     const updaterName =
       activeTabRole === 'doctor'
-        ? 'Dr. Priya Sharma'
+        ? (formData.referringDoctorName || 'Dr. Priya Sharma')
         : activeTabRole === 'worker'
         ? 'ASHA Anita Devi'
         : activeTabRole === 'facility'
@@ -4211,7 +4323,54 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
       })
     );
 
+    if (targetStatus === 'CANCELLED') {
+      setStats((prev) => ({
+        ...prev,
+        pending: Math.max(0, prev.pending - (targetReferral.status === 'CREATED' || targetReferral.status === 'SENT' ? 1 : 0)),
+        cancelled: (prev.cancelled || 0) + 1
+      }));
+    }
+
     setShowUpdateModal(false);
+  };
+
+  const handleOpenDeleteModal = (ref) => {
+    setTargetDeleteRef(ref);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteReferral = async () => {
+    if (!targetDeleteRef) return;
+    setIsDeleting(true);
+    try {
+      const res = await fetch(getApiUrl(`/api/referrals/${encodeURIComponent(targetDeleteRef.referralId)}`), {
+        method: 'DELETE'
+      });
+      const json = await res.json();
+      if (!json.success) {
+        console.warn('Backend DELETE returned failure, applying local delete:', json);
+      }
+    } catch (err) {
+      console.warn('Backend DELETE fetch failed, applying local delete:', err);
+    }
+
+    setReferrals((prev) => prev.filter((r) => r.referralId !== targetDeleteRef.referralId));
+    setStats((prev) => ({
+      ...prev,
+      total: Math.max(0, prev.total - 1),
+      pending: Math.max(0, prev.pending - (targetDeleteRef.status === 'CREATED' || targetDeleteRef.status === 'SENT' ? 1 : 0)),
+      inProgress: Math.max(0, prev.inProgress - (targetDeleteRef.status === 'IN_PROGRESS' || targetDeleteRef.status === 'REACHED_FACILITY' ? 1 : 0)),
+      completed: Math.max(0, prev.completed - (targetDeleteRef.status === 'COMPLETED' ? 1 : 0)),
+      cancelled: Math.max(0, (prev.cancelled || 0) - (targetDeleteRef.status === 'CANCELLED' ? 1 : 0))
+    }));
+
+    if (selectedTimelineRef?.referralId === targetDeleteRef.referralId) {
+      setSelectedTimelineRef(null);
+    }
+
+    setIsDeleting(false);
+    setShowDeleteModal(false);
+    setTargetDeleteRef(null);
   };
 
   const filteredReferrals = useMemo(() => {
@@ -4292,7 +4451,7 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
               }}
               className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center gap-2 ${
                 activeTabRole === t.id
-                  ? 'bg-slate-900 text-white shadow-sm'
+                  ? 'bg-[#0b2b82] text-white shadow-md shadow-[#0b2b82]/25'
                   : 'bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200/60'
               }`}
             >
@@ -4353,8 +4512,8 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
                 className="text-xs border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:ring-2 focus:ring-emerald-500 w-48 sm:w-60"
               />
 
-              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-bold">
-                {['ALL', 'CREATED', 'SENT', 'IN_PROGRESS', 'REACHED_FACILITY', 'COMPLETED'].map((st) => (
+              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-bold flex-wrap">
+                {['ALL', 'CREATED', 'SENT', 'IN_PROGRESS', 'REACHED_FACILITY', 'COMPLETED', 'CANCELLED'].map((st) => (
                   <button
                     key={st}
                     type="button"
@@ -4420,15 +4579,27 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
                         {ref.status.replace('_', ' ')}
                       </span>
                     </td>
-                    <td className="py-3.5 px-3 text-right space-x-1.5">
+                    <td className="py-3.5 px-3 text-right space-x-1.5 whitespace-nowrap">
                       {ref.status === 'CREATED' && (
                         <button
                           type="button"
                           onClick={() => handleUpdateStatus(ref, 'SENT', 'Doctor transmitted referral to destination facility.')}
-                          className="px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-[11px] font-bold"
+                          className="px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-[11px] font-bold shadow-sm"
                         >
                           Dispatch (Send)
                         </button>
+                      )}
+                      {(ref.status === 'CREATED' || ref.status === 'SENT') && (
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateStatus(ref, 'CANCELLED', 'Doctor cancelled referral: patient clinical condition reassessed.')}
+                          className="px-3 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-[11px] font-bold transition-colors"
+                        >
+                          Cancel Referral ✕
+                        </button>
+                      )}
+                      {ref.status === 'CANCELLED' && (
+                        <span className="text-[11px] font-bold text-rose-600 italic mr-1">Cancelled</span>
                       )}
                       <button
                         type="button"
@@ -4436,6 +4607,14 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
                         className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[11px] font-bold"
                       >
                         Timeline 📜
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleOpenDeleteModal(ref)}
+                        className="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 border border-red-200 rounded-lg text-[11px] font-bold transition-colors"
+                        title="Delete this referral"
+                      >
+                        Delete 🗑️
                       </button>
                     </td>
                   </tr>
@@ -4464,13 +4643,28 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {pendingWorkerReferrals.map((ref) => (
-              <div key={ref.id} className="p-5 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-3">
+            {pendingWorkerReferrals.map((ref, idx) => (
+              <div
+                key={ref.id}
+                className={`p-5 rounded-2xl border transition-all space-y-3 ${
+                  idx === 1 || ref.status === 'IN_PROGRESS'
+                    ? 'border-[#0b2b82]/30 hover:border-[#0b2b82]/60 bg-[#0b2b82]/5 hover:bg-[#0b2b82]/10 shadow-sm'
+                    : 'border-slate-200 hover:border-slate-300 bg-slate-50/50 hover:bg-white'
+                }`}
+              >
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-mono font-black text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded">
                     {ref.referralId}
                   </span>
-                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                  <span
+                    className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full ${
+                      ref.status === 'IN_PROGRESS'
+                        ? 'bg-[#0b2b82]/15 text-[#0b2b82] border border-[#0b2b82]/30'
+                        : ref.status === 'SENT'
+                        ? 'bg-amber-100 text-amber-800 border border-amber-200'
+                        : 'bg-slate-100 text-slate-700 border border-slate-200'
+                    }`}
+                  >
                     {ref.status.replace('_', ' ')}
                   </span>
                 </div>
@@ -4487,13 +4681,25 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
                 </div>
 
                 <div className="pt-2 flex items-center gap-2 flex-wrap">
+                  {ref.status === 'CREATED' && (
+                    <button
+                      type="button"
+                      onClick={() => handleUpdateStatus(ref, 'SENT', 'ASHA acknowledged and initiated transport coordination.')}
+                      className="flex-1 py-2.5 bg-[#0b2b82] hover:bg-[#071a4f] text-white rounded-xl text-xs font-bold shadow-md shadow-[#0b2b82]/25 transition-all flex items-center justify-center gap-1.5"
+                    >
+                      <span>📨</span>
+                      <span>Acknowledge &amp; Dispatch</span>
+                    </button>
+                  )}
+
                   {ref.status === 'SENT' && (
                     <button
                       type="button"
                       onClick={() => handleUpdateStatus(ref, 'IN_PROGRESS', 'ASHA contacted patient; transport en route.')}
-                      className="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold"
+                      className="flex-1 py-2.5 bg-[#0b2b82] hover:bg-[#071a4f] text-white rounded-xl text-xs font-bold shadow-md shadow-[#0b2b82]/25 transition-all flex items-center justify-center gap-1.5"
                     >
-                      📞 Patient Contacted / En Route
+                      <span>📞</span>
+                      <span>Patient Contacted / En Route</span>
                     </button>
                   )}
 
@@ -4501,16 +4707,17 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
                     <button
                       type="button"
                       onClick={() => handleUpdateStatus(ref, 'REACHED_FACILITY', 'ASHA confirmed patient arrived at hospital gate/OPD desk.')}
-                      className="flex-1 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold"
+                      className="flex-1 py-2.5 bg-[#0b2b82] hover:bg-[#071a4f] text-white rounded-xl text-xs font-bold shadow-md shadow-[#0b2b82]/25 transition-all flex items-center justify-center gap-1.5"
                     >
-                      🏥 Confirm Patient Reached Hospital
+                      <span>🏥</span>
+                      <span>Confirm Patient Reached Hospital</span>
                     </button>
                   )}
 
                   <button
                     type="button"
                     onClick={() => handleOpenTimeline(ref)}
-                    className="px-3 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-bold"
+                    className="px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-colors"
                   >
                     History
                   </button>
@@ -4554,7 +4761,7 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
                     <button
                       type="button"
                       onClick={() => handleUpdateStatus(ref, 'REACHED_FACILITY', 'Facility reception desk checked in patient.')}
-                      className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl shadow-sm"
+                      className="px-4 py-2 bg-[#0b2b82] hover:bg-[#071a4f] text-white font-bold text-xs rounded-xl shadow-md shadow-[#0b2b82]/25 transition-all"
                     >
                       📥 Check-In Patient Arrival
                     </button>
@@ -4697,11 +4904,20 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
               ))}
             </div>
 
-            <div className="pt-3 border-t border-slate-100 text-right">
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+              {activeTabRole === 'doctor' && (
+                <button
+                  type="button"
+                  onClick={() => handleOpenDeleteModal(selectedTimelineRef)}
+                  className="px-3.5 py-2 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 border border-red-200 rounded-xl text-xs font-bold transition-colors"
+                >
+                  Delete Referral 🗑️
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => setSelectedTimelineRef(null)}
-                className="px-5 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold"
+                className="px-5 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold ml-auto"
               >
                 Close Audit Timeline
               </button>
@@ -4769,12 +4985,131 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="font-bold text-slate-700 block mb-1">Referring Doctor &amp; Facility</label>
-                  <input
-                    type="text"
-                    value={`${formData.referringDoctorName} (${formData.referringFacilityName})`}
-                    disabled
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-500 font-medium"
-                  />
+                  <select
+                    value={isCustomReferringDoctor ? 'custom' : selectedDoctorOptionId}
+                    onChange={(e) => {
+                      const selId = e.target.value;
+                      if (selId === 'custom') {
+                        setIsCustomReferringDoctor(true);
+                        setSelectedDoctorOptionId('custom');
+                        setFormData({
+                          ...formData,
+                          referringDoctorId: 'doc_custom',
+                          referringFacilityId: 'fac_custom'
+                        });
+                      } else {
+                        setIsCustomReferringDoctor(false);
+                        setSelectedDoctorOptionId(selId);
+                        const match = REFERRING_DOCTOR_FACILITY_OPTIONS.find((opt) => opt.id === selId);
+                        if (match) {
+                          setFormData({
+                            ...formData,
+                            referringDoctorId: match.id,
+                            referringDoctorName: match.doctorName,
+                            referringFacilityId: match.facilityId,
+                            referringFacilityName: match.facilityName
+                          });
+                        }
+                      }
+                    }}
+                    className="w-full border border-slate-200 rounded-xl p-2.5 font-bold text-slate-900 bg-white focus:ring-2 focus:ring-emerald-500 shadow-sm"
+                  >
+                    <optgroup label="Primary Health Centres (PHC)">
+                      {REFERRING_DOCTOR_FACILITY_OPTIONS.filter((d) => d.facilityType === 'PHC').map((doc) => (
+                        <option key={doc.id} value={doc.id}>
+                          {doc.doctorName} &bull; {doc.facilityName} ({doc.specialty})
+                        </option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="Community Health Centres (CHC)">
+                      {REFERRING_DOCTOR_FACILITY_OPTIONS.filter((d) => d.facilityType === 'CHC').map((doc) => (
+                        <option key={doc.id} value={doc.id}>
+                          {doc.doctorName} &bull; {doc.facilityName} ({doc.specialty})
+                        </option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="District &amp; Sub-Divisional Hospitals">
+                      {REFERRING_DOCTOR_FACILITY_OPTIONS.filter((d) => d.facilityType === 'HOSPITAL').map((doc) => (
+                        <option key={doc.id} value={doc.id}>
+                          {doc.doctorName} &bull; {doc.facilityName} ({doc.specialty})
+                        </option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="Specialized &amp; Regional Facilities">
+                      {REFERRING_DOCTOR_FACILITY_OPTIONS.filter((d) => d.facilityType === 'OTHER').map((doc) => (
+                        <option key={doc.id} value={doc.id}>
+                          {doc.doctorName} &bull; {doc.facilityName} ({doc.specialty})
+                        </option>
+                      ))}
+                    </optgroup>
+                    <option value="custom">➕ Enter Custom Doctor &amp; Facility...</option>
+                  </select>
+
+                  {/* Custom Doctor & Facility Input Fields */}
+                  {isCustomReferringDoctor ? (
+                    <div className="mt-2.5 p-3 bg-emerald-50/40 rounded-xl border border-emerald-200/60 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase text-emerald-800">Custom Clinician &amp; Facility</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsCustomReferringDoctor(false);
+                            const first = REFERRING_DOCTOR_FACILITY_OPTIONS[0];
+                            setSelectedDoctorOptionId(first.id);
+                            setFormData({
+                              ...formData,
+                              referringDoctorId: first.id,
+                              referringDoctorName: first.doctorName,
+                              referringFacilityId: first.facilityId,
+                              referringFacilityName: first.facilityName
+                            });
+                          }}
+                          className="text-[10px] font-bold text-slate-500 hover:text-slate-800"
+                        >
+                          ✕ Reset to Presets
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] font-bold text-slate-600 block mb-0.5">Doctor Full Name</label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. Dr. Rajesh Kumar"
+                            value={formData.referringDoctorName}
+                            onChange={(e) => setFormData({ ...formData, referringDoctorName: e.target.value })}
+                            className="w-full border border-slate-200 rounded-lg p-2 font-medium text-xs bg-white focus:ring-1 focus:ring-emerald-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-bold text-slate-600 block mb-0.5">Referring Facility / Hospital</label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. Barhi Sub-Divisional Hospital"
+                            value={formData.referringFacilityName}
+                            onChange={(e) => setFormData({ ...formData, referringFacilityName: e.target.value })}
+                            className="w-full border border-slate-200 rounded-lg p-2 font-medium text-xs bg-white focus:ring-1 focus:ring-emerald-500"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mt-1.5 flex items-center justify-between text-[11px] text-slate-500 bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200/70">
+                      <div className="truncate">
+                        <span className="font-bold text-slate-800">👨‍⚕️ {formData.referringDoctorName}</span>
+                        <span className="mx-1 text-slate-300">&bull;</span>
+                        <span className="text-slate-600 font-medium">🏥 {formData.referringFacilityName}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setIsCustomReferringDoctor(true)}
+                        className="text-[10px] text-emerald-700 font-bold hover:underline shrink-0 ml-2"
+                      >
+                        Custom Edit
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label className="font-bold text-slate-700 block mb-1">Receiving Hospital (Destination)</label>
@@ -4851,27 +5186,36 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
         </div>
       )}
 
-      {/* UPDATE STATUS MODAL */}
+      {/* UPDATE STATUS / CANCEL MODAL */}
       {showUpdateModal && targetReferral && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4 animate-in fade-in zoom-in-95 duration-150">
             <div>
-              <span className="text-[10px] font-black uppercase text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded">
-                Confirm Transition
+              <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded ${
+                targetStatus === 'CANCELLED' ? 'text-rose-800 bg-rose-100' : 'text-emerald-800 bg-emerald-50'
+              }`}>
+                {targetStatus === 'CANCELLED' ? 'Cancel Referral' : 'Confirm Transition'}
               </span>
               <h3 className="text-lg font-black text-slate-900 mt-1">
-                Update Status to <span className="text-emerald-700 font-mono">{targetStatus}</span>
+                {targetStatus === 'CANCELLED' ? (
+                  <>Cancel Referral: <span className="text-rose-600 font-mono">{targetReferral.referralId}</span></>
+                ) : (
+                  <>Update Status to <span className="text-emerald-700 font-mono">{targetStatus}</span></>
+                )}
               </h3>
               <p className="text-xs text-slate-500">Referral: {targetReferral.referralId} &bull; Patient: {targetReferral.patientName}</p>
             </div>
 
             <div>
-              <label className="font-bold text-slate-700 text-xs block mb-1">Audit Remarks / Ground Notes</label>
+              <label className="font-bold text-slate-700 text-xs block mb-1">
+                {targetStatus === 'CANCELLED' ? 'Cancellation Reason / Clinical Justification' : 'Audit Remarks / Ground Notes'}
+              </label>
               <textarea
                 rows="3"
                 value={statusRemarks}
+                placeholder={targetStatus === 'CANCELLED' ? 'Enter clinical rationale for cancellation...' : ''}
                 onChange={(e) => setStatusRemarks(e.target.value)}
-                className="w-full text-xs border border-slate-200 rounded-xl p-2.5 font-medium"
+                className="w-full text-xs border border-slate-200 rounded-xl p-2.5 font-medium focus:ring-2 focus:ring-emerald-500"
               />
             </div>
 
@@ -4879,16 +5223,80 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
               <button
                 type="button"
                 onClick={() => setShowUpdateModal(false)}
-                className="px-4 py-2 border border-slate-200 text-slate-700 text-xs font-bold rounded-xl"
+                className="px-4 py-2 border border-slate-200 text-slate-700 text-xs font-bold rounded-xl hover:bg-slate-50"
               >
-                Cancel
+                Close
               </button>
               <button
                 type="button"
                 onClick={confirmStatusUpdate}
-                className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md"
+                className={`px-5 py-2 text-white text-xs font-bold rounded-xl shadow-md transition-colors ${
+                  targetStatus === 'CANCELLED'
+                    ? 'bg-rose-600 hover:bg-rose-700 shadow-rose-600/20'
+                    : 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20'
+                }`}
               >
-                Confirm Status Transition
+                {targetStatus === 'CANCELLED' ? 'Confirm Cancellation ✕' : 'Confirm Status Transition'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* DELETE REFERRAL CONFIRMATION MODAL */}
+      {showDeleteModal && targetDeleteRef && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-lg font-black shrink-0">
+                🗑️
+              </div>
+              <div className="flex-1">
+                <span className="text-[10px] font-black uppercase text-red-700 bg-red-50 px-2 py-0.5 rounded border border-red-200/60">
+                  Permanent Delete
+                </span>
+                <h3 className="text-lg font-black text-slate-900 mt-1">
+                  Delete Referral <span className="font-mono text-red-600">{targetDeleteRef.referralId}</span>?
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Patient: <strong className="text-slate-700">{targetDeleteRef.patientName}</strong> ({targetDeleteRef.patientAge}y &bull; {targetDeleteRef.patientSex})
+                </p>
+              </div>
+            </div>
+
+            <div className="p-3 bg-red-50/50 rounded-xl border border-red-200 text-xs space-y-1.5 text-slate-700">
+              <div>
+                <span className="text-slate-400 text-[10px] uppercase font-bold block">Destination &amp; Specialty</span>
+                <span className="font-bold text-slate-900">{targetDeleteRef.receivingFacilityName}</span> &bull; {targetDeleteRef.specialty}
+              </div>
+              <div>
+                <span className="text-slate-400 text-[10px] uppercase font-bold block">Current Status</span>
+                <span className="font-mono font-bold text-red-700">{targetDeleteRef.status}</span>
+              </div>
+              <p className="text-[11px] text-red-700/90 font-medium pt-1 border-t border-red-200/60">
+                ⚠️ Warning: This will permanently remove this referral record and its audit history from the system.
+              </p>
+            </div>
+
+            <div className="pt-2 flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setTargetDeleteRef(null);
+                }}
+                disabled={isDeleting}
+                className="px-4 py-2 border border-slate-200 text-slate-700 text-xs font-bold rounded-xl hover:bg-slate-50"
+              >
+                Keep Referral
+              </button>
+              <button
+                type="button"
+                onClick={confirmDeleteReferral}
+                disabled={isDeleting}
+                className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl shadow-md shadow-red-600/20 transition-all flex items-center gap-1.5"
+              >
+                <span>{isDeleting ? 'Deleting...' : 'Delete Referral 🗑️'}</span>
               </button>
             </div>
           </div>
