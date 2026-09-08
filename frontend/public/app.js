@@ -1493,7 +1493,7 @@ function ScreenHomepage({
             <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white/60 to-transparent z-10 pointer-events-none"></div>
 
             <img
-              src="/hero-doctors.png"
+              src="./hero-doctors.png"
               alt="MedVeda Clinical Care Specialists"
               className="w-full h-auto max-h-[460px] object-cover object-left sm:object-center transform transition-transform duration-700 group-hover:scale-[1.02] select-none block"
             />
