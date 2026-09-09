@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedVeda | Smart Care Platform & Teleconsultation Grid</title>
+  <link rel="icon" type="image/png" href="./logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          },
+          colors: {
+            deepblue: {
+              50: '#f0f7ff',
+              100: '#e0effe',
+              200: '#b9ddfd',
+              300: '#7cc2fb',
+              400: '#36a4f7',
+              500: '#1565C0',
+              600: '#1565C0',
+              700: '#0d47a1',
+              800: '#092d68',
+              900: '#061b40',
+            },
+            nearblack: {
+              DEFAULT: '#0B0F14',
+              50: '#1e2632',
+              100: '#161c24',
+              200: '#10141b',
+              300: '#0B0F14',
+            },
+            tealaccent: {
+              50: '#e0f2f1',
+              100: '#b2dfdb',
+              200: '#80cbc4',
+              300: '#4db6ac',
+              400: '#26a69a',
+              500: '#00897B',
+              600: '#00897B',
+              700: '#00695c',
+              800: '#004d40',
+              900: '#00332c',
+            },
+            brand: {
+              50: '#f0f7ff',
+              100: '#e0effe',
+              200: '#b9ddfd',
+              300: '#7cc2fb',
+              400: '#36a4f7',
+              500: '#1565C0',
+              600: '#1565C0',
+              700: '#0d47a1',
+              800: '#092d68',
+              900: '#061b40',
+              accent: '#1565C0',
+            },
+            critical: {
+              50: '#fef2f2',
+              100: '#fee2e2',
+              500: '#ef4444',
+              600: '#d32f2f',
+              700: '#c62828',
+            },
+            urgent: {
+              50: '#fffbeb',
+              100: '#fef3c7',
+              500: '#f59e0b',
+              600: '#d97706',
+              700: '#b45309',
+            },
+            safe: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+            },
+            teal: {
+              50: '#e0f2f1',
+              100: '#b2dfdb',
+              200: '#80cbc4',
+              300: '#4db6ac',
+              400: '#26a69a',
+              500: '#00897B',
+              600: '#00897B',
+              700: '#00695c',
+              800: '#004d40',
+              900: '#00332c',
+            },
+            indigo: {
+              50: '#f0f7ff',
+              100: '#e0effe',
+              200: '#b9ddfd',
+              300: '#7cc2fb',
+              400: '#36a4f7',
+              500: '#1565C0',
+              600: '#1565C0',
+              700: '#0d47a1',
+              800: '#092d68',
+              900: '#061b40',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background: radial-gradient(circle at 12% 15%, rgba(21, 101, 192, 0.045) 0%, transparent 42%),
+                  radial-gradient(circle at 88% 45%, rgba(0, 137, 123, 0.038) 0%, transparent 42%),
+                  radial-gradient(circle at 50% 90%, rgba(21, 101, 192, 0.03) 0%, transparent 50%),
+                  linear-gradient(135deg, #f8fafc 0%, #f1f5f9 45%, #f0fdfa 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.84);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.7);
+    }
+    .glass-card-light {
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 10px 30px -5px rgba(21, 101, 192, 0.04), 0 0 0 1px rgba(21, 101, 192, 0.03);
+    }
+    .glass-card-dark {
+      background: rgba(11, 15, 20, 0.94);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      box-shadow: 0 20px 40px -15px rgba(11, 15, 20, 0.5), 0 0 0 1px rgba(21, 101, 192, 0.18);
+    }
+    .glass-pill {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+    .pulse-ring {
+      animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.1); opacity: 0.4; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+</head>
+<body class="min-h-screen text-slate-900 flex flex-col">
+  <div id="root" class="flex-1 flex flex-col"></div>
+  <script src="app.compiled.js"></script>
+</body>
+</html>
