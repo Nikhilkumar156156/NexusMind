@@ -13,7 +13,8 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
-    "test:all": "npm run test && npm run test:e2e --workspace=tests"
+    "test:all": "npm run test && npm run test:e2e --workspace=tests",
+    "schemes:py": "python backend-python/main.py"
   },
   "keywords": [
     "knowledge-graph",

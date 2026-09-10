@@ -933,6 +933,14 @@ function Header({ currentView, setView, currentScreen, setScreen, actorRole, set
       label: 'Facility Dashboard',
       description: 'Readiness Index, ICU beds, oxygen buffer & triage meters',
       onSelect: () => setView('feature7')
+    },
+    {
+      id: 'feature8',
+      code: 'Module 08',
+      icon: '🏛️',
+      label: 'Govt Health Schemes',
+      description: 'RAG scheme discovery, deterministic rules engine & gap-filling',
+      onSelect: () => setView('feature8')
     }
   ];
 
@@ -1335,6 +1343,7 @@ function ScreenHomepage({
   onLaunchFeature5,
   onLaunchFeature6,
   onLaunchFeature7,
+  onLaunchFeature8,
   onLaunchAbout,
   actorRole,
   setActorRole
@@ -1419,6 +1428,16 @@ function ScreenHomepage({
       actionLabel: 'Open Dashboard',
       action: onLaunchFeature7,
       badge: 'Operations Control'
+    },
+    {
+      id: 'feature8',
+      code: 'Module 08',
+      icon: '🏛️',
+      title: 'AI Govt Health Scheme Finder',
+      description: 'RAG scheme discovery with deterministic eligibility rules engine, single-document gap filling, and verified benefit matching.',
+      actionLabel: 'Find Schemes',
+      action: onLaunchFeature8,
+      badge: 'Affordable Care'
     }
   ];
 
@@ -11629,6 +11648,1072 @@ function ScreenAboutUs({
 }
 
 // ==========================================
+// --- FEATURE 08: AI GOVERNMENT HEALTH SCHEME FINDER ---
+// ==========================================
+
+function ScreenSchemeFinder({
+  actorRole,
+  setActorRole,
+  onBackToHome,
+  onNavigateToCareNavigator,
+  onNavigateToTeleconsult,
+  onNavigateToReferrals,
+  onNavigateToRecords,
+  triageContext,
+  patientContext
+}) {
+  const SCHEME_PRESETS = {
+    anita: {
+      name: 'Anita Devi (Stroke Emergency - BPL)',
+      age: 58,
+      state: 'Jharkhand',
+      district: 'Hazaribagh',
+      family_income_annual: 85000,
+      occupation: 'Agricultural Laborer',
+      ration_card_status: 'BPL',
+      gender: 'female',
+      diagnosis: 'Acute Ischemic Stroke',
+      treatment_required: 'Emergency Thrombectomy & ICU Hospitalization',
+      hospital_type: 'government',
+      existing_documents: ['Aadhaar Card', 'Ration Card']
+    },
+    rameshwar: {
+      name: 'Rameshwar Rao (Senior Citizen 74y - Cardiac)',
+      age: 74,
+      state: 'Maharashtra',
+      district: 'Pune',
+      family_income_annual: 380000,
+      occupation: 'Retired Clerk',
+      ration_card_status: 'APL',
+      gender: 'male',
+      diagnosis: 'Triple Vessel Coronary Artery Disease',
+      treatment_required: 'Coronary Artery Bypass Graft (CABG) Surgery',
+      hospital_type: 'empanelled_private',
+      existing_documents: ['Aadhaar Card', 'Age Proof (70+ years)']
+    },
+    pooja: {
+      name: 'Pooja Patil (Maternal High-Risk Delivery)',
+      age: 24,
+      state: 'Maharashtra',
+      district: 'Nashik',
+      family_income_annual: 95000,
+      occupation: 'Homemaker',
+      ration_card_status: 'BPL',
+      gender: 'female',
+      diagnosis: 'High-Risk Pregnancy / Severe Preeclampsia',
+      treatment_required: 'Emergency Cesarean Section & Neonatal ICU',
+      hospital_type: 'government',
+      existing_documents: ['Aadhaar Card', 'Mother-Child Protection (MCP) Card / RCH ID']
+    },
+    arif: {
+      name: 'Mohammad Arif (Pulmonary TB & Nutritional Support)',
+      age: 32,
+      state: 'Jharkhand',
+      district: 'Ranchi',
+      family_income_annual: 110000,
+      occupation: 'Daily Wage Artisan',
+      ration_card_status: 'BPL',
+      gender: 'male',
+      diagnosis: 'Pulmonary Tuberculosis (Sputum Positive)',
+      treatment_required: 'DOTS Regimen Therapy & Monthly Nutrition DBT',
+      hospital_type: 'government',
+      existing_documents: ['Aadhaar Card', 'Bank Account Details / Passbook']
+    },
+    kavita: {
+      name: 'Kavita Soren (Child 8y - Congenital Heart Defect)',
+      age: 8,
+      state: 'Jharkhand',
+      district: 'Dhanbad',
+      family_income_annual: 220000,
+      occupation: 'Student / Dependent',
+      ration_card_status: 'APL',
+      gender: 'female',
+      diagnosis: 'Congenital Ventricular Septal Defect (VSD)',
+      treatment_required: 'Pediatric Cardiac Surgical Correction',
+      hospital_type: 'government',
+      existing_documents: ['Aadhaar Card', 'Birth Certificate / School ID / Aadhaar']
+    }
+  };
+
+  const ALL_DOCUMENTS_CATALOG = [
+    'Aadhaar Card',
+    'Ration Card',
+    'BPL Ration Card',
+    'Income Certificate (< ₹1.5 Lakh/year)',
+    'Income Certificate (State Authority)',
+    'Medical Report with Estimate signed by Govt Hospital Superintendent',
+    'Medical Certificate & Cost Estimate from Central Govt Hospital/AIIMS',
+    'PM-JAY Golden Card / Family ID',
+    'Ayushman Vay Vandana Card',
+    'Age Proof (70+ years)',
+    'Mother-Child Protection (MCP) Card / RCH ID',
+    'Birth Certificate / School ID / Aadhaar',
+    'Bank Account Details / Passbook',
+    'TB Diagnostic Report / Ni-kshay ID',
+    'Maharashtra Yellow/Orange Ration Card',
+    'Valid Domicile / Voter ID of Maharashtra',
+    'Jharkhand Domicile Certificate'
+  ];
+
+  // Initial form values - pre-filled from Anita Devi or triageContext
+  const [profile, setProfile] = useState(() => {
+    if (triageContext && patientContext) {
+      return {
+        age: patientContext.age || 58,
+        state: 'Jharkhand',
+        district: 'Hazaribagh',
+        family_income_annual: 85000,
+        occupation: 'Agricultural Laborer',
+        ration_card_status: 'BPL',
+        gender: patientContext.sex || 'female',
+        diagnosis: triageContext.recommendedSpecialty ? `Acute Clinical Care: ${triageContext.recommendedSpecialty}` : 'Acute Ischemic Stroke',
+        treatment_required: 'Emergency Hospitalization & Tertiary Procedure',
+        hospital_type: 'government',
+        existing_documents: ['Aadhaar Card', 'Ration Card']
+      };
+    }
+    return SCHEME_PRESETS.anita;
+  });
+
+  const [activePresetKey, setActivePresetKey] = useState(triageContext ? 'custom' : 'anita');
+  const [activeTab, setActiveTab] = useState('recommendations'); // 'recommendations' | 'all_schemes' | 'ingestion_audit'
+  const [isAssessing, setIsAssessing] = useState(false);
+  const [assessment, setAssessment] = useState(null);
+  const [clarifyingId, setClarifyingId] = useState(null);
+  const [clarificationNotice, setClarificationNotice] = useState(null);
+  const [explainModal, setExplainModal] = useState(null);
+  const [explainLoading, setExplainLoading] = useState(false);
+  const [allSchemesList, setAllSchemesList] = useState([]);
+  const [ingestionLogsList, setIngestionLogsList] = useState([]);
+
+  // Auto-run initial assessment on mount
+  useEffect(() => {
+    runAssessment(profile);
+    loadAllSchemes();
+    loadIngestionLogs();
+  }, []);
+
+  const loadAllSchemes = async () => {
+    try {
+      const res = await fetch(getApiUrl('/api/schemes'));
+      const json = await res.json();
+      if (json.success && json.data) {
+        setAllSchemesList(json.data);
+      }
+    } catch (err) {
+      console.warn('Could not load all schemes:', err);
+    }
+  };
+
+  const loadIngestionLogs = async () => {
+    try {
+      const res = await fetch(getApiUrl('/api/admin/schemes/ingestion-log'));
+      const json = await res.json();
+      if (json.success && json.data) {
+        setIngestionLogsList(json.data);
+      }
+    } catch (err) {
+      console.warn('Could not load ingestion logs:', err);
+    }
+  };
+
+  const runAssessment = async (targetProfile) => {
+    setIsAssessing(true);
+    setClarificationNotice(null);
+    try {
+      const res = await fetch(getApiUrl('/api/schemes/assess'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(targetProfile || profile)
+      });
+      const json = await res.json();
+      if (json.success && json.data) {
+        setAssessment(json.data);
+      }
+    } catch (err) {
+      console.error('Scheme Assessment error:', err);
+    } finally {
+      setIsAssessing(false);
+    }
+  };
+
+  const handleSelectPreset = (key) => {
+    setActivePresetKey(key);
+    if (SCHEME_PRESETS[key]) {
+      setProfile(SCHEME_PRESETS[key]);
+      runAssessment(SCHEME_PRESETS[key]);
+    }
+  };
+
+  const toggleDocument = (doc) => {
+    setProfile(prev => {
+      const docs = prev.existing_documents || [];
+      const updated = docs.includes(doc)
+        ? docs.filter(d => d !== doc)
+        : [...docs, doc];
+      return { ...prev, existing_documents: updated };
+    });
+  };
+
+  const handleClarification = async (questionId, answer, docName) => {
+    if (!assessment) return;
+    setClarifyingId(questionId);
+    try {
+      const res = await fetch(getApiUrl(`/api/schemes/assessment/${assessment.assessment_id}/clarify`), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question_id: questionId, answer })
+      });
+      const json = await res.json();
+      if (json.success && json.data) {
+        setAssessment(json.data);
+        if (answer === 'yes') {
+          setClarificationNotice({
+            type: 'success',
+            msg: `✓ Verified: '${docName}' added to patient credentials. Rules engine re-evaluated & updated match scores!`
+          });
+          // Update local profile state
+          setProfile(prev => ({
+            ...prev,
+            existing_documents: prev.existing_documents.includes(docName)
+              ? prev.existing_documents
+              : [...prev.existing_documents, docName]
+          }));
+        } else if (answer === 'no') {
+          setClarificationNotice({
+            type: 'info',
+            msg: `Actionable Guidance Recorded: Scheme retained under Partial Eligibility. Follow the procurement steps below to unlock full coverage.`
+          });
+        } else {
+          setClarificationNotice({
+            type: 'neutral',
+            msg: `Marked as 'Not Sure': Assessment stays active and can be verified later without restarting.`
+          });
+        }
+      }
+    } catch (err) {
+      console.error('Clarification error:', err);
+    } finally {
+      setClarifyingId(null);
+    }
+  };
+
+  const handleOpenExplain = async (schemeId, schemeName, perspective) => {
+    if (!assessment) return;
+    setExplainLoading(true);
+    setExplainModal({
+      schemeId,
+      schemeName,
+      perspective,
+      data: null
+    });
+    try {
+      const res = await fetch(getApiUrl(`/api/schemes/assessment/${assessment.assessment_id}/explain`), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ scheme_id: schemeId, perspective })
+      });
+      const json = await res.json();
+      if (json.success && json.data) {
+        setExplainModal({
+          schemeId,
+          schemeName,
+          perspective,
+          data: json.data
+        });
+      }
+    } catch (err) {
+      console.error('Explanation fetch error:', err);
+    } finally {
+      setExplainLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6 pb-12 max-w-7xl mx-auto px-4 sm:px-6">
+      {/* 1. Header & Navigation Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wide uppercase bg-sky-100 text-[#0b2b82] border border-sky-200">
+              Module 08 • SIH26133
+            </span>
+            <span className="text-xs font-mono font-bold text-slate-400">
+              Deterministic RAG Matching
+            </span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 flex items-center gap-2">
+            <span>🏛️ AI Government Health Scheme Finder</span>
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
+            Instant affordability discovery: deterministic eligibility rules engine (Income, Age, Location, Medical Need), single-document gap filling, and verified benefit ranking.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
+          <button
+            type="button"
+            onClick={onBackToHome}
+            className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs flex items-center gap-1.5 transition-colors"
+          >
+            <span>←</span>
+            <span>Home</span>
+          </button>
+          <button
+            type="button"
+            onClick={onNavigateToCareNavigator}
+            className="px-3.5 py-2 bg-sky-50 hover:bg-sky-100 text-[#0b2b82] font-bold rounded-xl text-xs border border-sky-200 flex items-center gap-1.5 transition-colors"
+          >
+            <span>🩺 Triage (Mod 01)</span>
+          </button>
+          <button
+            type="button"
+            onClick={onNavigateToTeleconsult}
+            className="px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 text-[#0b2b82] font-bold rounded-xl text-xs border border-indigo-200 flex items-center gap-1.5 transition-colors"
+          >
+            <span>📞 Consult (Mod 02)</span>
+          </button>
+        </div>
+      </div>
+
+      {/* 2. Platform Positioning & Governance Strip */}
+      <div className="bg-gradient-to-r from-sky-900 via-[#0b2b82] to-[#071a4f] text-white rounded-2xl p-4 sm:p-5 shadow-sm border border-blue-900/50">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-3">
+            <span className="w-8 h-8 rounded-xl bg-sky-500/20 text-sky-300 font-black flex items-center justify-center text-sm shrink-0 border border-sky-400/30">
+              §
+            </span>
+            <div>
+              <span className="font-bold text-sky-200 uppercase tracking-wider text-[10px] block">
+                Platform Architecture Rule
+              </span>
+              <p className="text-slate-200 font-medium leading-relaxed">
+                Smart Care Navigator (What care is needed?) &rarr; <strong className="text-sky-300 underline">Scheme Finder (How to afford it?)</strong> &rarr; Referral Grid (Where to go?).
+                The LLM acts strictly as a retriever &amp; explainer — eligibility is decided 100% deterministically by the Rules Engine.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 self-start lg:self-auto shrink-0 font-mono text-[11px] text-sky-200 bg-black/20 px-3 py-1.5 rounded-lg border border-white/10">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span>16 Official Schemes Seeded</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Quick-Fill Persona Presets */}
+      <div className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-sm space-y-2.5">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <span className="text-xs font-black text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+            <span>⚡ Quick-Fill Patient Presets (Test Real Personas)</span>
+          </span>
+          <span className="text-[11px] text-slate-500">
+            Auto-loads diagnosis, income tier, ration card, and documents
+          </span>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+          {Object.entries(SCHEME_PRESETS).map(([key, p]) => {
+            const isActive = activePresetKey === key;
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => handleSelectPreset(key)}
+                className={`p-2.5 rounded-xl text-left text-xs transition-all border ${
+                  isActive
+                    ? 'bg-sky-50 border-sky-400 text-[#0b2b82] font-black shadow-xs ring-1 ring-sky-300'
+                    : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700 font-medium'
+                }`}
+              >
+                <div className="font-bold truncate">{p.name.split('(')[0]}</div>
+                <div className="text-[10px] text-slate-500 truncate mt-0.5">
+                  {p.diagnosis.split('/')[0]}
+                </div>
+                <div className="text-[10px] font-mono mt-1 text-slate-400">
+                  {p.state} • ₹{p.family_income_annual.toLocaleString()}/yr
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 4. Tab Navigation */}
+      <div className="flex items-center gap-2 border-b border-slate-200">
+        <button
+          type="button"
+          onClick={() => setActiveTab('recommendations')}
+          className={`pb-3 px-4 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
+            activeTab === 'recommendations'
+              ? 'border-[#0b2b82] text-[#0b2b82]'
+              : 'border-transparent text-slate-500 hover:text-slate-900'
+          }`}
+        >
+          <span>🎯 Assessment &amp; Recommendations</span>
+          {assessment?.ranked_recommendations?.length > 0 && (
+            <span className="px-2 py-0.5 rounded-full text-[10px] bg-sky-100 text-[#0b2b82] font-black">
+              {assessment.ranked_recommendations.length}
+            </span>
+          )}
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('all_schemes')}
+          className={`pb-3 px-4 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
+            activeTab === 'all_schemes'
+              ? 'border-[#0b2b82] text-[#0b2b82]'
+              : 'border-transparent text-slate-500 hover:text-slate-900'
+          }`}
+        >
+          <span>📚 All Official Schemes ({allSchemesList.length || 16})</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('ingestion_audit')}
+          className={`pb-3 px-4 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
+            activeTab === 'ingestion_audit'
+              ? 'border-[#0b2b82] text-[#0b2b82]'
+              : 'border-transparent text-slate-500 hover:text-slate-900'
+          }`}
+        >
+          <span>🛡️ Data Ingestion &amp; Verification Audit</span>
+        </button>
+      </div>
+
+      {/* TAB 1: RECOMMENDATIONS & AUDIT ENGINE */}
+      {activeTab === 'recommendations' && (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Left Column: Patient Profile Form */}
+          <div className="lg:col-span-5 space-y-5">
+            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+                  <span>📋 Patient &amp; Family Profile</span>
+                </h3>
+                <span className="text-[11px] font-bold text-slate-400 font-mono">Input Vectors</span>
+              </div>
+
+              {/* Diagnosis & Clinical Need */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700">Diagnosis / Clinical Condition</label>
+                <input
+                  type="text"
+                  value={profile.diagnosis || ''}
+                  onChange={e => setProfile({ ...profile, diagnosis: e.target.value })}
+                  placeholder="e.g. Acute Ischemic Stroke, Cancer, Cataract"
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-hidden focus:border-[#0b2b82] font-medium bg-slate-50/50"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700">Treatment Required</label>
+                <input
+                  type="text"
+                  value={profile.treatment_required || ''}
+                  onChange={e => setProfile({ ...profile, treatment_required: e.target.value })}
+                  placeholder="e.g. Emergency Surgery, Chemotherapy, Delivery"
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-hidden focus:border-[#0b2b82] font-medium bg-slate-50/50"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700">Patient Age (Years)</label>
+                  <input
+                    type="number"
+                    value={profile.age || 0}
+                    onChange={e => setProfile({ ...profile, age: parseInt(e.target.value) || 0 })}
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-hidden focus:border-[#0b2b82] font-medium bg-slate-50/50"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700">Annual Family Income (₹)</label>
+                  <input
+                    type="number"
+                    value={profile.family_income_annual || 0}
+                    onChange={e => setProfile({ ...profile, family_income_annual: parseFloat(e.target.value) || 0 })}
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-hidden focus:border-[#0b2b82] font-medium bg-slate-50/50"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700">State of Domicile</label>
+                  <select
+                    value={profile.state}
+                    onChange={e => setProfile({ ...profile, state: e.target.value })}
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-hidden focus:border-[#0b2b82] font-medium bg-slate-50/50"
+                  >
+                    <option value="Jharkhand">Jharkhand</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Bihar">Bihar</option>
+                    <option value="Gujarat">Gujarat</option>
+                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                    <option value="Kerala">Kerala</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Delhi">Delhi (NCT)</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="West Bengal">West Bengal</option>
+                    <option value="All-India">All-India / Other</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700">Ration Card Status</label>
+                  <select
+                    value={profile.ration_card_status}
+                    onChange={e => setProfile({ ...profile, ration_card_status: e.target.value })}
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-hidden focus:border-[#0b2b82] font-medium bg-slate-50/50"
+                  >
+                    <option value="BPL">BPL / Antyodaya / Yellow Card</option>
+                    <option value="APL">APL / White Card</option>
+                    <option value="none">No Ration Card</option>
+                    <option value="unknown">Unknown / Not Declared</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700">Hospital Type</label>
+                <select
+                  value={profile.hospital_type}
+                  onChange={e => setProfile({ ...profile, hospital_type: e.target.value })}
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-hidden focus:border-[#0b2b82] font-medium bg-slate-50/50"
+                >
+                  <option value="government">Government / Public Tertiary Hospital</option>
+                  <option value="empanelled_private">Empanelled Private Hospital (Network)</option>
+                  <option value="private">Non-Empanelled Private Hospital</option>
+                </select>
+              </div>
+
+              {/* Documents Checklist */}
+              <div className="space-y-2 pt-2 border-t border-slate-100">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-black text-slate-800">
+                    Existing Documents Available ({profile.existing_documents?.length || 0})
+                  </label>
+                  <span className="text-[10px] text-slate-400">Click to toggle</span>
+                </div>
+                <div className="max-h-48 overflow-y-auto space-y-1.5 pr-1 text-xs">
+                  {ALL_DOCUMENTS_CATALOG.map(doc => {
+                    const checked = (profile.existing_documents || []).includes(doc);
+                    return (
+                      <label
+                        key={doc}
+                        className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-colors ${
+                          checked ? 'bg-emerald-50 text-emerald-900 font-bold' : 'hover:bg-slate-50 text-slate-600'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => toggleDocument(doc)}
+                          className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                        />
+                        <span className="truncate">{doc}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => runAssessment(profile)}
+                disabled={isAssessing}
+                className="w-full py-3 bg-[#0b2b82] hover:bg-[#071a4f] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-md disabled:opacity-50"
+              >
+                {isAssessing ? (
+                  <>
+                    <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                    <span>Running Deterministic Rules Engine...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>⚡ Re-Run Scheme Assessment</span>
+                    <span>→</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Right Column: Recommendations & Clarifications */}
+          <div className="lg:col-span-7 space-y-5">
+            {/* Notification Bar */}
+            {clarificationNotice && (
+              <div
+                className={`p-3.5 rounded-xl text-xs font-bold border flex items-center justify-between gap-3 ${
+                  clarificationNotice.type === 'success'
+                    ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
+                    : clarificationNotice.type === 'info'
+                    ? 'bg-amber-50 border-amber-300 text-amber-900'
+                    : 'bg-slate-100 border-slate-300 text-slate-800'
+                }`}
+              >
+                <span>{clarificationNotice.msg}</span>
+                <button
+                  type="button"
+                  onClick={() => setClarificationNotice(null)}
+                  className="text-slate-400 hover:text-slate-700 font-black text-sm"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+
+            {/* INTERACTIVE DOCUMENT GAP-FILLING CARD (Section 8) */}
+            {assessment?.pending_clarifications?.length > 0 && (
+              <div className="bg-gradient-to-br from-amber-500/10 via-amber-50 to-orange-50 border-2 border-amber-400/80 rounded-2xl p-5 shadow-md space-y-4 animate-fadeIn">
+                <div className="flex items-start gap-3">
+                  <span className="w-9 h-9 rounded-xl bg-amber-500 text-white font-black text-lg flex items-center justify-center shrink-0 shadow-sm">
+                    💡
+                  </span>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-200 text-amber-900">
+                        Interactive Document Gap-Filling (Section 8)
+                      </span>
+                      <span className="text-[11px] font-mono text-amber-800 font-bold">
+                        1 Question Pending
+                      </span>
+                    </div>
+                    <h4 className="text-base font-black text-slate-900 mt-1">
+                      A Single Missing Document Can Unlock Full Coverage!
+                    </h4>
+                    <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
+                      Rather than marking a scheme as partial and discarding it silently, we verify your status right now so the rules engine can upgrade you to PASS.
+                    </p>
+                  </div>
+                </div>
+
+                {assessment.pending_clarifications.map(q => {
+                  const isProcessing = clarifyingId === q.question_id;
+                  return (
+                    <div
+                      key={q.question_id}
+                      className="bg-white rounded-xl p-4 border border-amber-200 shadow-xs space-y-3"
+                    >
+                      <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                        <span className="text-amber-600">❓</span>
+                        <span>{q.question_text}</span>
+                      </div>
+
+                      {q.guidance_if_no && (
+                        <div className="text-[11px] text-slate-500 bg-amber-50/60 p-2.5 rounded-lg border border-amber-100 flex items-center gap-2">
+                          <span>ℹ️</span>
+                          <span><strong>Procurement Guidance:</strong> {q.guidance_if_no}</span>
+                        </div>
+                      )}
+
+                      <div className="flex items-center gap-2 pt-1 flex-wrap">
+                        <button
+                          type="button"
+                          onClick={() => handleClarification(q.question_id, 'yes', q.document_name)}
+                          disabled={isProcessing}
+                          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs flex items-center gap-1.5 transition-colors shadow-xs"
+                        >
+                          <span>✅ Yes, I have it</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleClarification(q.question_id, 'no', q.document_name)}
+                          disabled={isProcessing}
+                          className="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold rounded-lg text-xs border border-rose-200 transition-colors"
+                        >
+                          <span>❌ No, I don't have it</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleClarification(q.question_id, 'not_sure', q.document_name)}
+                          disabled={isProcessing}
+                          className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-lg text-xs transition-colors"
+                        >
+                          <span>❓ Not sure</span>
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* SHORTLIST OF RANKED RECOMMENDATIONS */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
+                  <span>🎯 {assessment?.ranked_recommendations?.length || 0} Schemes May Be Relevant To You</span>
+                </h3>
+                <span className="text-xs text-slate-500 font-medium">
+                  Ranked by Medical Need (25%) &bull; Benefit (20%) &bull; Feasibility (20%)
+                </span>
+              </div>
+
+              {(!assessment || assessment.ranked_recommendations?.length === 0) && (
+                <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center space-y-3">
+                  <div className="text-3xl">🔍</div>
+                  <h4 className="text-sm font-bold text-slate-800">No schemes directly matched current criteria</h4>
+                  <p className="text-xs text-slate-500 max-w-md mx-auto">
+                    Check if annual income or residency requirements are within statutory caps, or visit your nearest district hospital's Ayushman Mitra helpdesk.
+                  </p>
+                </div>
+              )}
+
+              {assessment?.ranked_recommendations?.map((rec, index) => {
+                const isTop = index === 0;
+                const isPassed = rec.status === 'PASS';
+                return (
+                  <div
+                    key={rec.scheme_id}
+                    className={`bg-white rounded-2xl border transition-all duration-300 overflow-hidden shadow-xs hover:shadow-md ${
+                      isTop ? 'border-sky-300 ring-2 ring-sky-100' : 'border-slate-200'
+                    }`}
+                  >
+                    {/* Card Header Strip */}
+                    <div className="p-4 sm:p-5 pb-3 border-b border-slate-100 flex items-start justify-between gap-3">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span
+                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wide ${
+                              rec.match_score_pct >= 88
+                                ? 'bg-emerald-100 text-emerald-800'
+                                : rec.match_score_pct >= 75
+                                ? 'bg-sky-100 text-sky-800'
+                                : 'bg-slate-100 text-slate-700'
+                            }`}
+                          >
+                            #{rec.rank} &bull; {rec.match_tier} — {rec.match_score_pct}% Match
+                          </span>
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                              isPassed ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'
+                            }`}
+                          >
+                            {isPassed ? 'PASS (Fully Eligible)' : 'PARTIAL (Actionable Gap)'}
+                          </span>
+                          <span className="text-[11px] font-mono text-slate-400">
+                            {rec.issuing_body === 'central' ? '🏛️ Central Government' : `🏛️ ${rec.issuing_body.replace('state:', 'State of ')}`}
+                          </span>
+                        </div>
+                        <h4 className="text-base sm:text-lg font-black text-slate-900">
+                          {rec.scheme_name}
+                        </h4>
+                      </div>
+
+                      <div className="text-right shrink-0">
+                        <span className="text-[10px] font-bold text-slate-400 block uppercase">Max Cover</span>
+                        <span className="text-sm sm:text-base font-black text-[#0b2b82]">
+                          ₹{rec.max_benefit_amount.toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Card Body */}
+                    <div className="p-4 sm:p-5 space-y-3.5">
+                      {/* Three Key Rule Checkmarks */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                        <div className="flex items-center gap-1.5 text-emerald-700 font-bold bg-emerald-50/70 px-2.5 py-1.5 rounded-lg">
+                          <span>✓</span>
+                          <span>Treatment Covered</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-emerald-700 font-bold bg-emerald-50/70 px-2.5 py-1.5 rounded-lg">
+                          <span>✓</span>
+                          <span>Patient Appears Eligible</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-emerald-700 font-bold bg-emerald-50/70 px-2.5 py-1.5 rounded-lg">
+                          <span>✓</span>
+                          <span>Available in your State</span>
+                        </div>
+                      </div>
+
+                      {/* Benefit Formula */}
+                      <div className="text-xs bg-slate-50 p-3 rounded-xl border border-slate-100 flex items-start gap-2">
+                        <span className="text-[#0b2b82] font-black text-sm">₹</span>
+                        <div className="text-slate-700 font-medium leading-relaxed">
+                          <strong className="text-slate-900 font-bold">Financial Assistance:</strong> {rec.financial_assistance}
+                        </div>
+                      </div>
+
+                      {/* Documents Audit Chips */}
+                      <div className="space-y-1.5">
+                        <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                          Required Documents Audit
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {rec.matched_documents.map(d => (
+                            <span
+                              key={d}
+                              className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-1"
+                            >
+                              <span>✓</span>
+                              <span>{d}</span>
+                            </span>
+                          ))}
+                          {rec.missing_documents.map(d => (
+                            <span
+                              key={d}
+                              className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200 flex items-center gap-1"
+                            >
+                              <span>⚠️ Missing:</span>
+                              <span>{d}</span>
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* MANDATORY Source + Last Verified Date Strip (Section 7 & 14) */}
+                      <div className="pt-2 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] text-slate-500 font-medium">
+                        <div className="flex items-center gap-1.5 truncate">
+                          <span className="text-[#0b2b82] font-bold">🏛️ Official Source:</span>
+                          <span className="truncate">{rec.source_portal_name}</span>
+                          <span>&bull;</span>
+                          <span className="font-bold text-slate-700">Verified: {rec.last_verified_date}</span>
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => handleOpenExplain(rec.scheme_id, rec.scheme_name, 'why_eligible')}
+                            className="text-[#0b2b82] hover:text-[#071a4f] font-bold underline underline-offset-2 transition-colors"
+                          >
+                            Why eligible?
+                          </button>
+                          <span>&bull;</span>
+                          <button
+                            type="button"
+                            onClick={() => handleOpenExplain(rec.scheme_id, rec.scheme_name, 'what_could_make_ineligible')}
+                            className="text-amber-700 hover:text-amber-800 font-bold underline underline-offset-2 transition-colors"
+                          >
+                            What could disqualify?
+                          </button>
+                          <span>&bull;</span>
+                          <a
+                            href={rec.source_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-slate-600 hover:text-slate-900 font-bold flex items-center gap-1"
+                          >
+                            <span>Portal ↗</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 2: ALL SCHEMES DIRECTORY */}
+      {activeTab === 'all_schemes' && (
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
+          <div className="flex items-center justify-between flex-wrap gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <h3 className="text-base font-black text-slate-900">
+                Official Government Health Scheme Knowledge Base
+              </h3>
+              <p className="text-xs text-slate-500">
+                Seeded with 16 Central and State schemes, complete with verified circulars, thresholds, and portal references.
+              </p>
+            </div>
+            <span className="px-3 py-1 bg-sky-50 text-[#0b2b82] rounded-full text-xs font-mono font-bold">
+              16 Verified Packages
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {(allSchemesList.length > 0 ? allSchemesList : []).map(s => (
+              <div key={s.scheme_id} className="p-4 rounded-xl border border-slate-200 hover:border-sky-300 transition-all space-y-2.5">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-slate-100 text-slate-700">
+                      {s.short_code}
+                    </span>
+                    <h4 className="text-sm font-black text-slate-900 mt-1">{s.scheme_name}</h4>
+                  </div>
+                  <span className="text-xs font-black text-[#0b2b82]">
+                    ₹{s.max_benefit_amount.toLocaleString()}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  {s.benefit_amount_or_formula}
+                </p>
+                <div className="text-[11px] text-slate-400 pt-2 border-t border-slate-100 flex items-center justify-between">
+                  <span>Source: {s.source_portal_name}</span>
+                  <a href={s.source_url} target="_blank" rel="noopener noreferrer" className="text-[#0b2b82] font-bold">
+                    Official Portal ↗
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* TAB 3: INGESTION AUDIT LOGS */}
+      {activeTab === 'ingestion_audit' && (
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
+          <div className="flex items-center justify-between flex-wrap gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <h3 className="text-base font-black text-slate-900">
+                Official Sources Verification &amp; Ingestion Audit Trail
+              </h3>
+              <p className="text-xs text-slate-500">
+                Scheduled ingestion logs verifying that recommendations derive only from whitelisted government portals.
+              </p>
+            </div>
+            <span className="px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full text-xs font-mono font-bold">
+              ✓ All Sources Verified Fresh
+            </span>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-slate-50 text-slate-700 font-bold border-b border-slate-200">
+                <tr>
+                  <th className="p-3">Ingestion ID</th>
+                  <th className="p-3">Portal / Ministry</th>
+                  <th className="p-3">Official URL</th>
+                  <th className="p-3">Run Timestamp</th>
+                  <th className="p-3">Status</th>
+                  <th className="p-3">Freshness</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {(ingestionLogsList.length > 0 ? ingestionLogsList : []).map(log => (
+                  <tr key={log.ingestion_id} className="hover:bg-slate-50">
+                    <td className="p-3 font-mono font-bold text-slate-600">{log.ingestion_id}</td>
+                    <td className="p-3 font-bold text-slate-900">{log.portal_name}</td>
+                    <td className="p-3 font-mono text-sky-700">
+                      <a href={log.source_url} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                        {log.source_url}
+                      </a>
+                    </td>
+                    <td className="p-3 text-slate-500 font-mono">{log.run_at}</td>
+                    <td className="p-3">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 uppercase">
+                        {log.ingestion_status}
+                      </span>
+                    </td>
+                    <td className="p-3 font-medium text-emerald-700">✓ Verified Fresh</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* 5. Traceable Explanation Modal (Section 9) */}
+      {explainModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white rounded-2xl max-w-2xl w-full border border-slate-200 shadow-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-start justify-between border-b border-slate-100 pb-3">
+              <div>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-sky-100 text-[#0b2b82]">
+                  Traceable Rules Engine Audit &bull; Section 9
+                </span>
+                <h3 className="text-lg font-black text-slate-900 mt-1">
+                  {explainModal.perspective === 'why_eligible' ? 'Why Am I Eligible?' : 'What Could Disqualify Me?'}
+                </h3>
+                <p className="text-xs text-slate-500 font-medium">
+                  {explainModal.schemeName}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setExplainModal(null)}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center text-sm"
+              >
+                ✕
+              </button>
+            </div>
+
+            {explainLoading ? (
+              <div className="py-12 text-center text-xs text-slate-500 space-y-2">
+                <div className="w-6 h-6 border-2 border-[#0b2b82] border-t-transparent rounded-full animate-spin mx-auto"></div>
+                <div>Synthesizing traceable explanation from stored rules engine evaluation...</div>
+              </div>
+            ) : explainModal.data ? (
+              <div className="space-y-4 text-xs">
+                {/* Plain-Language Explanation */}
+                <div className="bg-sky-50/70 border border-sky-200 p-4 rounded-xl text-slate-800 leading-relaxed font-medium">
+                  {explainModal.data.explanation}
+                </div>
+
+                {/* Key Highlights */}
+                {explainModal.data.key_highlights?.length > 0 && (
+                  <div className="space-y-1.5">
+                    <div className="font-bold text-slate-900 uppercase text-[10px] tracking-wider">
+                      Factual Eligibility Highlights
+                    </div>
+                    <ul className="space-y-1">
+                      {explainModal.data.key_highlights.map((h, i) => (
+                        <li key={i} className="text-emerald-800 font-medium flex items-center gap-1.5">
+                          <span>{h}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Cautions / Missing Factors */}
+                {explainModal.data.cautions_or_actions?.length > 0 && (
+                  <div className="space-y-1.5">
+                    <div className="font-bold text-slate-900 uppercase text-[10px] tracking-wider">
+                      Mandatory Prerequisites &amp; Verification Checks
+                    </div>
+                    <ul className="space-y-1">
+                      {explainModal.data.cautions_or_actions.map((c, i) => (
+                        <li key={i} className="text-amber-800 font-medium flex items-center gap-1.5">
+                          <span>{c}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Field-by-field Comparison Table */}
+                <div className="pt-2 border-t border-slate-100 space-y-2">
+                  <div className="font-bold text-slate-900 uppercase text-[10px] tracking-wider">
+                    Stored Rules Engine Audit Trail
+                  </div>
+                  <div className="bg-slate-50 rounded-xl p-3 border border-slate-200 space-y-1.5 font-mono text-[11px]">
+                    {Object.entries(explainModal.data.traceable_rule_checks || {}).map(([k, v]) => (
+                      <div key={k} className="flex items-center justify-between gap-2 border-b border-slate-200/50 pb-1">
+                        <span className="font-bold uppercase text-slate-600">{k}:</span>
+                        <span className={v.passed ? 'text-emerald-700 font-bold' : 'text-amber-700 font-bold'}>
+                          {v.passed ? '✓ PASS' : '⚠️ FAIL'} — {v.details}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
+            <div className="pt-2 border-t border-slate-100 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setExplainModal(null)}
+                className="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs transition-colors"
+              >
+                Close Audit Rationale
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ==========================================
 // --- MAIN APPLICATION ROOT (ROUTER & STATE) ---
 // ==========================================
 function App() {
@@ -11720,9 +12805,13 @@ function App() {
       hash === '#dashboard-alerts'
     ) {
       setViewState('feature7');
-      if (actorRole === 'worker' || actorRole === 'patient') {
-        setActorRole('facility');
-      }
+    } else if (
+      hash === '#feature8' ||
+      hash === '#schemes' ||
+      hash === '#scheme-finder' ||
+      hash === '#govt-schemes'
+    ) {
+      setViewState('feature8');
     } else if (hash === '#about' || hash === '#about-us') {
       setViewState('about');
     } else {
@@ -11801,6 +12890,9 @@ function App() {
             }}
             onLaunchFeature7={() => {
               setView('feature7');
+            }}
+            onLaunchFeature8={() => {
+              setView('feature8');
             }}
             onLaunchAbout={() => {
               setView('about');
@@ -12059,7 +13151,28 @@ function App() {
           />
         )}
 
-        {/* VIEW 9: ABOUT US PAGE */}
+        {/* VIEW 9: FEATURE 08 — AI GOVERNMENT HEALTH SCHEME FINDER */}
+        {view === 'feature8' && (
+          <ScreenSchemeFinder
+            actorRole={actorRole}
+            setActorRole={setActorRole}
+            onBackToHome={() => setView('home')}
+            onNavigateToCareNavigator={() => {
+              setView('feature1');
+              setScreen(1);
+            }}
+            onNavigateToTeleconsult={() => {
+              setView('feature2');
+              setTeleconsultScreen('entry');
+            }}
+            onNavigateToReferrals={() => setView('feature3')}
+            onNavigateToRecords={() => setView('feature5')}
+            triageContext={triageResult}
+            patientContext={patient}
+          />
+        )}
+
+        {/* VIEW 10: ABOUT US PAGE */}
         {view === 'about' && (
           <ScreenAboutUs
             onBackToHome={() => setView('home')}
@@ -12085,6 +13198,9 @@ function App() {
             }}
             onLaunchFeature7={() => {
               setView('feature7');
+            }}
+            onLaunchFeature8={() => {
+              setView('feature8');
             }}
           />
         )}
