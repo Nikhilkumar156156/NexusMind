@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MedVeda | Smart Care Platform & Teleconsultation Grid</title>
+  <title>MedVeda | Making Quality Healthcare Accessible</title>
   <link rel="icon" type="image/png" href="./logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -93,6 +93,22 @@
       0% { transform: scale(0.95); opacity: 0.8; }
       50% { transform: scale(1.1); opacity: 0.4; }
       100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    @keyframes ecgTrace {
+      0% { stroke-dashoffset: 1200; }
+      100% { stroke-dashoffset: 0; }
+    }
+    @keyframes cardiacBeat {
+      0%, 100% { transform: scale(1); }
+      14% { transform: scale(1.08); }
+      28% { transform: scale(0.98); }
+      42% { transform: scale(1.04); }
+      56% { transform: scale(1); }
+    }
+    @keyframes slowmoDrift {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+      100% { transform: translateY(0px); }
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>

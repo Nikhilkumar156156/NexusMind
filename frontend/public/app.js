@@ -948,20 +948,6 @@ function Header({ currentView, setView, currentScreen, setScreen, actorRole, set
 
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
-      {/* Top Emergency Hotline Strip */}
-      <div className="bg-critical-600 text-white text-xs font-bold py-1.5 px-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
-          <span>EMERGENCY AMBULANCE HOTLINE: 108 / POLICE: 112</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="hidden sm:inline text-critical-100 text-[11px]">Rural Healthcare Teleconsult &amp; Emergency Grid</span>
-          <a href="tel:108" className="px-2.5 py-0.5 bg-white text-critical-700 rounded font-black text-xs hover:bg-critical-50">
-            Call 108
-          </a>
-        </div>
-      </div>
-
       {/* Main Navigation Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between flex-wrap gap-3">
         {/* Logo & Brand */}
@@ -973,11 +959,8 @@ function Header({ currentView, setView, currentScreen, setScreen, actorRole, set
                 <span>MED</span>
                 <span className="text-teal-600 font-extrabold">VEDA</span>
               </h1>
-              <span className="text-[10px] uppercase font-black px-1.5 py-0.5 bg-teal-50 text-teal-800 rounded border border-teal-200">
-                v2.0
-              </span>
             </div>
-            <p className="text-[11px] text-slate-500 font-medium">Smart Care Platform &bull; Telehealth &amp; Triage Grid</p>
+            <p className="text-[11px] text-slate-500 font-medium">Making quality healthcare accessible</p>
           </div>
         </div>
 
@@ -1348,6 +1331,17 @@ function ScreenHomepage({
   actorRole,
   setActorRole
 }) {
+  const [activeHeroSlide, setActiveHeroSlide] = useState(0);
+  const [isHeroPaused, setIsHeroPaused] = useState(false);
+
+  useEffect(() => {
+    if (isHeroPaused) return;
+    const timer = setInterval(() => {
+      setActiveHeroSlide((prev) => (prev === 0 ? 1 : 0));
+    }, 6500);
+    return () => clearInterval(timer);
+  }, [isHeroPaused]);
+
   const roleDescriptions = {
     worker: 'Frontline ASHA/ANM Mode: Assisted symptom triage, scheduled follow-up visits, pending referral monitoring, and medicine reservation.',
     patient: 'Self-Service Patient Mode: Autonomous triage, appointment booking, medicine & lab test search with radius fallback, and digital Health ID.',
@@ -1443,110 +1437,278 @@ function ScreenHomepage({
 
   return (
     <div className="space-y-8">
-      {/* Enhanced Interactive Smart Care Navigator Hero Banner */}
-      <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-r from-white via-slate-50/40 to-blue-50/30 border border-slate-200/80 shadow-[0_12px_40px_rgba(8,35,95,0.06)] hover:shadow-[0_20px_50px_rgba(8,35,95,0.1)] transition-all duration-500 group">
+      {/* Interactive Hero Carousel (Preserves Smart Care Navigator & adds AI Govt Health Scheme Finder) */}
+      <div
+        className="relative overflow-hidden rounded-[36px] bg-gradient-to-r from-white via-slate-50/40 to-blue-50/30 border border-slate-200/80 shadow-[0_12px_40px_rgba(8,35,95,0.06)] hover:shadow-[0_20px_50px_rgba(8,35,95,0.1)] transition-all duration-500 group"
+        onMouseEnter={() => setIsHeroPaused(true)}
+        onMouseLeave={() => setIsHeroPaused(false)}
+      >
         {/* Subtle Ambient Radial Glows */}
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-sky-200/25 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute -bottom-24 right-1/4 w-80 h-80 bg-blue-100/30 rounded-full blur-3xl pointer-events-none"></div>
 
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between min-h-[420px]">
-          {/* Left Column: Interactive Typography, CTA Buttons, and Badges */}
-          <div className="p-8 sm:p-12 lg:py-14 lg:pl-14 lg:pr-6 lg:w-[54%] xl:w-[52%] space-y-6">
-            {/* Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50/90 border border-sky-200/80 text-[#0b2b82] text-xs font-bold shadow-2xs hover:bg-sky-100/80 transition-colors">
-              <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span>
-              <span>Smart care navigation, powered by your data</span>
+        {/* Carousel Arrow Navigation: Previous */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setActiveHeroSlide((prev) => (prev === 0 ? 1 : 0));
+          }}
+          className="absolute left-3.5 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white/85 hover:bg-white border border-slate-200/90 shadow-md hover:shadow-lg text-slate-700 hover:text-[#0b2b82] flex items-center justify-center transition-all opacity-70 group-hover:opacity-100 active:scale-90 cursor-pointer backdrop-blur-sm"
+          aria-label="Previous Slide"
+          title="Previous Slide"
+        >
+          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        {/* Carousel Arrow Navigation: Next */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setActiveHeroSlide((prev) => (prev === 0 ? 1 : 0));
+          }}
+          className="absolute right-3.5 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white/85 hover:bg-white border border-slate-200/90 shadow-md hover:shadow-lg text-slate-700 hover:text-[#0b2b82] flex items-center justify-center transition-all opacity-70 group-hover:opacity-100 active:scale-90 cursor-pointer backdrop-blur-sm"
+          aria-label="Next Slide"
+          title="Next Slide"
+        >
+          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+
+        {/* Slide 0: Smart Care Navigator (Strictly Preserved) */}
+        <div className={`transition-opacity duration-500 ease-in-out ${activeHeroSlide === 0 ? 'block opacity-100' : 'hidden opacity-0'}`}>
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between min-h-[420px]">
+            {/* Left Column: Interactive Typography, CTA Buttons, and Badges */}
+            <div className="p-8 sm:p-12 lg:py-14 lg:pl-16 lg:pr-6 lg:w-[54%] xl:w-[52%] space-y-6">
+              {/* Pill Badge */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50/90 border border-sky-200/80 text-[#0b2b82] text-xs font-bold shadow-2xs hover:bg-sky-100/80 transition-colors">
+                <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span>
+                <span>Smart care navigation, powered by your data</span>
+              </div>
+
+              {/* Headline */}
+              <h1 className="text-3xl sm:text-4xl lg:text-[44px] xl:text-[48px] font-black tracking-tight text-slate-900 leading-[1.12]">
+                The right care, <span className="text-[#1a66b8]">at</span><br />
+                <span className="text-[#1a66b8]">the right time.</span>
+              </h1>
+
+              {/* Description */}
+              <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-normal max-w-xl">
+                Meet MedVeda’s Smart Care Navigator. Simply describe the symptoms. MedVeda assesses the urgency, identifies the care required, and guides you to the right nearby facility—especially when every minute matters.
+              </p>
+
+              {/* Interactive Button Group */}
+              <div className="flex items-center gap-3.5 pt-1 flex-wrap">
+                <button
+                  type="button"
+                  onClick={onLaunchFeature1}
+                  className="px-6 py-3 bg-[#183b7b] hover:bg-[#0b2b82] text-white font-bold text-sm rounded-xl shadow-md hover:shadow-lg hover:shadow-blue-900/25 active:scale-95 transition-all flex items-center gap-2.5 group/btn cursor-pointer"
+                >
+                  <span>Get started</span>
+                  <span className="group-hover/btn:translate-x-1 transition-transform">&rarr;</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={onLaunchFeature2}
+                  className="px-5 py-3 bg-white hover:bg-slate-50 text-slate-700 font-bold text-sm rounded-xl border border-slate-200/90 hover:border-slate-300 shadow-2xs hover:shadow-xs active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+                >
+                  <span>Doctor Queue &rarr;</span>
+                </button>
+              </div>
+
+              {/* Security & Compliance Footer */}
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 pt-2 flex-wrap">
+                <div className="flex items-center gap-1.5">
+                  <svg className="w-4 h-4 text-slate-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  <span>End-to-end encrypted</span>
+                </div>
+                <span className="text-slate-300">&bull;</span>
+                <span className="text-slate-500 font-medium">ABDM Digital Health Record</span>
+                <span className="text-slate-300">&bull;</span>
+                <span className="text-emerald-700 font-bold">Ayushman Bharat Interoperable</span>
+              </div>
             </div>
 
-            {/* Headline */}
-            <h1 className="text-3xl sm:text-4xl lg:text-[44px] xl:text-[48px] font-black tracking-tight text-slate-900 leading-[1.12]">
-              The right care, <span className="text-[#1a66b8]">at</span><br />
-              <span className="text-[#1a66b8]">the right time.</span>
-            </h1>
+            {/* Right Column: Feathered Seamless Doctors Graphic with Floating Interactive Cards */}
+            <div className="relative lg:w-[46%] xl:w-[48%] self-stretch flex items-center justify-end overflow-hidden">
+              {/* Soft Edge Blending Overlay to eliminate any boxy lines */}
+              <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none hidden lg:block"></div>
+              <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white/60 to-transparent z-10 pointer-events-none"></div>
+              <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white/60 to-transparent z-10 pointer-events-none"></div>
 
-            {/* Description */}
-            <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-normal max-w-xl">
-              Meet MedVeda’s Smart Care Navigator. Simply describe the symptoms. MedVeda assesses the urgency, identifies the care required, and guides you to the right nearby facility—especially when every minute matters.
-            </p>
+              <img
+                src="./hero-doctors.png"
+                alt="MedVeda Clinical Care Specialists"
+                className="w-full h-auto max-h-[460px] object-cover object-left sm:object-center transform transition-transform duration-700 group-hover:scale-[1.02] select-none block"
+              />
 
-            {/* Interactive Button Group */}
-            <div className="flex items-center gap-3.5 pt-1 flex-wrap">
-              <button
-                type="button"
-                onClick={onLaunchFeature1}
-                className="px-6 py-3 bg-[#183b7b] hover:bg-[#0b2b82] text-white font-bold text-sm rounded-xl shadow-md hover:shadow-lg hover:shadow-blue-900/25 active:scale-95 transition-all flex items-center gap-2.5 group/btn cursor-pointer"
-              >
-                <span>Get started</span>
-                <span className="group-hover/btn:translate-x-1 transition-transform">&rarr;</span>
-              </button>
-
-              <button
-                type="button"
+              {/* Floating Interactive Micro-Badge 1: On-Duty Specialists */}
+              <div
                 onClick={onLaunchFeature2}
-                className="px-5 py-3 bg-white hover:bg-slate-50 text-slate-700 font-bold text-sm rounded-xl border border-slate-200/90 hover:border-slate-300 shadow-2xs hover:shadow-xs active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+                className="absolute top-6 right-6 z-20 bg-white/90 hover:bg-white backdrop-blur-md px-3.5 py-2 rounded-2xl border border-slate-200/80 shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 group/tag"
+                title="View on-duty specialist doctors"
               >
-                <span>Doctor Queue &rarr;</span>
-              </button>
-            </div>
-
-            {/* Security & Compliance Footer */}
-            <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 pt-2 flex-wrap">
-              <div className="flex items-center gap-1.5">
-                <svg className="w-4 h-4 text-slate-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-                <span>End-to-end encrypted</span>
-              </div>
-              <span className="text-slate-300">&bull;</span>
-              <span className="text-slate-500 font-medium">ABDM Digital Health Record</span>
-              <span className="text-slate-300">&bull;</span>
-              <span className="text-emerald-700 font-bold">Ayushman Bharat Interoperable</span>
-            </div>
-          </div>
-
-          {/* Right Column: Feathered Seamless Doctors Graphic with Floating Interactive Cards */}
-          <div className="relative lg:w-[46%] xl:w-[48%] self-stretch flex items-center justify-end overflow-hidden">
-            {/* Soft Edge Blending Overlay to eliminate any boxy lines */}
-            <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none hidden lg:block"></div>
-            <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white/60 to-transparent z-10 pointer-events-none"></div>
-            <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white/60 to-transparent z-10 pointer-events-none"></div>
-
-            <img
-              src="./hero-doctors.png"
-              alt="MedVeda Clinical Care Specialists"
-              className="w-full h-auto max-h-[460px] object-cover object-left sm:object-center transform transition-transform duration-700 group-hover:scale-[1.02] select-none block"
-            />
-
-            {/* Floating Interactive Micro-Badge 1: On-Duty Specialists */}
-            <div
-              onClick={onLaunchFeature2}
-              className="absolute top-6 right-6 z-20 bg-white/90 hover:bg-white backdrop-blur-md px-3.5 py-2 rounded-2xl border border-slate-200/80 shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 group/tag"
-              title="View on-duty specialist doctors"
-            >
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-              <div className="text-left">
-                <div className="text-[11px] font-black text-slate-900 group-hover/tag:text-[#0b2b82]">
-                  4 Specialists On-Duty
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                <div className="text-left">
+                  <div className="text-[11px] font-black text-slate-900 group-hover/tag:text-[#0b2b82]">
+                    4 Specialists On-Duty
+                  </div>
+                  <div className="text-[9px] text-slate-500 font-semibold">Live Teleconsult Roster &rarr;</div>
                 </div>
-                <div className="text-[9px] text-slate-500 font-semibold">Live Teleconsult Roster &rarr;</div>
               </div>
-            </div>
 
-            {/* Floating Interactive Micro-Badge 2: Autonomous Care Triage */}
-            <div
-              onClick={onLaunchFeature1}
-              className="absolute bottom-6 left-12 lg:left-4 z-20 bg-white/90 hover:bg-white backdrop-blur-md px-3.5 py-2 rounded-2xl border border-blue-200/80 shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 group/tag"
-              title="Launch Smart Care Triage"
-            >
-              <span className="text-base">⚡</span>
-              <div className="text-left">
-                <div className="text-[11px] font-black text-[#0b2b82]">
-                  Instant Clinical Triage
+              {/* Floating Interactive Micro-Badge 2: Autonomous Care Triage */}
+              <div
+                onClick={onLaunchFeature1}
+                className="absolute bottom-6 left-12 lg:left-4 z-20 bg-white/90 hover:bg-white backdrop-blur-md px-3.5 py-2 rounded-2xl border border-blue-200/80 shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 group/tag"
+                title="Launch Smart Care Triage"
+              >
+                <span className="text-base">⚡</span>
+                <div className="text-left">
+                  <div className="text-[11px] font-black text-[#0b2b82]">
+                    Instant Clinical Triage
+                  </div>
+                  <div className="text-[9px] text-slate-500 font-semibold">&lt; 2 min facility matching &rarr;</div>
                 </div>
-                <div className="text-[9px] text-slate-500 font-semibold">&lt; 2 min facility matching &rarr;</div>
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Slide 1: AI Govt Health Scheme Finder (Added from User Upload) */}
+        <div className={`transition-opacity duration-500 ease-in-out ${activeHeroSlide === 1 ? 'block opacity-100' : 'hidden opacity-0'}`}>
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between min-h-[420px]">
+            {/* Left Column: Interactive Typography, CTA Buttons, and Badges */}
+            <div className="p-8 sm:p-12 lg:py-14 lg:pl-16 lg:pr-6 lg:w-[54%] xl:w-[52%] space-y-6">
+              {/* Pill Badge */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50/90 border border-sky-200/80 text-[#0284c7] text-xs font-bold shadow-2xs hover:bg-sky-100/80 transition-colors">
+                <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span>
+                <span>Government health schemes finder</span>
+              </div>
+
+              {/* Headline */}
+              <h1 className="text-3xl sm:text-4xl lg:text-[44px] xl:text-[48px] font-black tracking-tight text-slate-900 leading-[1.12]">
+                Right scheme,<br />
+                <span className="text-[#0284c7]">for a healthier tomorrow.</span>
+              </h1>
+
+              {/* Description */}
+              <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-normal max-w-xl">
+                We find the best government health schemes for you and your family — based on your needs, income category and location.
+              </p>
+
+              {/* Interactive Button Group */}
+              <div className="flex items-center gap-3.5 pt-1 flex-wrap">
+                <button
+                  type="button"
+                  onClick={onLaunchFeature8}
+                  className="px-6 py-3 bg-[#0284c7] hover:bg-[#0369a1] text-white font-bold text-sm rounded-xl shadow-md hover:shadow-lg hover:shadow-sky-900/25 active:scale-95 transition-all flex items-center gap-2.5 group/btn cursor-pointer"
+                >
+                  <span>Find suitable schemes</span>
+                  <span className="group-hover/btn:translate-x-1 transition-transform">&rarr;</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={onLaunchFeature8}
+                  className="px-5 py-3 bg-white hover:bg-slate-50 text-slate-700 font-bold text-sm rounded-xl border border-slate-200/90 hover:border-slate-300 shadow-2xs hover:shadow-xs active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+                >
+                  <span>Learn more</span>
+                </button>
+              </div>
+
+              {/* Trust Badges Footer */}
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 pt-2 flex-wrap">
+                <div className="flex items-center gap-1.5">
+                  <svg className="w-4 h-4 text-sky-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  <span>Official schemes</span>
+                </div>
+                <span className="text-slate-300">&bull;</span>
+                <span className="text-slate-500 font-medium">Verified information</span>
+                <span className="text-slate-300">&bull;</span>
+                <span className="text-slate-500 font-medium">Trusted support</span>
+              </div>
+            </div>
+
+            {/* Right Column: Feathered Seamless Schemes Graphic with Floating Interactive Cards */}
+            <div className="relative lg:w-[46%] xl:w-[48%] self-stretch flex items-center justify-end overflow-hidden">
+              {/* Soft Edge Blending Overlay to eliminate any boxy lines */}
+              <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none hidden lg:block"></div>
+              <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white/60 to-transparent z-10 pointer-events-none"></div>
+              <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white/60 to-transparent z-10 pointer-events-none"></div>
+
+              <img
+                src="./hero-schemes-art.png"
+                alt="Government Health Schemes Family and Doctor Support"
+                className="w-full h-auto max-h-[460px] object-cover object-left sm:object-center transform transition-transform duration-700 group-hover:scale-[1.02] select-none block"
+              />
+
+              {/* Floating Interactive Micro-Badge 1: Schemes Coverage */}
+              <div
+                onClick={onLaunchFeature8}
+                className="absolute top-6 right-6 z-20 bg-white/90 hover:bg-white backdrop-blur-md px-3.5 py-2 rounded-2xl border border-sky-200/80 shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 group/tag"
+                title="Explore Verified Central & State Schemes"
+              >
+                <span className="w-2 h-2 rounded-full bg-sky-500 animate-ping"></span>
+                <div className="text-left">
+                  <div className="text-[11px] font-black text-slate-900 group-hover/tag:text-[#0284c7]">
+                    500+ Verified Schemes
+                  </div>
+                  <div className="text-[9px] text-slate-500 font-semibold">Ayushman & State Grid &rarr;</div>
+                </div>
+              </div>
+
+              {/* Floating Interactive Micro-Badge 2: Instant Eligibility Check */}
+              <div
+                onClick={onLaunchFeature8}
+                className="absolute bottom-6 left-12 lg:left-4 z-20 bg-white/90 hover:bg-white backdrop-blur-md px-3.5 py-2 rounded-2xl border border-sky-200/80 shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 group/tag"
+                title="Launch Scheme Eligibility Engine"
+              >
+                <span className="text-base">🏛️</span>
+                <div className="text-left">
+                  <div className="text-[11px] font-black text-[#0284c7]">
+                    Instant Eligibility Check
+                  </div>
+                  <div className="text-[9px] text-slate-500 font-semibold">Zero out-of-pocket &rarr;</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Carousel Slide Indicators (Dots/Pills) */}
+        <div className="absolute bottom-3 sm:bottom-3.5 inset-x-0 z-30 flex items-center justify-center gap-2 pointer-events-auto">
+          <button
+            type="button"
+            onClick={() => setActiveHeroSlide(0)}
+            className={`h-2 transition-all duration-300 rounded-full cursor-pointer ${
+              activeHeroSlide === 0
+                ? 'w-8 bg-[#0b2b82] shadow-xs'
+                : 'w-2.5 bg-slate-300/80 hover:bg-slate-400'
+            }`}
+            aria-label="Slide 1: Smart Care Navigator"
+            title="Slide 1: Smart Care Navigator"
+          />
+          <button
+            type="button"
+            onClick={() => setActiveHeroSlide(1)}
+            className={`h-2 transition-all duration-300 rounded-full cursor-pointer ${
+              activeHeroSlide === 1
+                ? 'w-8 bg-[#0284c7] shadow-xs'
+                : 'w-2.5 bg-slate-300/80 hover:bg-slate-400'
+            }`}
+            aria-label="Slide 2: Govt Health Schemes Finder"
+            title="Slide 2: Govt Health Schemes Finder"
+          />
         </div>
       </div>
 
@@ -1582,36 +1744,6 @@ function ScreenHomepage({
               {r.label}
             </button>
           ))}
-        </div>
-      </div>
-
-      {/* Real-Time Operational Network Telemetry (Moved in-between Active Persona and Platform Modules) */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs space-y-4">
-        <div className="flex items-center justify-between">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-600">Network Telemetry &bull; Jharkhand District Grid</h4>
-          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700">
-            <span className="w-2 h-2 rounded-full bg-emerald-600"></span>
-            All Services Operational
-          </span>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-            <div className="text-2xl font-black text-slate-900">4</div>
-            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Specialist Doctors On-Duty</div>
-          </div>
-          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-            <div className="text-2xl font-black text-slate-900">4</div>
-            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Connected Health Facilities</div>
-          </div>
-          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-            <div className="text-2xl font-black text-slate-900">8.5 min</div>
-            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Avg. Priority Queue Wait</div>
-          </div>
-          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-            <div className="text-2xl font-black text-slate-900">100%</div>
-            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Closed-Loop EMR Traceability</div>
-          </div>
         </div>
       </div>
 
@@ -1677,6 +1809,36 @@ function ScreenHomepage({
               </button>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Real-Time Operational Network Telemetry */}
+      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs space-y-4">
+        <div className="flex items-center justify-between">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-600">Network Telemetry &bull; Jharkhand District Grid</h4>
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700">
+            <span className="w-2 h-2 rounded-full bg-emerald-600"></span>
+            All Services Operational
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+            <div className="text-2xl font-black text-slate-900">4</div>
+            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Specialist Doctors On-Duty</div>
+          </div>
+          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+            <div className="text-2xl font-black text-slate-900">4</div>
+            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Connected Health Facilities</div>
+          </div>
+          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+            <div className="text-2xl font-black text-slate-900">8.5 min</div>
+            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Avg. Priority Queue Wait</div>
+          </div>
+          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+            <div className="text-2xl font-black text-slate-900">100%</div>
+            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Closed-Loop EMR Traceability</div>
+          </div>
         </div>
       </div>
     </div>
@@ -4153,6 +4315,7 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [targetDeleteRef, setTargetDeleteRef] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [systemTab, setSystemTab] = useState('Overview');
 
   // New Referral Form state
   const [formData, setFormData] = useState({
@@ -4418,39 +4581,171 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
 
   return (
     <div className="space-y-6 pb-12">
-      {/* Header Banner */}
-      <div className="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200 shadow-sm flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300 uppercase">
-              Feature Map 03 &bull; Closed-Loop Referral
-            </span>
-            <span className="text-xs font-mono font-bold text-slate-400">REF-TRACKER v2.0</span>
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-900">Smart Referral Management System</h2>
-          <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1">
-            Digitally manages and tracks patient referrals from doctor creation to ASHA follow-up, facility intake, and completed care.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2 flex-wrap">
+      <div className="bg-white rounded-2xl p-2 border border-slate-200 shadow-sm flex items-center gap-2 mb-4 overflow-x-auto">
+        {['Create New Referral', 'Manage Referrals', 'View Analytics', 'Overview'].map((tab) => (
           <button
+            key={tab}
             type="button"
-            onClick={() => setShowCreateModal(true)}
-            className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 transition-all flex items-center gap-2"
+            onClick={() => {
+              if (tab === 'Create New Referral') {
+                setShowCreateModal(true);
+              } else {
+                setSystemTab(tab);
+              }
+            }}
+            className={`px-4 py-2 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${
+              systemTab === tab
+                ? 'bg-[#0b2b82] text-white shadow-md shadow-[#0b2b82]/25'
+                : 'text-slate-600 hover:bg-slate-100'
+            }`}
           >
-            <span>➕</span>
-            <span>Create New Referral</span>
+            {tab}
           </button>
-          <button
-            type="button"
-            onClick={onBackToHome}
-            className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors"
-          >
-            🏠 Home
-          </button>
-        </div>
+        ))}
+        <button
+          type="button"
+          onClick={onBackToHome}
+          className="ml-auto px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors whitespace-nowrap"
+        >
+          🏠 Home
+        </button>
       </div>
+
+      {systemTab === 'Overview' && (
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+          {/* Left Column: Doctor Referral Tracking Board */}
+          <div className="xl:col-span-8 bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col min-h-[500px]">
+            <div className="mb-4">
+              <h3 className="text-lg font-black text-slate-900">Doctor Referral Tracking Board</h3>
+            </div>
+            
+            <div className="flex items-center gap-2 flex-wrap mb-4">
+              <input
+                type="text"
+                placeholder="Search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="text-xs border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:ring-2 focus:ring-emerald-500 w-full sm:w-auto flex-1 max-w-[200px]"
+              />
+
+              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-bold flex-wrap overflow-x-auto">
+                {['ALL', 'CREATED', 'CANCELLED', 'COMPLETED'].map((st) => (
+                  <button
+                    key={st}
+                    type="button"
+                    onClick={() => setStatusFilter(st)}
+                    className={`px-3 py-1.5 rounded-lg text-[11px] font-extrabold transition-all ${
+                      statusFilter === st ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    {st === 'ALL' ? 'All' : st.replace('_', ' ')}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="overflow-x-auto flex-1">
+              <table className="w-full text-left text-xs">
+                <thead>
+                  <tr className="border-b border-slate-200 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                    <th className="py-3 px-2">Referral ID</th>
+                    <th className="py-3 px-2">Patient</th>
+                    <th className="py-3 px-2">Destination</th>
+                    <th className="py-3 px-2">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 font-medium">
+                  {filteredReferrals.map((ref) => (
+                    <tr key={ref.id} className="hover:bg-slate-50/80 transition-colors">
+                      <td className="py-3 px-2 font-mono font-black text-emerald-800">
+                        {ref.referralId}
+                      </td>
+                      <td className="py-3 px-2">
+                        <div className="font-bold text-slate-900">{ref.patientName}</div>
+                      </td>
+                      <td className="py-3 px-2">
+                        <div className="font-bold text-slate-800">{ref.receivingFacilityName}</div>
+                      </td>
+                      <td className="py-3 px-2">
+                        <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase ${
+                          ref.status === 'CREATED' ? 'bg-slate-100 text-slate-700' :
+                          ref.status === 'SENT' ? 'bg-amber-100 text-amber-800' :
+                          ref.status === 'IN_PROGRESS' ? 'bg-blue-100 text-blue-800' :
+                          ref.status === 'REACHED_FACILITY' ? 'bg-purple-100 text-purple-800' :
+                          ref.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-800' :
+                          'bg-red-100 text-red-800'
+                        }`}>
+                          {ref.status.replace('_', ' ')}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Right Column: KPIs and Recent Successful Referrals */}
+          <div className="xl:col-span-4 space-y-6 flex flex-col">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col justify-center text-center">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Total Referrals</span>
+                <div className="text-2xl font-black text-slate-900">{stats.total}</div>
+              </div>
+              <div className="bg-white rounded-2xl p-4 border border-amber-200 bg-amber-50/20 shadow-sm flex flex-col justify-center text-center">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 mb-1">Pending Actions</span>
+                <div className="text-2xl font-black text-amber-600">{stats.pending}</div>
+              </div>
+              <div className="bg-white rounded-2xl p-4 border border-blue-200 bg-blue-50/20 shadow-sm flex flex-col justify-center text-center">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 mb-1">In Transit / Reached</span>
+                <div className="text-2xl font-black text-blue-600">{stats.inProgress}</div>
+              </div>
+              <div className="bg-white rounded-2xl p-4 border border-emerald-200 bg-emerald-50/20 shadow-sm flex flex-col justify-center text-center">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 mb-1">Care Completed</span>
+                <div className="text-2xl font-black text-emerald-600">{stats.completed}</div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex-1 flex flex-col">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-black text-slate-900 leading-tight">Recent Successful<br/>Referrals</h3>
+                <button className="text-[10px] font-bold text-[#0b2b82] hover:underline">View All</button>
+              </div>
+              <div className="space-y-3 overflow-y-auto max-h-[300px]">
+                {referrals.filter(r => r.status === 'COMPLETED').slice(0, 3).map(r => (
+                  <div key={r.id} className="p-3 border border-slate-100 rounded-xl bg-slate-50 flex flex-col gap-1">
+                    <div className="flex justify-between items-center">
+                      <span className="font-bold text-xs text-slate-800">{r.patientName}</span>
+                      <span className="text-[10px] font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-md">COMPLETED</span>
+                    </div>
+                    <span className="text-[10px] text-slate-500">To: {r.receivingFacilityName}</span>
+                  </div>
+                ))}
+                {referrals.filter(r => r.status === 'COMPLETED').length === 0 && (
+                  <div className="text-xs text-slate-400 italic">No recent successful referrals.</div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {systemTab !== 'Overview' && (
+        <div className="space-y-6">
+          <div className="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200 shadow-sm flex items-center justify-between flex-wrap gap-4">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300 uppercase">
+                  Feature Map 03 &bull; Closed-Loop Referral
+                </span>
+                <span className="text-xs font-mono font-bold text-slate-400">REF-TRACKER v2.0</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-900">Smart Referral Management System</h2>
+              <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1">
+                Digitally manages and tracks patient referrals from doctor creation to ASHA follow-up, facility intake, and completed care.
+              </p>
+            </div>
+          </div>
 
       {/* Role View Selector Tabs */}
       <div className="bg-white rounded-2xl p-2 border border-slate-200 shadow-sm flex items-center justify-between flex-wrap gap-2">
@@ -4876,6 +5171,9 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
             </div>
           </div>
         </div>
+      )}
+      
+      </div>
       )}
 
       {/* TIMELINE AUDIT DRAWER MODAL */}
@@ -12714,6 +13012,759 @@ function ScreenSchemeFinder({
 }
 
 // ==========================================
+// --- HOMEPAGE PRE-FOOTER BEATS BANNER ---
+// ==========================================
+function HomepageBeatsBanner({ onLaunchFeature1, onLaunchFeature2, onLaunchFeature8 }) {
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+  const [bpm, setBpm] = useState(72);
+  const [isBeating, setIsBeating] = useState(false);
+  const bannerRef = useRef(null);
+
+  // Cardiac heartbeat interval trigger (72 BPM = ~833ms cycle)
+  useEffect(() => {
+    const intervalMs = Math.round(60000 / bpm);
+    const interval = setInterval(() => {
+      setIsBeating(true);
+      setTimeout(() => setIsBeating(false), 360);
+    }, intervalMs);
+    return () => clearInterval(interval);
+  }, [bpm]);
+
+  // Scroll listener for slow-motion text & parallax reveal
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!bannerRef.current) return;
+      const rect = bannerRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const progress = Math.min(
+        1,
+        Math.max(0, (windowHeight - rect.top) / (windowHeight * 0.72))
+      );
+      setScrollProgress(progress);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleMouseMove = (e) => {
+    if (!bannerRef.current) return;
+    const rect = bannerRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 24;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 24;
+    setMousePos({ x, y });
+  };
+
+  const handleHeartbeatClick = () => {
+    setBpm((prev) => (prev === 72 ? 88 : prev === 88 ? 104 : 72));
+    setIsBeating(true);
+    setTimeout(() => setIsBeating(false), 300);
+  };
+
+  // Slow-motion dynamic scroll transforms & interactive response
+  const slowMoHeadlineStyle = {
+    opacity: Math.max(0.9, Math.min(1, 0.9 + scrollProgress * 0.1)),
+    transform: `translateY(${(1 - scrollProgress) * 22 + mousePos.y * 0.2}px) translateX(${mousePos.x * 0.2}px)`,
+    transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease-out'
+  };
+
+  const slowMoSubtextStyle = {
+    opacity: Math.max(0.85, Math.min(1, 0.85 + scrollProgress * 0.15)),
+    transform: `translateY(${(1 - scrollProgress) * 32 + mousePos.y * 0.14}px) translateX(${mousePos.x * 0.14}px)`,
+    transition: 'transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.65s ease-out'
+  };
+
+  const slowMoCtaStyle = {
+    opacity: 1,
+    transform: `translateY(${(1 - scrollProgress) * 16}px)`,
+    transition: 'transform 0.75s cubic-bezier(0.16, 1, 0.3, 1)'
+  };
+
+  return (
+    <section
+      ref={bannerRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => {
+        setIsHovered(true);
+        setBpm(82);
+      }}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setMousePos({ x: 0, y: 0 });
+        setBpm(72);
+      }}
+      className="relative w-full overflow-hidden bg-[#071328] text-white border-t border-slate-800/80 cursor-default select-none"
+      style={{ minHeight: '480px' }}
+      aria-label="Ready to begin your healthcare journey banner"
+    >
+      {/* 1. Background Image with Slow-Mo Parallax & Gradient Blends */}
+      <div
+        className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 ease-out"
+        style={{
+          backgroundImage: "url('./home-cta-beats.jpg')",
+          transform: `scale(${1.03 + scrollProgress * 0.04}) translate(${mousePos.x * -0.25}px, ${mousePos.y * -0.25}px)`
+        }}
+      />
+
+      {/* 2. Color Overlays: Navy Blue Depth with Seamless Bottom Fade into Footer */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#061226]/95 via-[#091b38]/78 to-[#061226]/92 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-[#07101e] pointer-events-none" />
+
+      {/* 3. Animated Heartbeat ECG Pulse Wave Line */}
+      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none overflow-hidden h-40">
+        <svg
+          className="w-full h-full"
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          {/* Ambient Glowing ECG Baseline */}
+          <path
+            d="M 0 60 L 140 60 L 165 60 L 175 42 L 190 85 L 205 15 L 220 75 L 235 60 L 420 60 L 445 60 L 455 42 L 470 85 L 485 15 L 500 75 L 515 60 L 700 60 L 725 60 L 735 42 L 750 85 L 765 15 L 780 75 L 795 60 L 980 60 L 1005 60 L 1015 42 L 1030 85 L 1045 15 L 1060 75 L 1075 60 L 1200 60"
+            stroke="#0284c7"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="opacity-45 drop-shadow-[0_0_8px_rgba(2,132,199,0.7)]"
+          />
+
+          {/* Electric Cyan Pulse Wave with Traveling Beat Animation */}
+          <path
+            d="M 0 60 L 140 60 L 165 60 L 175 42 L 190 85 L 205 15 L 220 75 L 235 60 L 420 60 L 445 60 L 455 42 L 470 85 L 485 15 L 500 75 L 515 60 L 700 60 L 725 60 L 735 42 L 750 85 L 765 15 L 780 75 L 795 60 L 980 60 L 1005 60 L 1015 42 L 1030 85 L 1045 15 L 1060 75 L 1075 60 L 1200 60"
+            stroke="#38bdf8"
+            strokeWidth="3.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeDasharray="90 1110"
+            style={{
+              animation: isHovered ? 'ecgTrace 1.5s linear infinite' : 'ecgTrace 2.4s linear infinite',
+              filter: 'drop-shadow(0 0 10px #38bdf8)'
+            }}
+          />
+
+          {/* Core White Pulse Spark that races across on beat */}
+          <path
+            d="M 0 60 L 140 60 L 165 60 L 175 42 L 190 85 L 205 15 L 220 75 L 235 60 L 420 60 L 445 60 L 455 42 L 470 85 L 485 15 L 500 75 L 515 60 L 700 60 L 725 60 L 735 42 L 750 85 L 765 15 L 780 75 L 795 60 L 980 60 L 1005 60 L 1015 42 L 1030 85 L 1045 15 L 1060 75 L 1075 60 L 1200 60"
+            stroke="#ffffff"
+            strokeWidth="3.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeDasharray="30 1170"
+            style={{
+              animation: isHovered ? 'ecgTrace 1.5s linear infinite' : 'ecgTrace 2.4s linear infinite'
+            }}
+          />
+        </svg>
+      </div>
+
+      {/* 4. Ambient Floating Crosses and Heartbeat Rings */}
+      <div className="absolute left-10 top-12 pointer-events-none opacity-20">
+        <div className={`w-12 h-12 rounded-full border border-sky-400 flex items-center justify-center ${isBeating ? 'scale-125 transition-transform duration-200' : 'transition-transform duration-300'}`}>
+          <svg viewBox="0 0 24 24" className="w-6 h-6 text-sky-300" fill="currentColor">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </div>
+      </div>
+
+      <div className="absolute right-12 bottom-16 pointer-events-none opacity-15">
+        <svg width="60" height="60" viewBox="0 0 60 60" fill="white">
+          <rect x="24" y="5" width="12" height="50" rx="3" />
+          <rect x="5" y="24" width="50" height="12" rx="3" />
+        </svg>
+      </div>
+
+      {/* 5. Main Center Content Container */}
+      <div className="relative z-10 max-w-5xl mx-auto px-6 py-16 sm:py-20 text-center flex flex-col items-center justify-center">
+        
+        {/* Interactive Heartbeat Monitor Pill */}
+        <button
+          type="button"
+          onClick={handleHeartbeatClick}
+          title="Click to pulse rhythm"
+          className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-900/80 border border-sky-400/40 backdrop-blur-md text-sky-300 text-xs font-semibold shadow-lg shadow-black/40 mb-6 hover:border-sky-300 hover:bg-slate-900 transition-all cursor-pointer group"
+        >
+          <span className="relative flex h-3 w-3">
+            <span className={`absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75 ${isBeating ? 'animate-ping' : ''}`}></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-400"></span>
+          </span>
+          <span className="font-mono tracking-wider font-bold text-white">{bpm} BPM</span>
+          <span className="text-slate-400">&bull;</span>
+          <span className="text-sky-200">Active Care Beat</span>
+          <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-200 group-hover:bg-sky-400 group-hover:text-slate-950 transition-colors">
+            Tap Beat
+          </span>
+        </button>
+
+        {/* Slow-Mo Scrolling Text: Heading from User's Note */}
+        <div style={slowMoHeadlineStyle} className="space-y-3">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.15] drop-shadow-md">
+            Ready to begin your{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-teal-200 to-cyan-300">
+              healthcare journey?
+            </span>
+          </h2>
+        </div>
+
+        {/* Slow-Mo Scrolling Text: Subtitle from User's Note */}
+        <div style={slowMoSubtextStyle} className="mt-5 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-slate-200 font-normal leading-relaxed drop-shadow-sm">
+            Join <strong className="text-white font-bold tracking-tight">MedVeda</strong> and experience a connected healthcare ecosystem that makes quality healthcare accessible.
+          </p>
+        </div>
+
+        {/* Interactive Action CTAs */}
+        <div style={slowMoCtaStyle} className="mt-8 flex flex-wrap items-center justify-center gap-3.5 sm:gap-4">
+          <button
+            type="button"
+            onClick={onLaunchFeature1}
+            className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold text-sm shadow-xl shadow-sky-500/25 transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] flex items-center gap-2 group cursor-pointer"
+          >
+            <span>Start Care Navigator</span>
+            <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={onLaunchFeature2}
+            className="px-5 py-3.5 rounded-xl bg-slate-900/60 hover:bg-slate-800/80 text-white font-semibold text-sm border border-white/20 backdrop-blur-md shadow-lg transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2 cursor-pointer"
+          >
+            <span>👨‍⚕️ Consult a Doctor</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={onLaunchFeature8}
+            className="px-5 py-3.5 rounded-xl bg-white/10 hover:bg-white/15 text-sky-200 hover:text-white font-semibold text-sm border border-sky-400/20 backdrop-blur-md transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2 cursor-pointer"
+          >
+            <span>🏛️ Health Schemes</span>
+          </button>
+        </div>
+
+      </div>
+    </section>
+  );
+}
+
+// ==========================================
+// --- GLOBAL FOOTER COMPONENT ---
+// ==========================================
+function Footer({ setView, setScreen, setTeleconsultScreen, setActorRole }) {
+  const [activeModal, setActiveModal] = useState(null);
+
+  const handleNav = (action) => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof action === 'function') {
+      action();
+    }
+  };
+
+  return (
+    <footer className="relative bg-[#07101e] text-slate-200 overflow-hidden border-t border-slate-800/90 w-full select-none">
+      {/* Background Ambience: Medical Crosses, Constellation Waves, Glowing Nodes & Star */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        {/* Soft Radial Glows */}
+        <div className="absolute -right-24 -top-24 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl"></div>
+        <div className="absolute right-1/3 -bottom-24 w-80 h-80 bg-teal-500/5 rounded-full blur-3xl"></div>
+
+        {/* Faint Medical Cross 1 (Center bottom) */}
+        <div className="absolute left-[54%] bottom-10 pointer-events-none opacity-[0.06]">
+          <svg width="76" height="76" viewBox="0 0 60 60" fill="white">
+            <rect x="23" y="4" width="14" height="52" rx="3.5" />
+            <rect x="4" y="23" width="52" height="14" rx="3.5" />
+          </svg>
+        </div>
+
+        {/* Faint Medical Cross 2 (Far Right) */}
+        <div className="absolute right-5 top-8 pointer-events-none opacity-[0.05]">
+          <svg width="64" height="64" viewBox="0 0 60 60" fill="white">
+            <rect x="23" y="4" width="14" height="52" rx="3.5" />
+            <rect x="4" y="23" width="52" height="14" rx="3.5" />
+          </svg>
+        </div>
+
+        {/* Constellation Neural Wave Network (Right half) */}
+        <svg
+          className="absolute right-0 top-0 bottom-0 h-full w-full sm:w-2/3 lg:w-1/2 pointer-events-none opacity-30"
+          viewBox="0 0 600 240"
+          preserveAspectRatio="none"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M 10 170 Q 140 80 280 150 T 560 110"
+            stroke="#38bdf8"
+            strokeWidth="0.85"
+            strokeDasharray="4 3"
+            opacity="0.5"
+          />
+          <path
+            d="M -30 210 C 100 130 220 230 360 150 C 460 90 520 170 610 120"
+            stroke="#93c5fd"
+            strokeWidth="1.1"
+            opacity="0.38"
+          />
+          <path
+            d="M 60 230 C 180 160 290 220 400 140 C 490 80 550 150 630 130"
+            stroke="#38bdf8"
+            strokeWidth="0.75"
+            opacity="0.28"
+          />
+          <circle cx="280" cy="150" r="2.5" fill="#93c5fd" opacity="0.8" />
+          <circle cx="360" cy="150" r="3" fill="#38bdf8" opacity="0.9" />
+          <circle cx="400" cy="140" r="2" fill="#bae6fd" opacity="0.7" />
+          <circle cx="460" cy="115" r="3.5" fill="#38bdf8" opacity="0.6" />
+          <circle cx="510" cy="135" r="2.5" fill="#93c5fd" opacity="0.8" />
+          <circle cx="560" cy="110" r="2" fill="#67e8f9" opacity="0.75" />
+        </svg>
+
+        {/* 4-Point Diamond Sparkle Star (Bottom Right) */}
+        <div className="absolute right-12 bottom-12 pointer-events-none opacity-60">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#93c5fd">
+            <path d="M12 0 C12 6.5 17.5 12 24 12 C17.5 12 12 17.5 12 24 C12 17.5 6.5 12 0 12 C6.5 12 12 6.5 12 0 Z" />
+          </svg>
+        </div>
+      </div>
+
+      {/* Main Content Grid */}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-14 pb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-6 items-start">
+          
+          {/* 1. MedVeda Logo & Mission */}
+          <div className="sm:col-span-2 lg:col-span-4 pr-0 lg:pr-6">
+            <div
+              className="flex items-center gap-3 cursor-pointer group w-fit"
+              onClick={() => handleNav(() => setView('home'))}
+              title="MedVeda Home"
+            >
+              {/* Medical Cross with Heartbeat Wave Cutout */}
+              <div className="relative w-8 h-8 shrink-0 transition-transform group-hover:scale-105">
+                <svg viewBox="0 0 36 36" className="w-8 h-8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M13 2.5C13 1.67 13.67 1 14.5 1H21.5C22.33 1 23 1.67 23 2.5V13H33.5C34.33 13 35 13.67 35 14.5V21.5C35 22.33 34.33 23 33.5 23H23V33.5C23 34.33 22.33 35 21.5 35H14.5C13.67 35 13 34.33 13 33.5V23H2.5C1.67 23 1 22.33 1 21.5V14.5C1 13.67 1.67 13 2.5 13H13V2.5Z"
+                    fill="#ffffff"
+                  />
+                  <path
+                    d="M1 18H10.5L13 13L17.5 24L22 11.5L24.5 18H35"
+                    stroke="#07101e"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+              <span className="text-2xl font-bold tracking-tight text-white font-sans">MedVeda</span>
+            </div>
+            <p className="text-slate-300 text-sm mt-3.5 leading-relaxed font-normal">
+              Smarter Healthcare. Better Access.<br />
+              Healthier Communities.
+            </p>
+          </div>
+
+          {/* 2. Platform Column */}
+          <div className="lg:col-span-2">
+            <h3 className="text-[#93c5fd] text-sm font-semibold mb-4 tracking-wide">Platform</h3>
+            <ul className="space-y-2.5 text-sm">
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleNav(() => {
+                    setView('feature2');
+                    if (setTeleconsultScreen) setTeleconsultScreen('entry');
+                  })}
+                  className="text-slate-200 hover:text-white transition-colors text-left"
+                >
+                  Teleconsultation
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleNav(() => {
+                    setView('feature2');
+                    if (setTeleconsultScreen) setTeleconsultScreen('booking');
+                  })}
+                  className="text-slate-200 hover:text-white transition-colors text-left"
+                >
+                  Appointments
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleNav(() => {
+                    setView('feature1');
+                    if (setScreen) setScreen(1);
+                  })}
+                  className="text-slate-200 hover:text-white transition-colors text-left"
+                >
+                  Digital Triage
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleNav(() => {
+                    setView('feature5');
+                    if (setActorRole) setActorRole('patient');
+                  })}
+                  className="text-slate-200 hover:text-white transition-colors text-left"
+                >
+                  Health Records
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          {/* 3. Services Column */}
+          <div className="lg:col-span-2">
+            <h3 className="text-[#93c5fd] text-sm font-semibold mb-4 tracking-wide">Services</h3>
+            <ul className="space-y-2.5 text-sm">
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleNav(() => {
+                    setView('feature1');
+                    if (setScreen) setScreen(6);
+                  })}
+                  className="text-slate-200 hover:text-white transition-colors text-left"
+                >
+                  Find a Doctor
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleNav(() => {
+                    setView('feature6');
+                    if (setActorRole) setActorRole('shop_owner');
+                  })}
+                  className="text-slate-200 hover:text-white transition-colors text-left"
+                >
+                  Medicine Availability
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleNav(() => {
+                    setView('feature3');
+                    if (setActorRole) setActorRole('doctor');
+                  })}
+                  className="text-slate-200 hover:text-white transition-colors text-left"
+                >
+                  Referrals
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleNav(() => {
+                    setView('feature4');
+                    if (setActorRole) setActorRole('worker');
+                  })}
+                  className="text-slate-200 hover:text-white transition-colors text-left"
+                >
+                  Follow-up Care
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          {/* 4. Resources Column */}
+          <div className="lg:col-span-2">
+            <h3 className="text-[#93c5fd] text-sm font-semibold mb-4 tracking-wide">Resources</h3>
+            <ul className="space-y-2.5 text-sm">
+              <li>
+                <button
+                  type="button"
+                  onClick={() => handleNav(() => setView('about'))}
+                  className="text-slate-200 hover:text-white transition-colors text-left"
+                >
+                  About MedVeda
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => setActiveModal('help')}
+                  className="text-slate-200 hover:text-white transition-colors text-left"
+                >
+                  Help Center
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => setActiveModal('faq')}
+                  className="text-slate-200 hover:text-white transition-colors text-left"
+                >
+                  FAQs
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => setActiveModal('contact')}
+                  className="text-slate-200 hover:text-white transition-colors text-left"
+                >
+                  Contact
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          {/* 5. Emergency Callout Card (Right) */}
+          <div className="sm:col-span-2 lg:col-span-2">
+            <div className="bg-slate-800/40 backdrop-blur-md border border-white/10 rounded-2xl p-5 shadow-2xl transition-all duration-300 hover:border-white/20 hover:bg-slate-800/50 group">
+              <div className="w-8 h-8 rounded-lg border border-white/20 bg-white/5 flex items-center justify-center mb-3 text-white">
+                <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.75">
+                  <path d="M8 2h8v6h6v8h-6v6H8v-6H2V8h6V2z" stroke="currentColor" fill="rgba(255,255,255,0.06)" strokeLinejoin="round" />
+                  <path d="M3 12h4l1.5-3 2.5 6 2-4 1.5 2H21" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+              <h4 className="text-white font-bold text-base tracking-tight mb-1.5">Emergency?</h4>
+              <p className="text-slate-300 text-xs leading-relaxed mb-3">
+                For medical emergencies, contact your local emergency service.
+              </p>
+              <button
+                type="button"
+                onClick={() => setActiveModal('emergency')}
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#93c5fd] hover:text-white transition-colors"
+              >
+                <span>Helplines &amp; Triage &rarr;</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Divider & Copyright Bar */}
+        <div className="border-t border-slate-700/60 pt-6 mt-12">
+          <div className="text-xs text-slate-400">
+            &copy; 2026 MedVeda. All rights reserved.{' '}
+            <button
+              type="button"
+              onClick={() => setActiveModal('privacy')}
+              className="hover:text-slate-200 transition-colors ml-1 underline-offset-2 hover:underline"
+            >
+              Privacy Policy
+            </button>
+            {' '}&middot;{' '}
+            <button
+              type="button"
+              onClick={() => setActiveModal('terms')}
+              className="hover:text-slate-200 transition-colors underline-offset-2 hover:underline"
+            >
+              Terms of Service
+            </button>
+            {' '}&middot;{' '}
+            <button
+              type="button"
+              onClick={() => setActiveModal('accessibility')}
+              className="hover:text-slate-200 transition-colors underline-offset-2 hover:underline"
+            >
+              Accessibility
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Interactive Modals */}
+      {activeModal && (
+        <div
+          className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setActiveModal(null)}
+        >
+          <div
+            className="bg-[#0b172a] border border-slate-700/80 rounded-2xl max-w-lg w-full p-6 text-slate-200 shadow-2xl relative animate-in fade-in zoom-in-95 duration-150"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setActiveModal(null)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors text-lg"
+              title="Close"
+            >
+              &times;
+            </button>
+
+            {activeModal === 'emergency' && (
+              <div>
+                <div className="flex items-center gap-3 mb-4 text-red-400">
+                  <div className="w-10 h-10 rounded-xl bg-red-500/20 border border-red-500/30 flex items-center justify-center font-black text-xl">
+                    🚨
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-white">Emergency Services</h3>
+                    <p className="text-xs text-slate-400">Immediate Medical &amp; Rescue Assistance</p>
+                  </div>
+                </div>
+                <div className="space-y-2.5 mb-6 text-sm">
+                  <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+                    <div>
+                      <div className="font-semibold text-white">National Emergency Number</div>
+                      <div className="text-xs text-slate-400">All-in-one Emergency Response</div>
+                    </div>
+                    <a href="tel:112" className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold text-xs">
+                      Call 112
+                    </a>
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+                    <div>
+                      <div className="font-semibold text-white">Ambulance Services</div>
+                      <div className="text-xs text-slate-400">Emergency Medical Transportation</div>
+                    </div>
+                    <a href="tel:108" className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold text-xs">
+                      Call 108
+                    </a>
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+                    <div>
+                      <div className="font-semibold text-white">National Health Helpline</div>
+                      <div className="text-xs text-slate-400">Government Medical Advice</div>
+                    </div>
+                    <a href="tel:1075" className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs">
+                      Call 1075
+                    </a>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveModal(null);
+                    handleNav(() => {
+                      setView('feature1');
+                      if (setScreen) setScreen(1);
+                    });
+                  }}
+                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-orange-600 text-white font-bold text-sm shadow-lg hover:brightness-110 transition-all"
+                >
+                  Start Emergency Triage Assessment &rarr;
+                </button>
+              </div>
+            )}
+
+            {activeModal === 'help' && (
+              <div>
+                <h3 className="text-lg font-bold text-white mb-2">Help Center</h3>
+                <p className="text-xs text-slate-400 mb-4">MedVeda Smart Care Platform Support</p>
+                <div className="space-y-3 text-sm text-slate-300">
+                  <div className="p-3 rounded-xl bg-slate-900/70 border border-slate-800">
+                    <strong className="text-white block mb-1">For Patients:</strong>
+                    Use Care Navigator for instant symptom assessment, book teleconsultations, and access Ayushman Bharat health records.
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-900/70 border border-slate-800">
+                    <strong className="text-white block mb-1">For ASHA / Field Workers:</strong>
+                    Log offline vitals, initiate emergency queue boosts, and track longitudinal patient follow-ups.
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-900/70 border border-slate-800">
+                    <strong className="text-white block mb-1">Technical Support:</strong>
+                    Email us at <span className="text-[#93c5fd]">support@medveda.health</span> for technical assistance.
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeModal === 'faq' && (
+              <div>
+                <h3 className="text-lg font-bold text-white mb-2">Frequently Asked Questions</h3>
+                <p className="text-xs text-slate-400 mb-4">Common questions about MedVeda</p>
+                <div className="space-y-3 text-xs sm:text-sm text-slate-300 max-h-80 overflow-y-auto pr-1">
+                  <div className="p-3 rounded-xl bg-slate-900/70 border border-slate-800">
+                    <strong className="text-white block mb-1">Is MedVeda free to use for patients?</strong>
+                    Yes, triage guidance and government healthcare scheme discovery are 100% free and open to everyone.
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-900/70 border border-slate-800">
+                    <strong className="text-white block mb-1">How does AI symptom triage work?</strong>
+                    Our 3-agent orchestration pipeline evaluates symptoms against clinical red flags and medical guidelines to recommend the safest care level.
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-900/70 border border-slate-800">
+                    <strong className="text-white block mb-1">Are my medical records safe?</strong>
+                    All records conform to ABDM and FHIR R4 interoperability standards with end-to-end encryption.
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeModal === 'contact' && (
+              <div>
+                <h3 className="text-lg font-bold text-white mb-2">Contact MedVeda</h3>
+                <p className="text-xs text-slate-400 mb-4">Get in touch with our team</p>
+                <div className="space-y-3 text-sm text-slate-300">
+                  <div className="p-3 rounded-xl bg-slate-900/70 border border-slate-800">
+                    <span className="text-xs text-slate-400 block">General Inquiries</span>
+                    <span className="text-white font-medium">contact@medveda.health</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-900/70 border border-slate-800">
+                    <span className="text-xs text-slate-400 block">Facility Onboarding &amp; Partnerships</span>
+                    <span className="text-white font-medium">partners@medveda.health</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-900/70 border border-slate-800">
+                    <span className="text-xs text-slate-400 block">Emergency Response Coordination</span>
+                    <span className="text-white font-medium">emergency-desk@medveda.health</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeModal === 'privacy' && (
+              <div>
+                <h3 className="text-lg font-bold text-white mb-2">Privacy Policy</h3>
+                <p className="text-xs text-slate-400 mb-4">Ayushman Bharat Digital Mission (ABDM) &amp; DISHA Compliant</p>
+                <div className="text-xs sm:text-sm text-slate-300 space-y-2 max-h-72 overflow-y-auto pr-1">
+                  <p>MedVeda is committed to protecting patient confidentiality and healthcare data sovereignty.</p>
+                  <p>&bull; Patient identifying information (PII) is encrypted both in transit (TLS 1.3) and at rest (AES-256).</p>
+                  <p>&bull; Consent artifacts are cryptographically signed before any health records are shared across facilities.</p>
+                  <p>&bull; No patient health records are sold or utilized for third-party commercial advertising.</p>
+                </div>
+              </div>
+            )}
+
+            {activeModal === 'terms' && (
+              <div>
+                <h3 className="text-lg font-bold text-white mb-2">Terms of Service</h3>
+                <p className="text-xs text-slate-400 mb-4">Clinical Decision Support &amp; Digital Health Protocol</p>
+                <div className="text-xs sm:text-sm text-slate-300 space-y-2 max-h-72 overflow-y-auto pr-1">
+                  <p>&bull; MedVeda provides digital clinical decision support and care navigation. It does not replace a licensed medical practitioner's professional judgment.</p>
+                  <p>&bull; In acute life-threatening situations, immediate local emergency services (112 / 108) must be contacted.</p>
+                  <p>&bull; Teleconsultations are conducted by registered medical practitioners in compliance with Telemedicine Practice Guidelines.</p>
+                </div>
+              </div>
+            )}
+
+            {activeModal === 'accessibility' && (
+              <div>
+                <h3 className="text-lg font-bold text-white mb-2">Accessibility Commitment</h3>
+                <p className="text-xs text-slate-400 mb-4">WCAG 2.1 AAA &amp; Inclusive Digital Healthcare</p>
+                <div className="text-xs sm:text-sm text-slate-300 space-y-2 max-h-72 overflow-y-auto pr-1">
+                  <p>&bull; Designed for high-contrast visibility, keyboard navigation, and screen reader compatibility.</p>
+                  <p>&bull; Optimized for low-bandwidth 2G/3G rural networks with offline data sync for community health workers.</p>
+                  <p>&bull; Multi-language voice and text triage support for regional accessibility.</p>
+                </div>
+              </div>
+            )}
+
+            <div className="mt-5 text-right">
+              <button
+                type="button"
+                onClick={() => setActiveModal(null)}
+                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </footer>
+  );
+}
+
+// ==========================================
 // --- MAIN APPLICATION ROOT (ROUTER & STATE) ---
 // ==========================================
 function App() {
@@ -13206,30 +14257,29 @@ function App() {
         )}
       </main>
 
-      <footer className="bg-white border-t border-slate-200 py-6 px-4 text-center text-xs text-slate-500 font-medium">
-        <div className="max-w-6xl xl:max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div>
-            MedVeda Smart Care Platform &bull; Autonomous Care Navigation &bull; Priority Telehealth &bull; Closed-Loop Referrals &bull; High-Risk Follow-Up &bull; Interoperable Health Records &bull; Medicine &amp; Diagnostic Coordination &bull; Facility Operations Dashboard
-          </div>
-          <div className="flex items-center gap-3 font-bold text-slate-700 shrink-0">
-            <button
-              type="button"
-              onClick={() => setView('home')}
-              className="hover:text-[#0b2b82] transition-colors"
-            >
-              Home
-            </button>
-            <span>&bull;</span>
-            <button
-              type="button"
-              onClick={() => setView('about')}
-              className="text-[#0b2b82] hover:text-[#071a4f] transition-colors underline underline-offset-2 font-black"
-            >
-              ℹ️ About MedVeda
-            </button>
-          </div>
-        </div>
-      </footer>
+      {/* HOMEPAGE ONLY: Pre-Footer Interactive Beats Banner */}
+      {view === 'home' && (
+        <HomepageBeatsBanner
+          onLaunchFeature1={() => {
+            setView('feature1');
+            setScreen(1);
+          }}
+          onLaunchFeature2={() => {
+            setView('feature2');
+            setTeleconsultScreen('entry');
+          }}
+          onLaunchFeature8={() => {
+            setView('feature8');
+          }}
+        />
+      )}
+
+      <Footer
+        setView={setView}
+        setScreen={setScreen}
+        setTeleconsultScreen={setTeleconsultScreen}
+        setActorRole={setActorRole}
+      />
     </div>
   );
 }
