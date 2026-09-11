@@ -1316,6 +1316,158 @@ function VitalsConfidenceBadge({ source }) {
 }
 
 // ==========================================
+// --- HEALTHCARE IMPACT AT A GLANCE (PERFORMANCE OVERVIEW) ---
+// ==========================================
+function HealthcareImpactSection({
+  onLaunchFeature1,
+  onLaunchFeature2,
+  onLaunchFeature4,
+  onLaunchFeature7
+}) {
+  const [mousePos, setMousePos] = useState({ x: 350, y: 180 });
+  const [isHovered, setIsHovered] = useState(false);
+  const containerRef = useRef(null);
+
+  const handleMouseMove = (e) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    setMousePos({
+      x: Math.round(e.clientX - rect.left),
+      y: Math.round(e.clientY - rect.top)
+    });
+  };
+
+  const cards = [
+    {
+      id: 'patients',
+      img: './impact-card-1.png',
+      alt: '38K+ Patients Served - 12.4% increase',
+      title: '38K+ Patients Served',
+      action: onLaunchFeature1,
+      offset: false
+    },
+    {
+      id: 'facilities',
+      img: './impact-card-2.png',
+      alt: '152+ Healthcare Facilities - 18 facilities added',
+      title: '152+ Healthcare Facilities',
+      action: onLaunchFeature7,
+      offset: true
+    },
+    {
+      id: 'doctors',
+      img: './impact-card-3.png',
+      alt: '759+ Doctors Connected - 8.6% increase',
+      title: '759+ Doctors Connected',
+      action: onLaunchFeature2,
+      offset: false
+    },
+    {
+      id: 'rating',
+      img: './impact-card-4.png',
+      alt: '4.9 Average Rating - 20K+ Ratings - Patient Satisfaction',
+      title: '4.9 Patient Satisfaction Rating',
+      action: onLaunchFeature4,
+      offset: true
+    }
+  ];
+
+  return (
+    <div
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="relative rounded-[36px] bg-gradient-to-b from-white via-sky-50/30 to-blue-50/40 border border-slate-200/90 shadow-[0_12px_40px_rgba(2,132,199,0.06)] hover:shadow-[0_18px_50px_rgba(2,132,199,0.12)] p-6 sm:p-10 lg:p-12 overflow-hidden transition-all duration-500 group select-none"
+    >
+      {/* Interactive Blueprint Medical Grid */}
+      <div
+        className="absolute inset-0 pointer-events-none transition-opacity duration-500"
+        style={{
+          backgroundImage:
+            'linear-gradient(to right, rgba(2, 132, 199, 0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(2, 132, 199, 0.08) 1px, transparent 1px)',
+          backgroundSize: '44px 44px',
+          opacity: isHovered ? 0.95 : 0.65
+        }}
+      />
+
+      {/* Dynamic Cursor Spotlight Radial Glow */}
+      <div
+        className="absolute inset-0 pointer-events-none transition-opacity duration-300"
+        style={{
+          background: `radial-gradient(650px circle at ${mousePos.x}px ${mousePos.y}px, rgba(56, 189, 248, 0.18), rgba(2, 132, 199, 0.04) 40%, transparent 70%)`
+        }}
+      />
+
+      {/* Ambient ECG Heartbeat Waveform SVG traversing across background */}
+      <div className="absolute inset-x-0 top-[38%] -translate-y-1/2 pointer-events-none h-40 overflow-hidden opacity-35">
+        <svg className="w-full h-full min-w-[1000px]" preserveAspectRatio="none" viewBox="0 0 1200 120" fill="none">
+          <path
+            d="M0,60 L200,60 L220,40 L235,80 L255,10 L275,108 L295,45 L310,65 L325,60 L560,60 L580,40 L595,80 L615,10 L635,108 L655,45 L670,65 L685,60 L920,60 L940,40 L955,80 L975,10 L995,108 L1015,45 L1030,65 L1045,60 L1200,60"
+            stroke="#0284c7"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="pulse-ring"
+          />
+        </svg>
+      </div>
+
+      {/* Section Header */}
+      <div className="relative z-10 max-w-3xl space-y-2 mb-8 sm:mb-10">
+        {/* Eyebrow */}
+        <div className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#0284c7]">
+          <span className="w-2 h-2 rounded-full bg-[#0284c7] animate-pulse"></span>
+          <span>PERFORMANCE OVERVIEW</span>
+        </div>
+
+        {/* Title with signature cyan underline under "Impact at a Glance" */}
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight">
+          Healthcare{' '}
+          <span className="relative inline-block pb-1">
+            <span className="relative z-10 text-slate-900">Impact at a Glance</span>
+            <span className="absolute bottom-0 left-0 w-full h-1.5 bg-[#38bdf8] rounded-full"></span>
+          </span>
+        </h2>
+
+        {/* Subtitle */}
+        <p className="text-sm sm:text-base text-slate-600 font-normal mt-2 max-w-2xl leading-relaxed">
+          Connecting patients, healthcare facilities and doctors for better access to care.
+        </p>
+      </div>
+
+      {/* 4 Cards with Staggered Offset & Slight Text/Card Overflow */}
+      <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 pb-2 sm:pb-6 overflow-visible">
+        {cards.map((card) => (
+          <div
+            key={card.id}
+            onClick={card.action}
+            title={`Click to open ${card.title}`}
+            className={`group/card relative rounded-[28px] overflow-hidden bg-slate-900 border border-slate-200/90 shadow-[0_12px_36px_rgba(2,132,199,0.12)] hover:shadow-[0_24px_48px_rgba(2,132,199,0.22)] cursor-pointer transition-all duration-500 ease-out transform ${
+              card.offset ? 'sm:translate-y-6 lg:translate-y-8' : 'sm:translate-y-0'
+            } hover:-translate-y-2 active:scale-[0.98]`}
+          >
+            <div className="relative aspect-[4/5] w-full overflow-hidden">
+              <img
+                src={card.img}
+                alt={card.alt}
+                className="w-full h-full object-cover object-center transform transition-transform duration-700 ease-out group-hover/card:scale-105 select-none"
+              />
+
+              {/* Ambient glass reflection */}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-white/10 pointer-events-none"></div>
+
+              {/* Card interactive hover highlight ring */}
+              <div className="absolute inset-0 border-2 border-transparent group-hover/card:border-sky-400/70 rounded-[28px] transition-colors pointer-events-none"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ==========================================
 // --- HOMEPAGE COMPONENT (PROFESSIONAL & STREAMLINED) ---
 // ==========================================
 function ScreenHomepage({
@@ -1331,13 +1483,30 @@ function ScreenHomepage({
   actorRole,
   setActorRole
 }) {
-  const [activeHeroSlide, setActiveHeroSlide] = useState(0);
+  const [activeHeroSlide, setActiveHeroSlide] = useState(() => {
+    if (typeof window !== 'undefined' && window.location.hash.includes('slide=')) {
+      const match = window.location.hash.match(/slide=(\d+)/);
+      if (match) return parseInt(match[1], 10) % 4;
+    }
+    return 0;
+  });
   const [isHeroPaused, setIsHeroPaused] = useState(false);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash.includes('slide=')) {
+        const match = window.location.hash.match(/slide=(\d+)/);
+        if (match) setActiveHeroSlide(parseInt(match[1], 10) % 4);
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   useEffect(() => {
     if (isHeroPaused) return;
     const timer = setInterval(() => {
-      setActiveHeroSlide((prev) => (prev === 0 ? 1 : 0));
+      setActiveHeroSlide((prev) => (prev + 1) % 4);
     }, 6500);
     return () => clearInterval(timer);
   }, [isHeroPaused]);
@@ -1452,7 +1621,7 @@ function ScreenHomepage({
           type="button"
           onClick={(e) => {
             e.stopPropagation();
-            setActiveHeroSlide((prev) => (prev === 0 ? 1 : 0));
+            setActiveHeroSlide((prev) => (prev === 0 ? 3 : prev - 1));
           }}
           className="absolute left-3.5 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white/85 hover:bg-white border border-slate-200/90 shadow-md hover:shadow-lg text-slate-700 hover:text-[#0b2b82] flex items-center justify-center transition-all opacity-70 group-hover:opacity-100 active:scale-90 cursor-pointer backdrop-blur-sm"
           aria-label="Previous Slide"
@@ -1468,7 +1637,7 @@ function ScreenHomepage({
           type="button"
           onClick={(e) => {
             e.stopPropagation();
-            setActiveHeroSlide((prev) => (prev === 0 ? 1 : 0));
+            setActiveHeroSlide((prev) => (prev + 1) % 4);
           }}
           className="absolute right-3.5 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white/85 hover:bg-white border border-slate-200/90 shadow-md hover:shadow-lg text-slate-700 hover:text-[#0b2b82] flex items-center justify-center transition-all opacity-70 group-hover:opacity-100 active:scale-90 cursor-pointer backdrop-blur-sm"
           aria-label="Next Slide"
@@ -1685,6 +1854,215 @@ function ScreenHomepage({
           </div>
         </div>
 
+        {/* Slide 2: Smart Teleconsultation (Added from User Upload) */}
+        <div className={`transition-opacity duration-500 ease-in-out ${activeHeroSlide === 2 ? 'block opacity-100' : 'hidden opacity-0'}`}>
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between min-h-[420px]">
+            {/* Left Column: Interactive Typography, CTA Buttons, and Badges */}
+            <div className="p-8 sm:p-12 lg:py-14 lg:pl-16 lg:pr-6 lg:w-[54%] xl:w-[52%] space-y-6">
+              {/* Pill Badge */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50/90 border border-sky-200/80 text-[#0284c7] text-xs font-bold shadow-2xs hover:bg-sky-100/80 transition-colors">
+                <svg className="w-3.5 h-3.5 text-[#0284c7]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M23 7l-7 5 7 5V7z" />
+                  <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                </svg>
+                <span>Smart Teleconsultation</span>
+              </div>
+
+              {/* Headline */}
+              <h1 className="text-3xl sm:text-4xl lg:text-[44px] xl:text-[48px] font-black tracking-tight text-slate-900 leading-[1.12]">
+                Quality healthcare,<br />
+                <span className="text-[#0284c7]">from wherever you are.</span>
+              </h1>
+
+              {/* Description */}
+              <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-normal max-w-xl">
+                Connect with experienced doctors through secure video consultations, even when distance or access becomes a challenge.
+              </p>
+
+              {/* Interactive Button Group */}
+              <div className="flex items-center gap-3.5 pt-1 flex-wrap">
+                <button
+                  type="button"
+                  onClick={onLaunchFeature2}
+                  className="px-6 py-3 bg-[#0284c7] hover:bg-[#0369a1] text-white font-bold text-sm rounded-xl shadow-md hover:shadow-lg hover:shadow-sky-900/25 active:scale-95 transition-all flex items-center gap-2.5 group/btn cursor-pointer"
+                >
+                  <span>Start Consultation</span>
+                  <span className="group-hover/btn:translate-x-1 transition-transform">&rarr;</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={onLaunchAbout}
+                  className="px-5 py-3 bg-white hover:bg-slate-50 text-slate-700 font-bold text-sm rounded-xl border border-slate-200/90 hover:border-slate-300 shadow-2xs hover:shadow-xs active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+                >
+                  <span>Learn More</span>
+                </button>
+              </div>
+
+              {/* Trust Badges Footer */}
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 pt-2 flex-wrap">
+                <div className="flex items-center gap-1.5">
+                  <svg className="w-4 h-4 text-sky-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  <span>Secure</span>
+                </div>
+                <span className="text-slate-300">&bull;</span>
+                <span className="text-slate-500 font-medium">Simple</span>
+                <span className="text-slate-300">&bull;</span>
+                <span className="text-slate-500 font-medium">Accessible</span>
+              </div>
+            </div>
+
+            {/* Right Column: Feathered Teleconsult Graphic with Floating Interactive Cards */}
+            <div className="relative lg:w-[46%] xl:w-[48%] self-stretch flex items-center justify-end overflow-hidden">
+              {/* Soft Edge Blending Overlay */}
+              <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none hidden lg:block"></div>
+              <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white/60 to-transparent z-10 pointer-events-none"></div>
+              <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white/60 to-transparent z-10 pointer-events-none"></div>
+
+              <img
+                src="./hero-teleconsult-art.png"
+                alt="MedVeda Teleconsultation doctor with patient on laptop"
+                className="w-full h-auto max-h-[460px] object-cover object-left sm:object-center transform transition-transform duration-700 group-hover:scale-[1.02] select-none block"
+              />
+
+              {/* Floating Interactive Micro-Badge 1: Doctor Consultation */}
+              <div
+                onClick={onLaunchFeature2}
+                className="absolute top-6 right-6 z-20 bg-white/90 hover:bg-white backdrop-blur-md px-3.5 py-2 rounded-2xl border border-sky-200/80 shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 group/tag"
+                title="Live Doctor Consultation in progress"
+              >
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                <div className="text-left">
+                  <div className="text-[11px] font-black text-slate-900 group-hover/tag:text-[#0284c7]">
+                    Dr. R. Sharma &bull; General Physician
+                  </div>
+                  <div className="text-[9px] text-emerald-600 font-semibold">Consultation in progress &rarr;</div>
+                </div>
+              </div>
+
+              {/* Floating Interactive Micro-Badge 2: Health Records */}
+              <div
+                onClick={onLaunchFeature5}
+                className="absolute bottom-6 left-12 lg:left-4 z-20 bg-white/90 hover:bg-white backdrop-blur-md px-3.5 py-2 rounded-2xl border border-sky-200/80 shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 group/tag"
+                title="View Synced Health Records"
+              >
+                <span className="text-base">📄</span>
+                <div className="text-left">
+                  <div className="text-[11px] font-black text-[#0284c7]">
+                    Your Health Records
+                  </div>
+                  <div className="text-[9px] text-slate-500 font-semibold">Synced in real-time &rarr;</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Slide 3: AI-Assisted Medical Record (Added from User Upload) */}
+        <div className={`transition-opacity duration-500 ease-in-out ${activeHeroSlide === 3 ? 'block opacity-100' : 'hidden opacity-0'}`}>
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between min-h-[420px]">
+            {/* Left Column: Interactive Typography, CTA Buttons, and Badges */}
+            <div className="p-8 sm:p-12 lg:py-14 lg:pl-16 lg:pr-6 lg:w-[54%] xl:w-[52%] space-y-6">
+              {/* Pill Badge */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-50/90 border border-teal-200/80 text-teal-700 text-xs font-bold shadow-2xs hover:bg-teal-100/80 transition-colors">
+                <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
+                <span>ABDM FHIR-Compliant Health Cloud</span>
+              </div>
+
+              {/* Headline */}
+              <h1 className="text-3xl sm:text-4xl lg:text-[44px] xl:text-[48px] font-black tracking-tight text-slate-900 leading-[1.12]">
+                AI-Assisted<br />
+                <span className="text-teal-600">Medical Record</span>
+              </h1>
+
+              {/* Description */}
+              <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-normal max-w-xl">
+                Transform complex patient information into clear, organized, and actionable medical insights with intelligent AI assistance.
+              </p>
+
+              {/* Interactive Button Group */}
+              <div className="flex items-center gap-3.5 pt-1 flex-wrap">
+                <button
+                  type="button"
+                  onClick={onLaunchFeature5}
+                  className="px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm rounded-xl shadow-md hover:shadow-lg hover:shadow-teal-900/25 active:scale-95 transition-all flex items-center gap-2.5 group/btn cursor-pointer"
+                >
+                  <span>Explore Medical Records</span>
+                  <span className="group-hover/btn:translate-x-1 transition-transform">&rarr;</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={onLaunchFeature1}
+                  className="px-5 py-3 bg-white hover:bg-slate-50 text-slate-700 font-bold text-sm rounded-xl border border-slate-200/90 hover:border-slate-300 shadow-2xs hover:shadow-xs active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+                >
+                  <span>Care Triage &rarr;</span>
+                </button>
+              </div>
+
+              {/* Trust Badges Footer */}
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 pt-2 flex-wrap">
+                <div className="flex items-center gap-1.5">
+                  <svg className="w-4 h-4 text-teal-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  <span>ABDM FHIR R4</span>
+                </div>
+                <span className="text-slate-300">&bull;</span>
+                <span className="text-slate-500 font-medium">Encrypted Vault</span>
+                <span className="text-slate-300">&bull;</span>
+                <span className="text-slate-500 font-medium">Actionable Insights</span>
+              </div>
+            </div>
+
+            {/* Right Column: Feathered AI Medical Record Graphic with Floating Interactive Cards */}
+            <div className="relative lg:w-[46%] xl:w-[48%] self-stretch flex items-center justify-end overflow-hidden">
+              {/* Soft Edge Blending Overlay */}
+              <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none hidden lg:block"></div>
+              <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white/60 to-transparent z-10 pointer-events-none"></div>
+              <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white/60 to-transparent z-10 pointer-events-none"></div>
+
+              <img
+                src="./hero-ai-records-art.png"
+                alt="AI-Assisted Medical Record holographic dashboard with intelligent insights"
+                className="w-full h-auto max-h-[460px] object-cover object-left sm:object-center transform transition-transform duration-700 group-hover:scale-[1.02] select-none block"
+              />
+
+              {/* Floating Interactive Micro-Badge 1: AI Generated Summary */}
+              <div
+                onClick={onLaunchFeature5}
+                className="absolute top-6 right-6 z-20 bg-white/90 hover:bg-white backdrop-blur-md px-3.5 py-2 rounded-2xl border border-teal-200/80 shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 group/tag"
+                title="View AI Generated Medical Summary"
+              >
+                <span className="w-2 h-2 rounded-full bg-teal-500 animate-ping"></span>
+                <div className="text-left">
+                  <div className="text-[11px] font-black text-slate-900 group-hover/tag:text-teal-700">
+                    AI Generated Summary
+                  </div>
+                  <div className="text-[9px] text-slate-500 font-semibold">Instant timeline synthesis &rarr;</div>
+                </div>
+              </div>
+
+              {/* Floating Interactive Micro-Badge 2: Longitudinal History */}
+              <div
+                onClick={onLaunchFeature5}
+                className="absolute bottom-6 left-12 lg:left-4 z-20 bg-white/90 hover:bg-white backdrop-blur-md px-3.5 py-2 rounded-2xl border border-teal-200/80 shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-2 group/tag"
+                title="Explore Patient Longitudinal History"
+              >
+                <span className="text-base">📊</span>
+                <div className="text-left">
+                  <div className="text-[11px] font-black text-teal-700">
+                    Longitudinal Insights
+                  </div>
+                  <div className="text-[9px] text-slate-500 font-semibold">Vitals, Labs &amp; History &rarr;</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Carousel Slide Indicators (Dots/Pills) */}
         <div className="absolute bottom-3 sm:bottom-3.5 inset-x-0 z-30 flex items-center justify-center gap-2 pointer-events-auto">
           <button
@@ -1708,6 +2086,28 @@ function ScreenHomepage({
             }`}
             aria-label="Slide 2: Govt Health Schemes Finder"
             title="Slide 2: Govt Health Schemes Finder"
+          />
+          <button
+            type="button"
+            onClick={() => setActiveHeroSlide(2)}
+            className={`h-2 transition-all duration-300 rounded-full cursor-pointer ${
+              activeHeroSlide === 2
+                ? 'w-8 bg-[#0284c7] shadow-xs'
+                : 'w-2.5 bg-slate-300/80 hover:bg-slate-400'
+            }`}
+            aria-label="Slide 3: Smart Teleconsultation"
+            title="Slide 3: Smart Teleconsultation"
+          />
+          <button
+            type="button"
+            onClick={() => setActiveHeroSlide(3)}
+            className={`h-2 transition-all duration-300 rounded-full cursor-pointer ${
+              activeHeroSlide === 3
+                ? 'w-8 bg-teal-600 shadow-xs'
+                : 'w-2.5 bg-slate-300/80 hover:bg-slate-400'
+            }`}
+            aria-label="Slide 4: AI-Assisted Medical Records"
+            title="Slide 4: AI-Assisted Medical Records"
           />
         </div>
       </div>
@@ -1812,140 +2212,13 @@ function ScreenHomepage({
         </div>
       </div>
 
-      {/* Real-Time Operational Network Telemetry */}
-      <div className="relative overflow-hidden bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-[0_4px_24px_rgba(11,43,130,0.04)] space-y-6 group">
-        {/* Subtle Ambient Brand Tint */}
-        <div className="absolute top-0 right-0 w-80 h-32 bg-gradient-to-bl from-blue-50/60 via-sky-50/20 to-transparent pointer-events-none"></div>
-
-        {/* Card Header */}
-        <div className="relative z-10 flex items-center justify-between flex-wrap gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#f0f7ff] text-[#0284c7] border border-blue-100 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
-              <svg className="w-5 h-5 text-[#0284c7]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h4 className="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">
-                  Network Telemetry
-                </h4>
-                <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#f0f7ff] text-[#0284c7] border border-blue-100">
-                  LIVE
-                </span>
-              </div>
-              <p className="text-xs text-slate-500 font-normal mt-0.5">
-                Real-time operational health grid &amp; facility vitals
-              </p>
-            </div>
-          </div>
-
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#f0f7ff] border border-blue-200/80 shadow-2xs">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0284c7] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#0284c7]"></span>
-            </span>
-            <span className="text-xs font-bold text-[#0b2b82] tracking-wide">
-              All Services Operational
-            </span>
-          </div>
-        </div>
-
-        {/* 4 Telemetry Metrics */}
-        <div className="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Metric 1 */}
-          <div className="bg-slate-50/80 hover:bg-[#f0f7ff]/60 p-4 sm:p-5 rounded-2xl border border-slate-200/80 hover:border-blue-200 transition-all duration-200 flex flex-col justify-between group/metric shadow-2xs hover:shadow-xs">
-            <div className="flex items-center justify-between">
-              <span className="w-8 h-8 rounded-xl bg-white text-[#0284c7] border border-blue-100/90 shadow-2xs flex items-center justify-center text-sm">
-                👨‍⚕️
-              </span>
-              <span className="text-[10px] font-bold text-[#0284c7] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100/60">
-                Active
-              </span>
-            </div>
-            <div className="mt-3">
-              <div className="text-2xl sm:text-3xl font-black text-slate-900 group-hover/metric:text-[#0b2b82] tracking-tight transition-colors">
-                4
-              </div>
-              <div className="text-xs font-bold text-slate-700 mt-1">
-                Specialist Doctors On-Duty
-              </div>
-              <div className="text-[11px] text-slate-500 font-medium mt-0.5">
-                Instant teleconsult triage
-              </div>
-            </div>
-          </div>
-
-          {/* Metric 2 */}
-          <div className="bg-slate-50/80 hover:bg-[#f0f7ff]/60 p-4 sm:p-5 rounded-2xl border border-slate-200/80 hover:border-blue-200 transition-all duration-200 flex flex-col justify-between group/metric shadow-2xs hover:shadow-xs">
-            <div className="flex items-center justify-between">
-              <span className="w-8 h-8 rounded-xl bg-white text-[#0284c7] border border-blue-100/90 shadow-2xs flex items-center justify-center text-sm">
-                🏥
-              </span>
-              <span className="text-[10px] font-bold text-[#0284c7] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100/60">
-                Synced
-              </span>
-            </div>
-            <div className="mt-3">
-              <div className="text-2xl sm:text-3xl font-black text-slate-900 group-hover/metric:text-[#0b2b82] tracking-tight transition-colors">
-                4
-              </div>
-              <div className="text-xs font-bold text-slate-700 mt-1">
-                Connected Health Facilities
-              </div>
-              <div className="text-[11px] text-slate-500 font-medium mt-0.5">
-                District PHCs &amp; CHCs
-              </div>
-            </div>
-          </div>
-
-          {/* Metric 3 */}
-          <div className="bg-slate-50/80 hover:bg-[#f0f7ff]/60 p-4 sm:p-5 rounded-2xl border border-slate-200/80 hover:border-blue-200 transition-all duration-200 flex flex-col justify-between group/metric shadow-2xs hover:shadow-xs">
-            <div className="flex items-center justify-between">
-              <span className="w-8 h-8 rounded-xl bg-white text-[#0284c7] border border-blue-100/90 shadow-2xs flex items-center justify-center text-sm">
-                ⏱️
-              </span>
-              <span className="text-[10px] font-bold text-[#0284c7] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100/60">
-                Optimal
-              </span>
-            </div>
-            <div className="mt-3">
-              <div className="text-2xl sm:text-3xl font-black text-slate-900 group-hover/metric:text-[#0b2b82] tracking-tight transition-colors">
-                8.5 min
-              </div>
-              <div className="text-xs font-bold text-slate-700 mt-1">
-                Avg. Priority Queue Wait
-              </div>
-              <div className="text-[11px] text-slate-500 font-medium mt-0.5">
-                High-urgency prioritized
-              </div>
-            </div>
-          </div>
-
-          {/* Metric 4 */}
-          <div className="bg-slate-50/80 hover:bg-[#f0f7ff]/60 p-4 sm:p-5 rounded-2xl border border-slate-200/80 hover:border-blue-200 transition-all duration-200 flex flex-col justify-between group/metric shadow-2xs hover:shadow-xs">
-            <div className="flex items-center justify-between">
-              <span className="w-8 h-8 rounded-xl bg-white text-[#0284c7] border border-blue-100/90 shadow-2xs flex items-center justify-center text-sm">
-                🛡️
-              </span>
-              <span className="text-[10px] font-bold text-[#0284c7] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100/60">
-                ABDM
-              </span>
-            </div>
-            <div className="mt-3">
-              <div className="text-2xl sm:text-3xl font-black text-slate-900 group-hover/metric:text-[#0b2b82] tracking-tight transition-colors">
-                100%
-              </div>
-              <div className="text-xs font-bold text-slate-700 mt-1">
-                Closed-Loop EMR Traceability
-              </div>
-              <div className="text-[11px] text-slate-500 font-medium mt-0.5">
-                Full cryptographic audit
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Healthcare Impact at a Glance Section (Replaces Network Telemetry) */}
+      <HealthcareImpactSection
+        onLaunchFeature1={onLaunchFeature1}
+        onLaunchFeature2={onLaunchFeature2}
+        onLaunchFeature4={onLaunchFeature4}
+        onLaunchFeature7={onLaunchFeature7}
+      />
     </div>
   );
 }
