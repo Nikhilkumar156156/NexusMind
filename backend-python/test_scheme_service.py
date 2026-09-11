@@ -52,7 +52,7 @@ def run_tests():
     explain_why = pipeline.explain_scheme(assessment.assessment_id, top_scheme.scheme_id, "why_eligible")
     assert "eligible" in explain_why.explanation.lower()
     print(f"Why eligible summary: {explain_why.explanation[:120]}...")
-    print(f"Key highlights: {explain_why.key_highlights}")
+    print(f"Key highlights: {[h.encode('ascii', 'replace').decode() for h in explain_why.key_highlights]}")
 
     explain_ineligible = pipeline.explain_scheme(assessment.assessment_id, top_scheme.scheme_id, "what_could_make_ineligible")
     print(f"What could make ineligible summary: {explain_ineligible.explanation[:120]}...")
