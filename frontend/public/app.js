@@ -1813,31 +1813,136 @@ function ScreenHomepage({
       </div>
 
       {/* Real-Time Operational Network Telemetry */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs space-y-4">
-        <div className="flex items-center justify-between">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-600">Network Telemetry &bull; Jharkhand District Grid</h4>
-          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700">
-            <span className="w-2 h-2 rounded-full bg-emerald-600"></span>
-            All Services Operational
-          </span>
+      <div className="relative overflow-hidden bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-[0_4px_24px_rgba(11,43,130,0.04)] space-y-6 group">
+        {/* Subtle Ambient Brand Tint */}
+        <div className="absolute top-0 right-0 w-80 h-32 bg-gradient-to-bl from-blue-50/60 via-sky-50/20 to-transparent pointer-events-none"></div>
+
+        {/* Card Header */}
+        <div className="relative z-10 flex items-center justify-between flex-wrap gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#f0f7ff] text-[#0284c7] border border-blue-100 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+              <svg className="w-5 h-5 text-[#0284c7]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h4 className="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">
+                  Network Telemetry
+                </h4>
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#f0f7ff] text-[#0284c7] border border-blue-100">
+                  LIVE
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 font-normal mt-0.5">
+                Real-time operational health grid &amp; facility vitals
+              </p>
+            </div>
+          </div>
+
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#f0f7ff] border border-blue-200/80 shadow-2xs">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0284c7] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#0284c7]"></span>
+            </span>
+            <span className="text-xs font-bold text-[#0b2b82] tracking-wide">
+              All Services Operational
+            </span>
+          </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-            <div className="text-2xl font-black text-slate-900">4</div>
-            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Specialist Doctors On-Duty</div>
+        {/* 4 Telemetry Metrics */}
+        <div className="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Metric 1 */}
+          <div className="bg-slate-50/80 hover:bg-[#f0f7ff]/60 p-4 sm:p-5 rounded-2xl border border-slate-200/80 hover:border-blue-200 transition-all duration-200 flex flex-col justify-between group/metric shadow-2xs hover:shadow-xs">
+            <div className="flex items-center justify-between">
+              <span className="w-8 h-8 rounded-xl bg-white text-[#0284c7] border border-blue-100/90 shadow-2xs flex items-center justify-center text-sm">
+                👨‍⚕️
+              </span>
+              <span className="text-[10px] font-bold text-[#0284c7] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100/60">
+                Active
+              </span>
+            </div>
+            <div className="mt-3">
+              <div className="text-2xl sm:text-3xl font-black text-slate-900 group-hover/metric:text-[#0b2b82] tracking-tight transition-colors">
+                4
+              </div>
+              <div className="text-xs font-bold text-slate-700 mt-1">
+                Specialist Doctors On-Duty
+              </div>
+              <div className="text-[11px] text-slate-500 font-medium mt-0.5">
+                Instant teleconsult triage
+              </div>
+            </div>
           </div>
-          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-            <div className="text-2xl font-black text-slate-900">4</div>
-            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Connected Health Facilities</div>
+
+          {/* Metric 2 */}
+          <div className="bg-slate-50/80 hover:bg-[#f0f7ff]/60 p-4 sm:p-5 rounded-2xl border border-slate-200/80 hover:border-blue-200 transition-all duration-200 flex flex-col justify-between group/metric shadow-2xs hover:shadow-xs">
+            <div className="flex items-center justify-between">
+              <span className="w-8 h-8 rounded-xl bg-white text-[#0284c7] border border-blue-100/90 shadow-2xs flex items-center justify-center text-sm">
+                🏥
+              </span>
+              <span className="text-[10px] font-bold text-[#0284c7] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100/60">
+                Synced
+              </span>
+            </div>
+            <div className="mt-3">
+              <div className="text-2xl sm:text-3xl font-black text-slate-900 group-hover/metric:text-[#0b2b82] tracking-tight transition-colors">
+                4
+              </div>
+              <div className="text-xs font-bold text-slate-700 mt-1">
+                Connected Health Facilities
+              </div>
+              <div className="text-[11px] text-slate-500 font-medium mt-0.5">
+                District PHCs &amp; CHCs
+              </div>
+            </div>
           </div>
-          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-            <div className="text-2xl font-black text-slate-900">8.5 min</div>
-            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Avg. Priority Queue Wait</div>
+
+          {/* Metric 3 */}
+          <div className="bg-slate-50/80 hover:bg-[#f0f7ff]/60 p-4 sm:p-5 rounded-2xl border border-slate-200/80 hover:border-blue-200 transition-all duration-200 flex flex-col justify-between group/metric shadow-2xs hover:shadow-xs">
+            <div className="flex items-center justify-between">
+              <span className="w-8 h-8 rounded-xl bg-white text-[#0284c7] border border-blue-100/90 shadow-2xs flex items-center justify-center text-sm">
+                ⏱️
+              </span>
+              <span className="text-[10px] font-bold text-[#0284c7] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100/60">
+                Optimal
+              </span>
+            </div>
+            <div className="mt-3">
+              <div className="text-2xl sm:text-3xl font-black text-slate-900 group-hover/metric:text-[#0b2b82] tracking-tight transition-colors">
+                8.5 min
+              </div>
+              <div className="text-xs font-bold text-slate-700 mt-1">
+                Avg. Priority Queue Wait
+              </div>
+              <div className="text-[11px] text-slate-500 font-medium mt-0.5">
+                High-urgency prioritized
+              </div>
+            </div>
           </div>
-          <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-            <div className="text-2xl font-black text-slate-900">100%</div>
-            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Closed-Loop EMR Traceability</div>
+
+          {/* Metric 4 */}
+          <div className="bg-slate-50/80 hover:bg-[#f0f7ff]/60 p-4 sm:p-5 rounded-2xl border border-slate-200/80 hover:border-blue-200 transition-all duration-200 flex flex-col justify-between group/metric shadow-2xs hover:shadow-xs">
+            <div className="flex items-center justify-between">
+              <span className="w-8 h-8 rounded-xl bg-white text-[#0284c7] border border-blue-100/90 shadow-2xs flex items-center justify-center text-sm">
+                🛡️
+              </span>
+              <span className="text-[10px] font-bold text-[#0284c7] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100/60">
+                ABDM
+              </span>
+            </div>
+            <div className="mt-3">
+              <div className="text-2xl sm:text-3xl font-black text-slate-900 group-hover/metric:text-[#0b2b82] tracking-tight transition-colors">
+                100%
+              </div>
+              <div className="text-xs font-bold text-slate-700 mt-1">
+                Closed-Loop EMR Traceability
+              </div>
+              <div className="text-[11px] text-slate-500 font-medium mt-0.5">
+                Full cryptographic audit
+              </div>
+            </div>
           </div>
         </div>
       </div>
