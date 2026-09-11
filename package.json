@@ -14,7 +14,7 @@
     "lint": "npm run lint --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "test:all": "npm run test && npm run test:e2e --workspace=tests",
-    "schemes:py": "python backend-python/main.py"
+    "schemes:py": "node -e \"const { spawn } = require('child_process'); const fs = require('fs'); const py = process.platform === 'win32' ? 'backend-python\\\\.venv\\\\Scripts\\\\python.exe' : 'backend-python/.venv/bin/python'; const cmd = fs.existsSync(py) ? py : 'python'; spawn(cmd, ['backend-python/main.py'], { stdio: 'inherit' });\""
   },
   "keywords": [
     "knowledge-graph",
