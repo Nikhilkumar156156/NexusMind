@@ -14072,7 +14072,7 @@ function ScreenSchemeFinder({
       , React.createElement('div', { className: "flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5", __self: this, __source: { fileName: _jsxFileName, lineNumber: 12233 } }
         , React.createElement('div', { __self: this, __source: { fileName: _jsxFileName, lineNumber: 12234 } }
           , React.createElement('div', { className: "flex items-center gap-2 mb-1", __self: this, __source: { fileName: _jsxFileName, lineNumber: 12235 } }
-            , React.createElement('span', { className: "px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wide uppercase bg-sky-100 text-[#0b2b82] border border-sky-200", __self: this, __source: { fileName: _jsxFileName, lineNumber: 12236 } }, "Module 08 • SIH26133"
+            , React.createElement('span', { className: "px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wide uppercase bg-sky-100 text-[#0b2b82] border border-sky-200", __self: this, __source: { fileName: _jsxFileName, lineNumber: 12236 } },
 
             )
             , React.createElement('span', { className: "text-xs font-mono font-bold text-slate-400", __self: this, __source: { fileName: _jsxFileName, lineNumber: 12239 } }, "Deterministic RAG Matching"

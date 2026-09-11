@@ -603,22 +603,20 @@ function AuthModal({ initialTab = 'login', onClose, onAuthSuccess }) {
           <button
             type="button"
             onClick={() => setActiveTab('login')}
-            className={`py-2 rounded-lg transition-all ${
-              activeTab === 'login'
-                ? 'bg-[#0b2b82] text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
+            className={`py-2 rounded-lg transition-all ${activeTab === 'login'
+              ? 'bg-[#0b2b82] text-white shadow-xs'
+              : 'text-slate-600 hover:text-slate-900'
+              }`}
           >
             🔐 Log In
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('signup')}
-            className={`py-2 rounded-lg transition-all ${
-              activeTab === 'signup'
-                ? 'bg-[#0b2b82] text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
+            className={`py-2 rounded-lg transition-all ${activeTab === 'signup'
+              ? 'bg-[#0b2b82] text-white shadow-xs'
+              : 'text-slate-600 hover:text-slate-900'
+              }`}
           >
             ✨ Sign Up (ABDM)
           </button>
@@ -973,11 +971,10 @@ function Header({ currentView, setView, currentScreen, setScreen, actorRole, set
               setView('home');
               setFeaturesOpen(false);
             }}
-            className={`px-3.5 py-1.5 rounded-lg transition-all text-xs font-bold whitespace-nowrap ${
-              currentView === 'home'
-                ? 'bg-[#0b2b82] text-white shadow-sm'
-                : 'text-slate-600 hover:text-[#0b2b82] hover:bg-blue-50/70'
-            }`}
+            className={`px-3.5 py-1.5 rounded-lg transition-all text-xs font-bold whitespace-nowrap ${currentView === 'home'
+              ? 'bg-[#0b2b82] text-white shadow-sm'
+              : 'text-slate-600 hover:text-[#0b2b82] hover:bg-blue-50/70'
+              }`}
           >
             Home
           </button>
@@ -987,11 +984,10 @@ function Header({ currentView, setView, currentScreen, setScreen, actorRole, set
             <button
               type="button"
               onClick={() => setFeaturesOpen(!featuresOpen)}
-              className={`px-3.5 py-1.5 rounded-lg transition-all text-xs font-bold whitespace-nowrap flex items-center gap-1.5 ${
-                isFeatureActive
-                  ? 'bg-[#0b2b82] text-white shadow-sm'
-                  : 'text-slate-600 hover:text-[#0b2b82] hover:bg-blue-50/70'
-              }`}
+              className={`px-3.5 py-1.5 rounded-lg transition-all text-xs font-bold whitespace-nowrap flex items-center gap-1.5 ${isFeatureActive
+                ? 'bg-[#0b2b82] text-white shadow-sm'
+                : 'text-slate-600 hover:text-[#0b2b82] hover:bg-blue-50/70'
+                }`}
               aria-expanded={featuresOpen}
               aria-haspopup="true"
             >
@@ -1029,16 +1025,14 @@ function Header({ currentView, setView, currentScreen, setScreen, actorRole, set
                           item.onSelect();
                           setFeaturesOpen(false);
                         }}
-                        className={`w-full text-left p-2.5 rounded-xl transition-all flex items-start gap-3 group ${
-                          isActive
-                            ? 'bg-blue-50/90 border border-blue-200 text-[#0b2b82]'
-                            : 'hover:bg-slate-50 border border-transparent text-slate-800'
-                        }`}
+                        className={`w-full text-left p-2.5 rounded-xl transition-all flex items-start gap-3 group ${isActive
+                          ? 'bg-blue-50/90 border border-blue-200 text-[#0b2b82]'
+                          : 'hover:bg-slate-50 border border-transparent text-slate-800'
+                          }`}
                       >
                         <div
-                          className={`w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0 transition-transform group-hover:scale-110 ${
-                            isActive ? 'bg-[#0b2b82] text-white shadow-xs' : 'bg-slate-100'
-                          }`}
+                          className={`w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0 transition-transform group-hover:scale-110 ${isActive ? 'bg-[#0b2b82] text-white shadow-xs' : 'bg-slate-100'
+                            }`}
                         >
                           {item.icon}
                         </div>
@@ -1070,11 +1064,10 @@ function Header({ currentView, setView, currentScreen, setScreen, actorRole, set
               setView('about');
               setFeaturesOpen(false);
             }}
-            className={`px-3.5 py-1.5 rounded-lg transition-all text-xs font-bold whitespace-nowrap ${
-              currentView === 'about'
-                ? 'bg-[#0b2b82] text-white shadow-sm'
-                : 'text-slate-600 hover:text-[#0b2b82] hover:bg-blue-50/70'
-            }`}
+            className={`px-3.5 py-1.5 rounded-lg transition-all text-xs font-bold whitespace-nowrap ${currentView === 'about'
+              ? 'bg-[#0b2b82] text-white shadow-sm'
+              : 'text-slate-600 hover:text-[#0b2b82] hover:bg-blue-50/70'
+              }`}
           >
             About Us
           </button>
@@ -1203,13 +1196,12 @@ function WorkflowStepper({ currentScreen, setScreen }) {
             >
               {/* Node Circle */}
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-all ${
-                  isActive
-                    ? 'ring-4 ring-brand-100 bg-white border-2 border-brand-600 text-brand-600 shadow-md transform scale-110'
-                    : isDone
+                className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-all ${isActive
+                  ? 'ring-4 ring-brand-100 bg-white border-2 border-brand-600 text-brand-600 shadow-md transform scale-110'
+                  : isDone
                     ? 'bg-brand-600 border-2 border-brand-600 text-white shadow-sm'
                     : 'bg-white border-2 border-slate-300 text-slate-400 group-hover:border-slate-400'
-                }`}
+                  }`}
               >
                 {isActive ? (
                   <div className="w-2.5 h-2.5 rounded-full bg-brand-600"></div>
@@ -1222,13 +1214,12 @@ function WorkflowStepper({ currentScreen, setScreen }) {
 
               {/* Step Label */}
               <span
-                className={`mt-1.5 text-[11px] text-center leading-tight font-bold transition-colors ${
-                  isActive
-                    ? 'text-brand-700 font-extrabold'
-                    : isDone
+                className={`mt-1.5 text-[11px] text-center leading-tight font-bold transition-colors ${isActive
+                  ? 'text-brand-700 font-extrabold'
+                  : isDone
                     ? 'text-slate-800'
                     : 'text-slate-400 group-hover:text-slate-600'
-                }`}
+                  }`}
               >
                 {step.name}
               </span>
@@ -1443,9 +1434,8 @@ function HealthcareImpactSection({
             key={card.id}
             onClick={card.action}
             title={`Click to open ${card.title}`}
-            className={`group/card relative rounded-[28px] overflow-hidden bg-slate-900 border border-slate-200/90 shadow-[0_12px_36px_rgba(2,132,199,0.12)] hover:shadow-[0_24px_48px_rgba(2,132,199,0.22)] cursor-pointer transition-all duration-500 ease-out transform ${
-              card.offset ? 'sm:translate-y-6 lg:translate-y-8' : 'sm:translate-y-0'
-            } hover:-translate-y-2 active:scale-[0.98]`}
+            className={`group/card relative rounded-[28px] overflow-hidden bg-slate-900 border border-slate-200/90 shadow-[0_12px_36px_rgba(2,132,199,0.12)] hover:shadow-[0_24px_48px_rgba(2,132,199,0.22)] cursor-pointer transition-all duration-500 ease-out transform ${card.offset ? 'sm:translate-y-6 lg:translate-y-8' : 'sm:translate-y-0'
+              } hover:-translate-y-2 active:scale-[0.98]`}
           >
             <div className="relative aspect-[4/5] w-full overflow-hidden">
               <img
@@ -2068,44 +2058,40 @@ function ScreenHomepage({
           <button
             type="button"
             onClick={() => setActiveHeroSlide(0)}
-            className={`h-2 transition-all duration-300 rounded-full cursor-pointer ${
-              activeHeroSlide === 0
-                ? 'w-8 bg-[#0b2b82] shadow-xs'
-                : 'w-2.5 bg-slate-300/80 hover:bg-slate-400'
-            }`}
+            className={`h-2 transition-all duration-300 rounded-full cursor-pointer ${activeHeroSlide === 0
+              ? 'w-8 bg-[#0b2b82] shadow-xs'
+              : 'w-2.5 bg-slate-300/80 hover:bg-slate-400'
+              }`}
             aria-label="Slide 1: Smart Care Navigator"
             title="Slide 1: Smart Care Navigator"
           />
           <button
             type="button"
             onClick={() => setActiveHeroSlide(1)}
-            className={`h-2 transition-all duration-300 rounded-full cursor-pointer ${
-              activeHeroSlide === 1
-                ? 'w-8 bg-[#0284c7] shadow-xs'
-                : 'w-2.5 bg-slate-300/80 hover:bg-slate-400'
-            }`}
+            className={`h-2 transition-all duration-300 rounded-full cursor-pointer ${activeHeroSlide === 1
+              ? 'w-8 bg-[#0284c7] shadow-xs'
+              : 'w-2.5 bg-slate-300/80 hover:bg-slate-400'
+              }`}
             aria-label="Slide 2: Govt Health Schemes Finder"
             title="Slide 2: Govt Health Schemes Finder"
           />
           <button
             type="button"
             onClick={() => setActiveHeroSlide(2)}
-            className={`h-2 transition-all duration-300 rounded-full cursor-pointer ${
-              activeHeroSlide === 2
-                ? 'w-8 bg-[#0284c7] shadow-xs'
-                : 'w-2.5 bg-slate-300/80 hover:bg-slate-400'
-            }`}
+            className={`h-2 transition-all duration-300 rounded-full cursor-pointer ${activeHeroSlide === 2
+              ? 'w-8 bg-[#0284c7] shadow-xs'
+              : 'w-2.5 bg-slate-300/80 hover:bg-slate-400'
+              }`}
             aria-label="Slide 3: Smart Teleconsultation"
             title="Slide 3: Smart Teleconsultation"
           />
           <button
             type="button"
             onClick={() => setActiveHeroSlide(3)}
-            className={`h-2 transition-all duration-300 rounded-full cursor-pointer ${
-              activeHeroSlide === 3
-                ? 'w-8 bg-teal-600 shadow-xs'
-                : 'w-2.5 bg-slate-300/80 hover:bg-slate-400'
-            }`}
+            className={`h-2 transition-all duration-300 rounded-full cursor-pointer ${activeHeroSlide === 3
+              ? 'w-8 bg-teal-600 shadow-xs'
+              : 'w-2.5 bg-slate-300/80 hover:bg-slate-400'
+              }`}
             aria-label="Slide 4: AI-Assisted Medical Records"
             title="Slide 4: AI-Assisted Medical Records"
           />
@@ -2135,11 +2121,10 @@ function ScreenHomepage({
               key={r.id}
               type="button"
               onClick={() => setActorRole(r.id)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
-                actorRole === r.id
-                  ? 'bg-[#0b2b82] text-white border-[#0b2b82] shadow-sm'
-                  : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-blue-50 hover:text-[#0b2b82] hover:border-blue-200'
-              }`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${actorRole === r.id
+                ? 'bg-[#0b2b82] text-white border-[#0b2b82] shadow-sm'
+                : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-blue-50 hover:text-[#0b2b82] hover:border-blue-200'
+                }`}
             >
               {r.label}
             </button>
@@ -2274,11 +2259,10 @@ function Screen1PatientInfo({ patient, setPatient, onNext }) {
                   key={s}
                   type="button"
                   onClick={() => setPatient({ ...patient, sex: s })}
-                  className={`py-3 px-2 rounded-xl text-xs font-bold border capitalize transition-all ${
-                    patient.sex === s
-                      ? 'bg-brand-50 border-brand-500 text-brand-700 ring-2 ring-brand-500/20'
-                      : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                  }`}
+                  className={`py-3 px-2 rounded-xl text-xs font-bold border capitalize transition-all ${patient.sex === s
+                    ? 'bg-brand-50 border-brand-500 text-brand-700 ring-2 ring-brand-500/20'
+                    : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                    }`}
                 >
                   {s}
                 </button>
@@ -2429,11 +2413,10 @@ function Screen2SymptomAssessment({ symptoms, setSymptoms, onNext, onBack }) {
                   key={lvl.id}
                   type="button"
                   onClick={() => setSymptoms({ ...symptoms, severity: lvl.id })}
-                  className={`py-3 px-2 rounded-xl text-xs font-bold border capitalize transition-all ${
-                    symptoms.severity === lvl.id
-                      ? `${lvl.color} ring-2 ring-offset-1`
-                      : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                  }`}
+                  className={`py-3 px-2 rounded-xl text-xs font-bold border capitalize transition-all ${symptoms.severity === lvl.id
+                    ? `${lvl.color} ring-2 ring-offset-1`
+                    : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                    }`}
                 >
                   {lvl.label}
                 </button>
@@ -2543,11 +2526,10 @@ function Screen3RedFlags({ redFlags, setRedFlags, onNext, onBack }) {
             <div
               key={q.key}
               onClick={() => toggleFlag(q.key)}
-              className={`p-4 rounded-xl border cursor-pointer transition-all flex items-start justify-between gap-4 ${
-                isChecked
-                  ? 'bg-critical-50/50 border-critical-300 shadow-sm'
-                  : 'bg-white border-slate-200 hover:border-slate-300'
-              }`}
+              className={`p-4 rounded-xl border cursor-pointer transition-all flex items-start justify-between gap-4 ${isChecked
+                ? 'bg-critical-50/50 border-critical-300 shadow-sm'
+                : 'bg-white border-slate-200 hover:border-slate-300'
+                }`}
             >
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
@@ -2563,11 +2545,10 @@ function Screen3RedFlags({ redFlags, setRedFlags, onNext, onBack }) {
               </div>
 
               <div
-                className={`w-6 h-6 rounded-lg border flex items-center justify-center font-bold text-sm shrink-0 transition-colors ${
-                  isChecked
-                    ? 'bg-critical-600 border-critical-600 text-white'
-                    : 'border-slate-300 bg-white'
-                }`}
+                className={`w-6 h-6 rounded-lg border flex items-center justify-center font-bold text-sm shrink-0 transition-colors ${isChecked
+                  ? 'bg-critical-600 border-critical-600 text-white'
+                  : 'border-slate-300 bg-white'
+                  }`}
               >
                 {isChecked ? '✓' : ''}
               </div>
@@ -2666,22 +2647,20 @@ function Screen4TriageProcessing({ patient, symptoms, redFlags, onComplete }) {
           return (
             <div
               key={idx}
-              className={`p-3.5 rounded-xl border flex items-center gap-3 transition-all ${
-                isDone
-                  ? 'bg-emerald-50/60 border-emerald-200 text-emerald-900'
-                  : isCurrent
+              className={`p-3.5 rounded-xl border flex items-center gap-3 transition-all ${isDone
+                ? 'bg-emerald-50/60 border-emerald-200 text-emerald-900'
+                : isCurrent
                   ? 'bg-brand-50/60 border-brand-300 text-brand-900 shadow-sm ring-1 ring-brand-500/20'
                   : 'bg-slate-50/50 border-slate-100 text-slate-400 opacity-60'
-              }`}
+                }`}
             >
               <div
-                className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-                  isDone
-                    ? 'bg-emerald-600 text-white'
-                    : isCurrent
+                className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${isDone
+                  ? 'bg-emerald-600 text-white'
+                  : isCurrent
                     ? 'bg-brand-600 text-white animate-bounce'
                     : 'bg-slate-200 text-slate-600'
-                }`}
+                  }`}
               >
                 {isDone ? '✓' : idx + 1}
               </div>
@@ -2917,22 +2896,20 @@ function Screen7RecommendedFacilities({ facilities, onSelectFacility, onBack }) 
             <button
               type="button"
               onClick={() => setFilterMode('all')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                filterMode === 'all'
-                  ? 'bg-brand-600 text-white shadow-sm'
-                  : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
-              }`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${filterMode === 'all'
+                ? 'bg-brand-600 text-white shadow-sm'
+                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                }`}
             >
               All Ranked (5)
             </button>
             <button
               type="button"
               onClick={() => setFilterMode('emergency_only')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                filterMode === 'emergency_only'
-                  ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
-              }`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${filterMode === 'emergency_only'
+                ? 'bg-emerald-600 text-white shadow-sm'
+                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                }`}
             >
               ✓ 24x7 Emergency Only
             </button>
@@ -2947,22 +2924,20 @@ function Screen7RecommendedFacilities({ facilities, onSelectFacility, onBack }) 
             return (
               <div
                 key={fac.id}
-                className={`p-5 sm:p-6 rounded-2xl border transition-all ${
-                  isRankOne
-                    ? 'border-emerald-500 bg-emerald-50/20 shadow-md ring-2 ring-emerald-500/20'
-                    : isEmergency
+                className={`p-5 sm:p-6 rounded-2xl border transition-all ${isRankOne
+                  ? 'border-emerald-500 bg-emerald-50/20 shadow-md ring-2 ring-emerald-500/20'
+                  : isEmergency
                     ? 'border-slate-200 bg-white hover:border-slate-300'
                     : 'border-amber-300 bg-amber-50/20 hover:border-amber-400'
-                }`}
+                  }`}
               >
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div className="flex items-start gap-3">
                     <div
-                      className={`w-8 h-8 rounded-xl font-black text-sm flex items-center justify-center shrink-0 ${
-                        isRankOne
-                          ? 'bg-emerald-600 text-white'
-                          : 'bg-slate-100 text-slate-700'
-                      }`}
+                      className={`w-8 h-8 rounded-xl font-black text-sm flex items-center justify-center shrink-0 ${isRankOne
+                        ? 'bg-emerald-600 text-white'
+                        : 'bg-slate-100 text-slate-700'
+                        }`}
                     >
                       #{fac.rank}
                     </div>
@@ -3291,11 +3266,10 @@ function ScreenTeleconsultEntry({ actorRole, onSelectPath, onBackToHome }) {
           {/* Path 1: Assisted Path */}
           <div
             onClick={() => onSelectPath('worker')}
-            className={`p-6 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between hover:shadow-md ${
-              actorRole === 'worker'
-                ? 'border-brand-600 bg-brand-50/30 ring-2 ring-brand-500/20 shadow-sm'
-                : 'border-slate-200 bg-white hover:border-brand-300'
-            }`}
+            className={`p-6 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between hover:shadow-md ${actorRole === 'worker'
+              ? 'border-brand-600 bg-brand-50/30 ring-2 ring-brand-500/20 shadow-sm'
+              : 'border-slate-200 bg-white hover:border-brand-300'
+              }`}
           >
             <div>
               <div className="w-12 h-12 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center text-2xl mb-4 font-bold">
@@ -3334,11 +3308,10 @@ function ScreenTeleconsultEntry({ actorRole, onSelectPath, onBackToHome }) {
           {/* Path 2: Self-Service Path */}
           <div
             onClick={() => onSelectPath('self')}
-            className={`p-6 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between hover:shadow-md ${
-              actorRole === 'patient'
-                ? 'border-brand-600 bg-brand-50/30 ring-2 ring-brand-500/20 shadow-sm'
-                : 'border-slate-200 bg-white hover:border-brand-300'
-            }`}
+            className={`p-6 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between hover:shadow-md ${actorRole === 'patient'
+              ? 'border-brand-600 bg-brand-50/30 ring-2 ring-brand-500/20 shadow-sm'
+              : 'border-slate-200 bg-white hover:border-brand-300'
+              }`}
           >
             <div>
               <div className="w-12 h-12 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center text-2xl mb-4 font-bold">
@@ -3603,9 +3576,8 @@ function ScreenTeleconsultBooking({ pathActor, onBookSuccess, onBack, onEmergenc
           <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Book Teleconsultation Slot</h2>
         </div>
 
-        <span className={`text-xs font-bold px-3 py-1 rounded-full ${
-          pathActor === 'worker' ? 'bg-emerald-100 text-emerald-800' : 'bg-purple-100 text-purple-800'
-        }`}>
+        <span className={`text-xs font-bold px-3 py-1 rounded-full ${pathActor === 'worker' ? 'bg-emerald-100 text-emerald-800' : 'bg-purple-100 text-purple-800'
+          }`}>
           {pathActor === 'worker' ? '👩‍⚕️ Assisted Path (ASHA)' : '👤 Self-Service Path'}
         </span>
       </div>
@@ -3651,11 +3623,10 @@ function ScreenTeleconsultBooking({ pathActor, onBookSuccess, onBack, onEmergenc
             aria-expanded={isSpecialtyDropdownOpen}
             aria-labelledby="specialty-dropdown-label specialty-dropdown-button"
             onClick={() => setIsSpecialtyDropdownOpen((prev) => !prev)}
-            className={`w-full px-3.5 py-2.5 rounded-xl border text-left flex items-center justify-between transition-all duration-150 bg-white ${
-              isSpecialtyDropdownOpen
-                ? 'border-brand-500 ring-2 ring-brand-500/20 shadow-md'
-                : 'border-slate-300 hover:border-slate-400 hover:bg-slate-50/50 shadow-sm'
-            }`}
+            className={`w-full px-3.5 py-2.5 rounded-xl border text-left flex items-center justify-between transition-all duration-150 bg-white ${isSpecialtyDropdownOpen
+              ? 'border-brand-500 ring-2 ring-brand-500/20 shadow-md'
+              : 'border-slate-300 hover:border-slate-400 hover:bg-slate-50/50 shadow-sm'
+              }`}
           >
             <div className="flex items-center gap-3 min-w-0">
               <span className="w-9 h-9 rounded-lg bg-brand-50 border border-brand-100 flex items-center justify-center text-lg shrink-0">
@@ -3680,9 +3651,8 @@ function ScreenTeleconsultBooking({ pathActor, onBookSuccess, onBack, onEmergenc
               <span className="text-xs font-semibold text-slate-400 hidden sm:inline">
                 {isSpecialtyDropdownOpen ? 'Close menu' : 'Change specialty'}
               </span>
-              <div className={`w-7 h-7 rounded-lg flex items-center justify-center transition-transform duration-200 ${
-                isSpecialtyDropdownOpen ? 'bg-brand-100 text-brand-700 rotate-180' : 'bg-slate-100 text-slate-600'
-              }`}>
+              <div className={`w-7 h-7 rounded-lg flex items-center justify-center transition-transform duration-200 ${isSpecialtyDropdownOpen ? 'bg-brand-100 text-brand-700 rotate-180' : 'bg-slate-100 text-slate-600'
+                }`}>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
                 </svg>
@@ -3722,16 +3692,14 @@ function ScreenTeleconsultBooking({ pathActor, onBookSuccess, onBack, onEmergenc
                         }
                         setIsSpecialtyDropdownOpen(false);
                       }}
-                      className={`w-full p-2.5 rounded-xl text-left flex items-center justify-between transition-colors group ${
-                        isSelected
-                          ? 'bg-brand-50 border border-brand-200 text-brand-900 font-bold'
-                          : 'hover:bg-slate-50 text-slate-700 font-medium'
-                      }`}
+                      className={`w-full p-2.5 rounded-xl text-left flex items-center justify-between transition-colors group ${isSelected
+                        ? 'bg-brand-50 border border-brand-200 text-brand-900 font-bold'
+                        : 'hover:bg-slate-50 text-slate-700 font-medium'
+                        }`}
                     >
                       <div className="flex items-center gap-3 min-w-0">
-                        <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0 ${
-                          isSelected ? 'bg-brand-100' : 'bg-slate-100 group-hover:bg-brand-50'
-                        }`}>
+                        <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0 ${isSelected ? 'bg-brand-100' : 'bg-slate-100 group-hover:bg-brand-50'
+                          }`}>
                           {spec.icon}
                         </span>
                         <div className="min-w-0">
@@ -3806,11 +3774,10 @@ function ScreenTeleconsultBooking({ pathActor, onBookSuccess, onBack, onEmergenc
                 key={slot}
                 type="button"
                 onClick={() => setSelectedSlot(slot)}
-                className={`py-2.5 px-2 rounded-xl text-xs font-bold border transition-all text-center ${
-                  selectedSlot === slot
-                    ? 'bg-[#0b2b82] text-white border-[#0b2b82] shadow-sm'
-                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                }`}
+                className={`py-2.5 px-2 rounded-xl text-xs font-bold border transition-all text-center ${selectedSlot === slot
+                  ? 'bg-[#0b2b82] text-white border-[#0b2b82] shadow-sm'
+                  : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                  }`}
               >
                 {slot}
               </button>
@@ -3847,11 +3814,10 @@ function ScreenTeleconsultBooking({ pathActor, onBookSuccess, onBack, onEmergenc
                       setRiskFlags([...riskFlags, flag]);
                     }
                   }}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
-                    isChecked
-                      ? 'bg-brand-50 border-brand-400 text-brand-800'
-                      : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
-                  }`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${isChecked
+                    ? 'bg-brand-50 border-brand-400 text-brand-800'
+                    : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
+                    }`}
                 >
                   {isChecked ? '✓ ' : '+ '} {flag}
                 </button>
@@ -4028,27 +3994,24 @@ function ScreenTeleconsultCall({ appointment, pathActor, onCompleteConsultation 
           <button
             type="button"
             onClick={() => setCallMode('video')}
-            className={`px-3 py-1 rounded-lg transition-all ${
-              callMode === 'video' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-300 hover:text-white'
-            }`}
+            className={`px-3 py-1 rounded-lg transition-all ${callMode === 'video' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-300 hover:text-white'
+              }`}
           >
             🎥 Video (HD)
           </button>
           <button
             type="button"
             onClick={() => setCallMode('audio')}
-            className={`px-3 py-1 rounded-lg transition-all ${
-              callMode === 'audio' ? 'bg-amber-600 text-white shadow-sm' : 'text-slate-300 hover:text-white'
-            }`}
+            className={`px-3 py-1 rounded-lg transition-all ${callMode === 'audio' ? 'bg-amber-600 text-white shadow-sm' : 'text-slate-300 hover:text-white'
+              }`}
           >
             🎙️ Audio (Low BW)
           </button>
           <button
             type="button"
             onClick={() => setCallMode('chat')}
-            className={`px-3 py-1 rounded-lg transition-all ${
-              callMode === 'chat' ? 'bg-purple-600 text-white shadow-sm' : 'text-slate-300 hover:text-white'
-            }`}
+            className={`px-3 py-1 rounded-lg transition-all ${callMode === 'chat' ? 'bg-purple-600 text-white shadow-sm' : 'text-slate-300 hover:text-white'
+              }`}
           >
             💬 In-App Chat (2G)
           </button>
@@ -4089,9 +4052,8 @@ function ScreenTeleconsultCall({ appointment, pathActor, onCompleteConsultation 
                 <button
                   type="button"
                   onClick={() => setIsMuted(!isMuted)}
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${
-                    isMuted ? 'bg-critical-600 text-white' : 'bg-white/10 text-white hover:bg-white/20'
-                  }`}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${isMuted ? 'bg-critical-600 text-white' : 'bg-white/10 text-white hover:bg-white/20'
+                    }`}
                 >
                   {isMuted ? '🔇' : '🎙️'}
                 </button>
@@ -4099,9 +4061,8 @@ function ScreenTeleconsultCall({ appointment, pathActor, onCompleteConsultation 
                 <button
                   type="button"
                   onClick={() => setIsCameraOff(!isCameraOff)}
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${
-                    isCameraOff ? 'bg-critical-600 text-white' : 'bg-white/10 text-white hover:bg-white/20'
-                  }`}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${isCameraOff ? 'bg-critical-600 text-white' : 'bg-white/10 text-white hover:bg-white/20'
+                    }`}
                 >
                   {isCameraOff ? '🚫' : '📹'}
                 </button>
@@ -4175,11 +4136,10 @@ function ScreenTeleconsultCall({ appointment, pathActor, onCompleteConsultation 
                     <div key={m.id} className={`flex flex-col ${isDoctor ? 'items-start' : 'items-end'}`}>
                       <span className="text-[10px] font-bold text-slate-400 mb-0.5">{m.senderName} &bull; {m.time}</span>
                       <div
-                        className={`p-3.5 rounded-2xl max-w-sm text-xs font-medium leading-relaxed ${
-                          isDoctor
-                            ? 'bg-slate-100 text-slate-900 rounded-tl-sm'
-                            : 'bg-brand-600 text-white rounded-tr-sm'
-                        }`}
+                        className={`p-3.5 rounded-2xl max-w-sm text-xs font-medium leading-relaxed ${isDoctor
+                          ? 'bg-slate-100 text-slate-900 rounded-tl-sm'
+                          : 'bg-brand-600 text-white rounded-tr-sm'
+                          }`}
                       >
                         {m.text}
                       </div>
@@ -4402,9 +4362,8 @@ function ScreenDoctorDocumentation({ appointment, vitals, onSaveDocumentation })
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
             <div
               onClick={() => setReferralFlag(!referralFlag)}
-              className={`p-4 rounded-xl border cursor-pointer transition-all ${
-                referralFlag ? 'bg-critical-50 border-critical-300 shadow-sm' : 'bg-white border-slate-200'
-              }`}
+              className={`p-4 rounded-xl border cursor-pointer transition-all ${referralFlag ? 'bg-critical-50 border-critical-300 shadow-sm' : 'bg-white border-slate-200'
+                }`}
             >
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs font-bold text-slate-900">Tertiary Referral</span>
@@ -4415,9 +4374,8 @@ function ScreenDoctorDocumentation({ appointment, vitals, onSaveDocumentation })
 
             <div
               onClick={() => setDiagnosticOrderFlag(!diagnosticOrderFlag)}
-              className={`p-4 rounded-xl border cursor-pointer transition-all ${
-                diagnosticOrderFlag ? 'bg-brand-50 border-brand-300 shadow-sm' : 'bg-white border-slate-200'
-              }`}
+              className={`p-4 rounded-xl border cursor-pointer transition-all ${diagnosticOrderFlag ? 'bg-brand-50 border-brand-300 shadow-sm' : 'bg-white border-slate-200'
+                }`}
             >
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs font-bold text-slate-900">Diagnostic Order</span>
@@ -4428,9 +4386,8 @@ function ScreenDoctorDocumentation({ appointment, vitals, onSaveDocumentation })
 
             <div
               onClick={() => setFollowUpFlag(!followUpFlag)}
-              className={`p-4 rounded-xl border cursor-pointer transition-all ${
-                followUpFlag ? 'bg-emerald-50 border-emerald-300 shadow-sm' : 'bg-white border-slate-200'
-              }`}
+              className={`p-4 rounded-xl border cursor-pointer transition-all ${followUpFlag ? 'bg-emerald-50 border-emerald-300 shadow-sm' : 'bg-white border-slate-200'
+                }`}
             >
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs font-bold text-slate-900">Follow-up Required</span>
@@ -4465,9 +4422,9 @@ function ScreenConsultationSummary({ consultationData, onRestart, onGoHome }) {
   const prescription = (consultationData?.prescription && consultationData.prescription.length > 0)
     ? consultationData.prescription
     : [
-        { medicineName: 'Tab Paracetamol', dosage: '500 mg', frequency: 'SOS (as needed)', durationDays: 3 },
-        { medicineName: 'Tab Naproxen', dosage: '250 mg', frequency: '1-0-1', durationDays: 5 }
-      ];
+      { medicineName: 'Tab Paracetamol', dosage: '500 mg', frequency: 'SOS (as needed)', durationDays: 3 },
+      { medicineName: 'Tab Naproxen', dosage: '250 mg', frequency: '1-0-1', durationDays: 5 }
+    ];
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -4829,10 +4786,10 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
       activeTabRole === 'doctor'
         ? (formData.referringDoctorName || 'Dr. Priya Sharma')
         : activeTabRole === 'worker'
-        ? 'ASHA Anita Devi'
-        : activeTabRole === 'facility'
-        ? 'SBMC&H Reception Desk'
-        : 'Patient';
+          ? 'ASHA Anita Devi'
+          : activeTabRole === 'facility'
+            ? 'SBMC&H Reception Desk'
+            : 'Patient';
 
     try {
       const res = await fetch(getApiUrl(`/api/referrals/${targetReferral.referralId}/status`), {
@@ -4971,11 +4928,10 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
                 setSystemTab(tab);
               }
             }}
-            className={`px-4 py-2 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${
-              systemTab === tab
-                ? 'bg-[#0b2b82] text-white shadow-md shadow-[#0b2b82]/25'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
+            className={`px-4 py-2 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${systemTab === tab
+              ? 'bg-[#0b2b82] text-white shadow-md shadow-[#0b2b82]/25'
+              : 'text-slate-600 hover:bg-slate-100'
+              }`}
           >
             {tab}
           </button>
@@ -4996,7 +4952,7 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
             <div className="mb-4">
               <h3 className="text-lg font-black text-slate-900">Doctor Referral Tracking Board</h3>
             </div>
-            
+
             <div className="flex items-center gap-2 flex-wrap mb-4">
               <input
                 type="text"
@@ -5012,9 +4968,8 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
                     key={st}
                     type="button"
                     onClick={() => setStatusFilter(st)}
-                    className={`px-3 py-1.5 rounded-lg text-[11px] font-extrabold transition-all ${
-                      statusFilter === st ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'
-                    }`}
+                    className={`px-3 py-1.5 rounded-lg text-[11px] font-extrabold transition-all ${statusFilter === st ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'
+                      }`}
                   >
                     {st === 'ALL' ? 'All' : st.replace('_', ' ')}
                   </button>
@@ -5045,14 +5000,13 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
                         <div className="font-bold text-slate-800">{ref.receivingFacilityName}</div>
                       </td>
                       <td className="py-3 px-2">
-                        <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase ${
-                          ref.status === 'CREATED' ? 'bg-slate-100 text-slate-700' :
+                        <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase ${ref.status === 'CREATED' ? 'bg-slate-100 text-slate-700' :
                           ref.status === 'SENT' ? 'bg-amber-100 text-amber-800' :
-                          ref.status === 'IN_PROGRESS' ? 'bg-blue-100 text-blue-800' :
-                          ref.status === 'REACHED_FACILITY' ? 'bg-purple-100 text-purple-800' :
-                          ref.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-800' :
-                          'bg-red-100 text-red-800'
-                        }`}>
+                            ref.status === 'IN_PROGRESS' ? 'bg-blue-100 text-blue-800' :
+                              ref.status === 'REACHED_FACILITY' ? 'bg-purple-100 text-purple-800' :
+                                ref.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-800' :
+                                  'bg-red-100 text-red-800'
+                          }`}>
                           {ref.status.replace('_', ' ')}
                         </span>
                       </td>
@@ -5086,7 +5040,7 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
 
             <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex-1 flex flex-col">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-black text-slate-900 leading-tight">Recent Successful<br/>Referrals</h3>
+                <h3 className="text-sm font-black text-slate-900 leading-tight">Recent Successful<br />Referrals</h3>
                 <button className="text-[10px] font-bold text-[#0b2b82] hover:underline">View All</button>
               </div>
               <div className="space-y-3 overflow-y-auto max-h-[300px]">
@@ -5125,433 +5079,427 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
             </div>
           </div>
 
-      {/* Role View Selector Tabs */}
-      <div className="bg-white rounded-2xl p-2 border border-slate-200 shadow-sm flex items-center justify-between flex-wrap gap-2">
-        <div className="flex items-center gap-1.5 flex-wrap">
-          {[
-            { id: 'doctor', label: '👨‍⚕️ Referring Doctor View' },
-            { id: 'worker', label: '👩‍⚕️ ASHA Action Center' },
-            { id: 'facility', label: '🏥 Receiving Facility View' },
-            { id: 'patient', label: '👤 Patient Referral Pass' }
-          ].map((t) => (
-            <button
-              key={t.id}
-              type="button"
-              onClick={() => {
-                setActiveTabRole(t.id);
-                setActorRole(t.id);
-              }}
-              className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center gap-2 ${
-                activeTabRole === t.id
-                  ? 'bg-[#0b2b82] text-white shadow-md shadow-[#0b2b82]/25'
-                  : 'bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200/60'
-              }`}
-            >
-              <span>{t.label}</span>
-            </button>
-          ))}
-        </div>
-
-        <div className="px-3 py-1 bg-emerald-50 text-emerald-800 text-[11px] font-extrabold rounded-lg border border-emerald-200">
-          Active Role: {activeTabRole.toUpperCase()}
-        </div>
-      </div>
-
-      {/* 4 KPI METRIC CARDS */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Total Referrals</span>
-          <div className="text-3xl font-black text-slate-900 mt-1">{stats.total}</div>
-          <span className="text-[10px] text-slate-400 font-medium">Across all health corridors</span>
-        </div>
-
-        <div className="bg-white rounded-2xl p-5 border border-amber-200 bg-amber-50/20 shadow-sm">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-amber-700 block">Pending Action</span>
-          <div className="text-3xl font-black text-amber-600 mt-1">{stats.pending}</div>
-          <span className="text-[10px] text-amber-600/80 font-medium">CREATED or SENT state</span>
-        </div>
-
-        <div className="bg-white rounded-2xl p-5 border border-blue-200 bg-blue-50/20 shadow-sm">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 block">In Transit / Reached</span>
-          <div className="text-3xl font-black text-blue-600 mt-1">{stats.inProgress}</div>
-          <span className="text-[10px] text-blue-600/80 font-medium">ASHA active follow-up</span>
-        </div>
-
-        <div className="bg-white rounded-2xl p-5 border border-emerald-200 bg-emerald-50/20 shadow-sm">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 block">Care Completed</span>
-          <div className="text-3xl font-black text-emerald-600 mt-1">{stats.completed}</div>
-          <span className="text-[10px] text-emerald-600/80 font-medium">Verified consultation finished</span>
-        </div>
-      </div>
-
-      {/* VIEW 1: DOCTOR DASHBOARD */}
-      {activeTabRole === 'doctor' && (
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-5">
-          <div className="flex items-center justify-between flex-wrap gap-3 pb-4 border-b border-slate-100">
-            <div>
-              <h3 className="text-lg font-black text-slate-900">Doctor Referral Tracking Board</h3>
-              <p className="text-xs text-slate-500 font-medium">
-                Monitor referral lifecycles, dispatch newly created referrals, and inspect audit logs.
-              </p>
+          {/* Role View Selector Tabs */}
+          <div className="bg-white rounded-2xl p-2 border border-slate-200 shadow-sm flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {[
+                { id: 'doctor', label: '👨‍⚕️ Referring Doctor View' },
+                { id: 'worker', label: '👩‍⚕️ ASHA Action Center' },
+                { id: 'facility', label: '🏥 Receiving Facility View' },
+                { id: 'patient', label: '👤 Patient Referral Pass' }
+              ].map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => {
+                    setActiveTabRole(t.id);
+                    setActorRole(t.id);
+                  }}
+                  className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center gap-2 ${activeTabRole === t.id
+                    ? 'bg-[#0b2b82] text-white shadow-md shadow-[#0b2b82]/25'
+                    : 'bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200/60'
+                    }`}
+                >
+                  <span>{t.label}</span>
+                </button>
+              ))}
             </div>
 
-            <div className="flex items-center gap-2 flex-wrap">
-              <input
-                type="text"
-                placeholder="Search patient, ID, facility..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="text-xs border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:ring-2 focus:ring-emerald-500 w-48 sm:w-60"
-              />
-
-              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-bold flex-wrap">
-                {['ALL', 'CREATED', 'SENT', 'IN_PROGRESS', 'REACHED_FACILITY', 'COMPLETED', 'CANCELLED'].map((st) => (
-                  <button
-                    key={st}
-                    type="button"
-                    onClick={() => setStatusFilter(st)}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all ${
-                      statusFilter === st ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'
-                    }`}
-                  >
-                    {st === 'ALL' ? 'All' : st.replace('_', ' ')}
-                  </button>
-                ))}
-              </div>
+            <div className="px-3 py-1 bg-emerald-50 text-emerald-800 text-[11px] font-extrabold rounded-lg border border-emerald-200">
+              Active Role: {activeTabRole.toUpperCase()}
             </div>
           </div>
 
-          {/* Referral Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead>
-                <tr className="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400 bg-slate-50/50">
-                  <th className="py-3 px-3">Referral ID</th>
-                  <th className="py-3 px-3">Patient</th>
-                  <th className="py-3 px-3">Specialty &amp; Reason</th>
-                  <th className="py-3 px-3">Receiving Destination</th>
-                  <th className="py-3 px-3">Status</th>
-                  <th className="py-3 px-3 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 font-medium">
-                {filteredReferrals.map((ref) => (
-                  <tr key={ref.id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="py-3.5 px-3 font-mono font-black text-emerald-800 text-xs">
-                      {ref.referralId}
-                    </td>
-                    <td className="py-3.5 px-3">
-                      <div className="font-bold text-slate-900">{ref.patientName}</div>
-                      <div className="text-[11px] text-slate-400">{ref.patientAge}y &bull; {ref.patientSex} &bull; {ref.patientLocation}</div>
-                    </td>
-                    <td className="py-3.5 px-3">
-                      <div className="font-bold text-slate-800">{ref.specialty}</div>
-                      <div className="text-[11px] text-slate-500 line-clamp-1">{ref.reason}</div>
-                    </td>
-                    <td className="py-3.5 px-3">
-                      <div className="font-bold text-slate-800">{ref.receivingFacilityName}</div>
-                      <div className="text-[10px] text-slate-400">From: {ref.referringFacilityName}</div>
-                    </td>
-                    <td className="py-3.5 px-3">
+          {/* 4 KPI METRIC CARDS */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Total Referrals</span>
+              <div className="text-3xl font-black text-slate-900 mt-1">{stats.total}</div>
+              <span className="text-[10px] text-slate-400 font-medium">Across all health corridors</span>
+            </div>
+
+            <div className="bg-white rounded-2xl p-5 border border-amber-200 bg-amber-50/20 shadow-sm">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-amber-700 block">Pending Action</span>
+              <div className="text-3xl font-black text-amber-600 mt-1">{stats.pending}</div>
+              <span className="text-[10px] text-amber-600/80 font-medium">CREATED or SENT state</span>
+            </div>
+
+            <div className="bg-white rounded-2xl p-5 border border-blue-200 bg-blue-50/20 shadow-sm">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 block">In Transit / Reached</span>
+              <div className="text-3xl font-black text-blue-600 mt-1">{stats.inProgress}</div>
+              <span className="text-[10px] text-blue-600/80 font-medium">ASHA active follow-up</span>
+            </div>
+
+            <div className="bg-white rounded-2xl p-5 border border-emerald-200 bg-emerald-50/20 shadow-sm">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 block">Care Completed</span>
+              <div className="text-3xl font-black text-emerald-600 mt-1">{stats.completed}</div>
+              <span className="text-[10px] text-emerald-600/80 font-medium">Verified consultation finished</span>
+            </div>
+          </div>
+
+          {/* VIEW 1: DOCTOR DASHBOARD */}
+          {activeTabRole === 'doctor' && (
+            <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-5">
+              <div className="flex items-center justify-between flex-wrap gap-3 pb-4 border-b border-slate-100">
+                <div>
+                  <h3 className="text-lg font-black text-slate-900">Doctor Referral Tracking Board</h3>
+                  <p className="text-xs text-slate-500 font-medium">
+                    Monitor referral lifecycles, dispatch newly created referrals, and inspect audit logs.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 flex-wrap">
+                  <input
+                    type="text"
+                    placeholder="Search patient, ID, facility..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="text-xs border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:ring-2 focus:ring-emerald-500 w-48 sm:w-60"
+                  />
+
+                  <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-bold flex-wrap">
+                    {['ALL', 'CREATED', 'SENT', 'IN_PROGRESS', 'REACHED_FACILITY', 'COMPLETED', 'CANCELLED'].map((st) => (
+                      <button
+                        key={st}
+                        type="button"
+                        onClick={() => setStatusFilter(st)}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all ${statusFilter === st ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'
+                          }`}
+                      >
+                        {st === 'ALL' ? 'All' : st.replace('_', ' ')}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Referral Table */}
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead>
+                    <tr className="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400 bg-slate-50/50">
+                      <th className="py-3 px-3">Referral ID</th>
+                      <th className="py-3 px-3">Patient</th>
+                      <th className="py-3 px-3">Specialty &amp; Reason</th>
+                      <th className="py-3 px-3">Receiving Destination</th>
+                      <th className="py-3 px-3">Status</th>
+                      <th className="py-3 px-3 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 font-medium">
+                    {filteredReferrals.map((ref) => (
+                      <tr key={ref.id} className="hover:bg-slate-50/80 transition-colors">
+                        <td className="py-3.5 px-3 font-mono font-black text-emerald-800 text-xs">
+                          {ref.referralId}
+                        </td>
+                        <td className="py-3.5 px-3">
+                          <div className="font-bold text-slate-900">{ref.patientName}</div>
+                          <div className="text-[11px] text-slate-400">{ref.patientAge}y &bull; {ref.patientSex} &bull; {ref.patientLocation}</div>
+                        </td>
+                        <td className="py-3.5 px-3">
+                          <div className="font-bold text-slate-800">{ref.specialty}</div>
+                          <div className="text-[11px] text-slate-500 line-clamp-1">{ref.reason}</div>
+                        </td>
+                        <td className="py-3.5 px-3">
+                          <div className="font-bold text-slate-800">{ref.receivingFacilityName}</div>
+                          <div className="text-[10px] text-slate-400">From: {ref.referringFacilityName}</div>
+                        </td>
+                        <td className="py-3.5 px-3">
+                          <span
+                            className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${ref.status === 'CREATED'
+                              ? 'bg-slate-100 text-slate-700'
+                              : ref.status === 'SENT'
+                                ? 'bg-amber-100 text-amber-800'
+                                : ref.status === 'IN_PROGRESS'
+                                  ? 'bg-blue-100 text-blue-800'
+                                  : ref.status === 'REACHED_FACILITY'
+                                    ? 'bg-purple-100 text-purple-800'
+                                    : ref.status === 'COMPLETED'
+                                      ? 'bg-emerald-100 text-emerald-800'
+                                      : 'bg-red-100 text-red-800'
+                              }`}
+                          >
+                            {ref.status.replace('_', ' ')}
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-3 text-right space-x-1.5 whitespace-nowrap">
+                          {ref.status === 'CREATED' && (
+                            <button
+                              type="button"
+                              onClick={() => handleUpdateStatus(ref, 'SENT', 'Doctor transmitted referral to destination facility.')}
+                              className="px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-[11px] font-bold shadow-sm"
+                            >
+                              Dispatch (Send)
+                            </button>
+                          )}
+                          {(ref.status === 'CREATED' || ref.status === 'SENT') && (
+                            <button
+                              type="button"
+                              onClick={() => handleUpdateStatus(ref, 'CANCELLED', 'Doctor cancelled referral: patient clinical condition reassessed.')}
+                              className="px-3 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-[11px] font-bold transition-colors"
+                            >
+                              Cancel Referral ✕
+                            </button>
+                          )}
+                          {ref.status === 'CANCELLED' && (
+                            <span className="text-[11px] font-bold text-rose-600 italic mr-1">Cancelled</span>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => handleOpenTimeline(ref)}
+                            className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[11px] font-bold"
+                          >
+                            Timeline 📜
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleOpenDeleteModal(ref)}
+                            className="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 border border-red-200 rounded-lg text-[11px] font-bold transition-colors"
+                            title="Delete this referral"
+                          >
+                            Delete 🗑️
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* VIEW 2: FRONTLINE WORKER (ASHA) ACTION CENTER */}
+          {activeTabRole === 'worker' && (
+            <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-6">
+              <div className="bg-amber-500/10 border border-amber-300 rounded-2xl p-5 flex items-start justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
+                    <h3 className="text-base font-black text-amber-900">ASHA Pending Follow-Up Queue</h3>
+                  </div>
+                  <p className="text-xs text-amber-800 font-medium mt-1">
+                    {pendingWorkerReferrals.length} patient(s) have active referrals requiring ground follow-up and transport coordination.
+                    Update their status once contacted or when they reach the hospital.
+                  </p>
+                </div>
+                <span className="text-2xl font-black text-amber-800">{pendingWorkerReferrals.length}</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {pendingWorkerReferrals.map((ref, idx) => (
+                  <div
+                    key={ref.id}
+                    className={`p-5 rounded-2xl border transition-all space-y-3 ${idx === 1 || ref.status === 'IN_PROGRESS'
+                      ? 'border-[#0b2b82]/30 hover:border-[#0b2b82]/60 bg-[#0b2b82]/5 hover:bg-[#0b2b82]/10 shadow-sm'
+                      : 'border-slate-200 hover:border-slate-300 bg-slate-50/50 hover:bg-white'
+                      }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-mono font-black text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded">
+                        {ref.referralId}
+                      </span>
                       <span
-                        className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${
-                          ref.status === 'CREATED'
-                            ? 'bg-slate-100 text-slate-700'
-                            : ref.status === 'SENT'
-                            ? 'bg-amber-100 text-amber-800'
-                            : ref.status === 'IN_PROGRESS'
-                            ? 'bg-blue-100 text-blue-800'
-                            : ref.status === 'REACHED_FACILITY'
-                            ? 'bg-purple-100 text-purple-800'
-                            : ref.status === 'COMPLETED'
-                            ? 'bg-emerald-100 text-emerald-800'
-                            : 'bg-red-100 text-red-800'
-                        }`}
+                        className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full ${ref.status === 'IN_PROGRESS'
+                          ? 'bg-[#0b2b82]/15 text-[#0b2b82] border border-[#0b2b82]/30'
+                          : ref.status === 'SENT'
+                            ? 'bg-amber-100 text-amber-800 border border-amber-200'
+                            : 'bg-slate-100 text-slate-700 border border-slate-200'
+                          }`}
                       >
                         {ref.status.replace('_', ' ')}
                       </span>
-                    </td>
-                    <td className="py-3.5 px-3 text-right space-x-1.5 whitespace-nowrap">
+                    </div>
+
+                    <div>
+                      <h4 className="font-extrabold text-slate-900 text-sm">{ref.patientName} ({ref.patientAge}y, {ref.patientSex})</h4>
+                      <p className="text-xs text-slate-500">Location: {ref.patientLocation} &bull; Phone: {ref.patientPhone || 'N/A'}</p>
+                    </div>
+
+                    <div className="bg-white p-3 rounded-xl border border-slate-200/80 text-xs space-y-1">
+                      <div><strong className="text-slate-700">Department:</strong> {ref.specialty}</div>
+                      <div><strong className="text-slate-700">Destination:</strong> {ref.receivingFacilityName}</div>
+                      <div><strong className="text-slate-700">Reason:</strong> {ref.reason}</div>
+                    </div>
+
+                    <div className="pt-2 flex items-center gap-2 flex-wrap">
                       {ref.status === 'CREATED' && (
                         <button
                           type="button"
-                          onClick={() => handleUpdateStatus(ref, 'SENT', 'Doctor transmitted referral to destination facility.')}
-                          className="px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-[11px] font-bold shadow-sm"
+                          onClick={() => handleUpdateStatus(ref, 'SENT', 'ASHA acknowledged and initiated transport coordination.')}
+                          className="flex-1 py-2.5 bg-[#0b2b82] hover:bg-[#071a4f] text-white rounded-xl text-xs font-bold shadow-md shadow-[#0b2b82]/25 transition-all flex items-center justify-center gap-1.5"
                         >
-                          Dispatch (Send)
+                          <span>📨</span>
+                          <span>Acknowledge &amp; Dispatch</span>
                         </button>
                       )}
-                      {(ref.status === 'CREATED' || ref.status === 'SENT') && (
+
+                      {ref.status === 'SENT' && (
                         <button
                           type="button"
-                          onClick={() => handleUpdateStatus(ref, 'CANCELLED', 'Doctor cancelled referral: patient clinical condition reassessed.')}
-                          className="px-3 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-[11px] font-bold transition-colors"
+                          onClick={() => handleUpdateStatus(ref, 'IN_PROGRESS', 'ASHA contacted patient; transport en route.')}
+                          className="flex-1 py-2.5 bg-[#0b2b82] hover:bg-[#071a4f] text-white rounded-xl text-xs font-bold shadow-md shadow-[#0b2b82]/25 transition-all flex items-center justify-center gap-1.5"
                         >
-                          Cancel Referral ✕
+                          <span>📞</span>
+                          <span>Patient Contacted / En Route</span>
                         </button>
                       )}
-                      {ref.status === 'CANCELLED' && (
-                        <span className="text-[11px] font-bold text-rose-600 italic mr-1">Cancelled</span>
+
+                      {ref.status === 'IN_PROGRESS' && (
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateStatus(ref, 'REACHED_FACILITY', 'ASHA confirmed patient arrived at hospital gate/OPD desk.')}
+                          className="flex-1 py-2.5 bg-[#0b2b82] hover:bg-[#071a4f] text-white rounded-xl text-xs font-bold shadow-md shadow-[#0b2b82]/25 transition-all flex items-center justify-center gap-1.5"
+                        >
+                          <span>🏥</span>
+                          <span>Confirm Patient Reached Hospital</span>
+                        </button>
                       )}
+
                       <button
                         type="button"
                         onClick={() => handleOpenTimeline(ref)}
-                        className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[11px] font-bold"
+                        className="px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-colors"
                       >
-                        Timeline 📜
+                        History
                       </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* VIEW 3: RECEIVING FACILITY INTAKE VIEW */}
+          {activeTabRole === 'facility' && (
+            <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-6">
+              <div>
+                <h3 className="text-lg font-black text-slate-900">Receiving Facility Intake &amp; Care Completion</h3>
+                <p className="text-xs text-slate-500 font-medium">
+                  Incoming referrals designated for Sheikh Bhikhari Medical College &amp; District Hospitals.
+                  Confirm patient arrival and finalize care when specialist consultation completes.
+                </p>
+              </div>
+
+              <div className="divide-y divide-slate-100">
+                {incomingFacilityReferrals.map((ref) => (
+                  <div key={ref.id} className="py-4 flex items-center justify-between flex-wrap gap-4">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono font-black text-emerald-800 text-xs">{ref.referralId}</span>
+                        <span className="font-bold text-slate-900 text-sm">&bull; {ref.patientName} ({ref.patientAge}y)</span>
+                        <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">
+                          {ref.status.replace('_', ' ')}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-500 mt-1">
+                        Specialty: <strong className="text-slate-700">{ref.specialty}</strong> &bull; Reason: {ref.reason}
+                      </p>
+                      <p className="text-[11px] text-slate-400 mt-0.5">Referred by: {ref.referringDoctorName} ({ref.referringFacilityName})</p>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      {ref.status !== 'REACHED_FACILITY' && (
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateStatus(ref, 'REACHED_FACILITY', 'Facility reception desk checked in patient.')}
+                          className="px-4 py-2 bg-[#0b2b82] hover:bg-[#071a4f] text-white font-bold text-xs rounded-xl shadow-md shadow-[#0b2b82]/25 transition-all"
+                        >
+                          📥 Check-In Patient Arrival
+                        </button>
+                      )}
+
+                      {ref.status === 'REACHED_FACILITY' && (
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateStatus(ref, 'COMPLETED', 'Consultation & clinical evaluation completed. Patient discharged/admitted.')}
+                          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm"
+                        >
+                          ✅ Complete Care &amp; Consultation
+                        </button>
+                      )}
+
                       <button
                         type="button"
-                        onClick={() => handleOpenDeleteModal(ref)}
-                        className="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 border border-red-200 rounded-lg text-[11px] font-bold transition-colors"
-                        title="Delete this referral"
+                        onClick={() => handleOpenTimeline(ref)}
+                        className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl"
                       >
-                        Delete 🗑️
+                        Audit Log
                       </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* VIEW 2: FRONTLINE WORKER (ASHA) ACTION CENTER */}
-      {activeTabRole === 'worker' && (
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-6">
-          <div className="bg-amber-500/10 border border-amber-300 rounded-2xl p-5 flex items-start justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
-                <h3 className="text-base font-black text-amber-900">ASHA Pending Follow-Up Queue</h3>
-              </div>
-              <p className="text-xs text-amber-800 font-medium mt-1">
-                {pendingWorkerReferrals.length} patient(s) have active referrals requiring ground follow-up and transport coordination.
-                Update their status once contacted or when they reach the hospital.
-              </p>
-            </div>
-            <span className="text-2xl font-black text-amber-800">{pendingWorkerReferrals.length}</span>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {pendingWorkerReferrals.map((ref, idx) => (
-              <div
-                key={ref.id}
-                className={`p-5 rounded-2xl border transition-all space-y-3 ${
-                  idx === 1 || ref.status === 'IN_PROGRESS'
-                    ? 'border-[#0b2b82]/30 hover:border-[#0b2b82]/60 bg-[#0b2b82]/5 hover:bg-[#0b2b82]/10 shadow-sm'
-                    : 'border-slate-200 hover:border-slate-300 bg-slate-50/50 hover:bg-white'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono font-black text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded">
-                    {ref.referralId}
-                  </span>
-                  <span
-                    className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full ${
-                      ref.status === 'IN_PROGRESS'
-                        ? 'bg-[#0b2b82]/15 text-[#0b2b82] border border-[#0b2b82]/30'
-                        : ref.status === 'SENT'
-                        ? 'bg-amber-100 text-amber-800 border border-amber-200'
-                        : 'bg-slate-100 text-slate-700 border border-slate-200'
-                    }`}
-                  >
-                    {ref.status.replace('_', ' ')}
-                  </span>
-                </div>
-
-                <div>
-                  <h4 className="font-extrabold text-slate-900 text-sm">{ref.patientName} ({ref.patientAge}y, {ref.patientSex})</h4>
-                  <p className="text-xs text-slate-500">Location: {ref.patientLocation} &bull; Phone: {ref.patientPhone || 'N/A'}</p>
-                </div>
-
-                <div className="bg-white p-3 rounded-xl border border-slate-200/80 text-xs space-y-1">
-                  <div><strong className="text-slate-700">Department:</strong> {ref.specialty}</div>
-                  <div><strong className="text-slate-700">Destination:</strong> {ref.receivingFacilityName}</div>
-                  <div><strong className="text-slate-700">Reason:</strong> {ref.reason}</div>
-                </div>
-
-                <div className="pt-2 flex items-center gap-2 flex-wrap">
-                  {ref.status === 'CREATED' && (
-                    <button
-                      type="button"
-                      onClick={() => handleUpdateStatus(ref, 'SENT', 'ASHA acknowledged and initiated transport coordination.')}
-                      className="flex-1 py-2.5 bg-[#0b2b82] hover:bg-[#071a4f] text-white rounded-xl text-xs font-bold shadow-md shadow-[#0b2b82]/25 transition-all flex items-center justify-center gap-1.5"
-                    >
-                      <span>📨</span>
-                      <span>Acknowledge &amp; Dispatch</span>
-                    </button>
-                  )}
-
-                  {ref.status === 'SENT' && (
-                    <button
-                      type="button"
-                      onClick={() => handleUpdateStatus(ref, 'IN_PROGRESS', 'ASHA contacted patient; transport en route.')}
-                      className="flex-1 py-2.5 bg-[#0b2b82] hover:bg-[#071a4f] text-white rounded-xl text-xs font-bold shadow-md shadow-[#0b2b82]/25 transition-all flex items-center justify-center gap-1.5"
-                    >
-                      <span>📞</span>
-                      <span>Patient Contacted / En Route</span>
-                    </button>
-                  )}
-
-                  {ref.status === 'IN_PROGRESS' && (
-                    <button
-                      type="button"
-                      onClick={() => handleUpdateStatus(ref, 'REACHED_FACILITY', 'ASHA confirmed patient arrived at hospital gate/OPD desk.')}
-                      className="flex-1 py-2.5 bg-[#0b2b82] hover:bg-[#071a4f] text-white rounded-xl text-xs font-bold shadow-md shadow-[#0b2b82]/25 transition-all flex items-center justify-center gap-1.5"
-                    >
-                      <span>🏥</span>
-                      <span>Confirm Patient Reached Hospital</span>
-                    </button>
-                  )}
-
-                  <button
-                    type="button"
-                    onClick={() => handleOpenTimeline(ref)}
-                    className="px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-colors"
-                  >
-                    History
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* VIEW 3: RECEIVING FACILITY INTAKE VIEW */}
-      {activeTabRole === 'facility' && (
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-6">
-          <div>
-            <h3 className="text-lg font-black text-slate-900">Receiving Facility Intake &amp; Care Completion</h3>
-            <p className="text-xs text-slate-500 font-medium">
-              Incoming referrals designated for Sheikh Bhikhari Medical College &amp; District Hospitals.
-              Confirm patient arrival and finalize care when specialist consultation completes.
-            </p>
-          </div>
-
-          <div className="divide-y divide-slate-100">
-            {incomingFacilityReferrals.map((ref) => (
-              <div key={ref.id} className="py-4 flex items-center justify-between flex-wrap gap-4">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono font-black text-emerald-800 text-xs">{ref.referralId}</span>
-                    <span className="font-bold text-slate-900 text-sm">&bull; {ref.patientName} ({ref.patientAge}y)</span>
-                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">
-                      {ref.status.replace('_', ' ')}
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Specialty: <strong className="text-slate-700">{ref.specialty}</strong> &bull; Reason: {ref.reason}
-                  </p>
-                  <p className="text-[11px] text-slate-400 mt-0.5">Referred by: {ref.referringDoctorName} ({ref.referringFacilityName})</p>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  {ref.status !== 'REACHED_FACILITY' && (
-                    <button
-                      type="button"
-                      onClick={() => handleUpdateStatus(ref, 'REACHED_FACILITY', 'Facility reception desk checked in patient.')}
-                      className="px-4 py-2 bg-[#0b2b82] hover:bg-[#071a4f] text-white font-bold text-xs rounded-xl shadow-md shadow-[#0b2b82]/25 transition-all"
-                    >
-                      📥 Check-In Patient Arrival
-                    </button>
-                  )}
-
-                  {ref.status === 'REACHED_FACILITY' && (
-                    <button
-                      type="button"
-                      onClick={() => handleUpdateStatus(ref, 'COMPLETED', 'Consultation & clinical evaluation completed. Patient discharged/admitted.')}
-                      className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm"
-                    >
-                      ✅ Complete Care &amp; Consultation
-                    </button>
-                  )}
-
-                  <button
-                    type="button"
-                    onClick={() => handleOpenTimeline(ref)}
-                    className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl"
-                  >
-                    Audit Log
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* VIEW 4: PATIENT REFERRAL PASS */}
-      {activeTabRole === 'patient' && primaryPatientRef && (
-        <div className="max-w-2xl mx-auto bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
-          <div className="border-2 border-dashed border-emerald-500/40 rounded-2xl p-6 bg-emerald-50/20">
-            <div className="flex items-center justify-between border-b border-emerald-200/60 pb-4 mb-4">
-              <div>
-                <span className="text-[10px] font-extrabold tracking-widest text-emerald-800 uppercase bg-emerald-100 px-2.5 py-0.5 rounded">
-                  Official Digital Referral Pass
-                </span>
-                <h3 className="text-xl font-black text-slate-900 mt-1">{primaryPatientRef.patientName}</h3>
-                <p className="text-xs text-slate-500">Age: {primaryPatientRef.patientAge} &bull; Destination: {primaryPatientRef.receivingFacilityName}</p>
-              </div>
-              <div className="text-right">
-                <div className="text-xs font-mono font-bold text-slate-400">REFERRAL ID</div>
-                <div className="text-sm font-black text-emerald-800 font-mono">{primaryPatientRef.referralId}</div>
-              </div>
-            </div>
-
-            {/* 4-Step Patient Stepper */}
-            <div className="py-4">
-              <div className="flex items-center justify-between text-center relative">
-                <div className="absolute top-3 left-6 right-6 h-0.5 bg-slate-200 -z-0"></div>
-                {[
-                  { step: 'CREATED', label: '1. Created', icon: '📝' },
-                  { step: 'SENT', label: '2. Sent', icon: '📨' },
-                  { step: 'REACHED_FACILITY', label: '3. Reached Hospital', icon: '🏥' },
-                  { step: 'COMPLETED', label: '4. Care Completed', icon: '✅' }
-                ].map((s, idx) => {
-                  const isDone =
-                    (s.step === 'CREATED') ||
-                    (s.step === 'SENT' && primaryPatientRef.status !== 'CREATED') ||
-                    (s.step === 'REACHED_FACILITY' && (primaryPatientRef.status === 'REACHED_FACILITY' || primaryPatientRef.status === 'COMPLETED')) ||
-                    (s.step === 'COMPLETED' && primaryPatientRef.status === 'COMPLETED');
-
-                  return (
-                    <div key={idx} className="relative z-10 flex flex-col items-center">
-                      <div
-                        className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black ${
-                          isDone ? 'bg-emerald-600 text-white' : 'bg-white border-2 border-slate-300 text-slate-400'
-                        }`}
-                      >
-                        {isDone ? '✓' : idx + 1}
-                      </div>
-                      <span className="text-[10px] font-bold text-slate-700 mt-1.5">{s.label}</span>
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
             </div>
+          )}
 
-            <div className="space-y-3 text-xs bg-white p-4 rounded-xl border border-slate-200 mt-4">
-              <div>
-                <span className="text-slate-400 uppercase font-bold text-[10px] block">Required Specialty</span>
-                <strong className="text-slate-900 text-sm font-black">{primaryPatientRef.specialty}</strong>
-              </div>
-              <div>
-                <span className="text-slate-400 uppercase font-bold text-[10px] block">Clinical Reason</span>
-                <p className="text-slate-700 font-medium">{primaryPatientRef.reason}</p>
-              </div>
-              <div>
-                <span className="text-slate-400 uppercase font-bold text-[10px] block">Emergency Destination Hospital</span>
-                <strong className="text-slate-900 font-extrabold">{primaryPatientRef.receivingFacilityName}</strong>
+          {/* VIEW 4: PATIENT REFERRAL PASS */}
+          {activeTabRole === 'patient' && primaryPatientRef && (
+            <div className="max-w-2xl mx-auto bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+              <div className="border-2 border-dashed border-emerald-500/40 rounded-2xl p-6 bg-emerald-50/20">
+                <div className="flex items-center justify-between border-b border-emerald-200/60 pb-4 mb-4">
+                  <div>
+                    <span className="text-[10px] font-extrabold tracking-widest text-emerald-800 uppercase bg-emerald-100 px-2.5 py-0.5 rounded">
+                      Official Digital Referral Pass
+                    </span>
+                    <h3 className="text-xl font-black text-slate-900 mt-1">{primaryPatientRef.patientName}</h3>
+                    <p className="text-xs text-slate-500">Age: {primaryPatientRef.patientAge} &bull; Destination: {primaryPatientRef.receivingFacilityName}</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xs font-mono font-bold text-slate-400">REFERRAL ID</div>
+                    <div className="text-sm font-black text-emerald-800 font-mono">{primaryPatientRef.referralId}</div>
+                  </div>
+                </div>
+
+                {/* 4-Step Patient Stepper */}
+                <div className="py-4">
+                  <div className="flex items-center justify-between text-center relative">
+                    <div className="absolute top-3 left-6 right-6 h-0.5 bg-slate-200 -z-0"></div>
+                    {[
+                      { step: 'CREATED', label: '1. Created', icon: '📝' },
+                      { step: 'SENT', label: '2. Sent', icon: '📨' },
+                      { step: 'REACHED_FACILITY', label: '3. Reached Hospital', icon: '🏥' },
+                      { step: 'COMPLETED', label: '4. Care Completed', icon: '✅' }
+                    ].map((s, idx) => {
+                      const isDone =
+                        (s.step === 'CREATED') ||
+                        (s.step === 'SENT' && primaryPatientRef.status !== 'CREATED') ||
+                        (s.step === 'REACHED_FACILITY' && (primaryPatientRef.status === 'REACHED_FACILITY' || primaryPatientRef.status === 'COMPLETED')) ||
+                        (s.step === 'COMPLETED' && primaryPatientRef.status === 'COMPLETED');
+
+                      return (
+                        <div key={idx} className="relative z-10 flex flex-col items-center">
+                          <div
+                            className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black ${isDone ? 'bg-emerald-600 text-white' : 'bg-white border-2 border-slate-300 text-slate-400'
+                              }`}
+                          >
+                            {isDone ? '✓' : idx + 1}
+                          </div>
+                          <span className="text-[10px] font-bold text-slate-700 mt-1.5">{s.label}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="space-y-3 text-xs bg-white p-4 rounded-xl border border-slate-200 mt-4">
+                  <div>
+                    <span className="text-slate-400 uppercase font-bold text-[10px] block">Required Specialty</span>
+                    <strong className="text-slate-900 text-sm font-black">{primaryPatientRef.specialty}</strong>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 uppercase font-bold text-[10px] block">Clinical Reason</span>
+                    <p className="text-slate-700 font-medium">{primaryPatientRef.reason}</p>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 uppercase font-bold text-[10px] block">Emergency Destination Hospital</span>
+                    <strong className="text-slate-900 font-extrabold">{primaryPatientRef.receivingFacilityName}</strong>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          )}
+
         </div>
-      )}
-      
-      </div>
       )}
 
       {/* TIMELINE AUDIT DRAWER MODAL */}
@@ -5886,9 +5834,8 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4 animate-in fade-in zoom-in-95 duration-150">
             <div>
-              <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded ${
-                targetStatus === 'CANCELLED' ? 'text-rose-800 bg-rose-100' : 'text-emerald-800 bg-emerald-50'
-              }`}>
+              <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded ${targetStatus === 'CANCELLED' ? 'text-rose-800 bg-rose-100' : 'text-emerald-800 bg-emerald-50'
+                }`}>
                 {targetStatus === 'CANCELLED' ? 'Cancel Referral' : 'Confirm Transition'}
               </span>
               <h3 className="text-lg font-black text-slate-900 mt-1">
@@ -5925,11 +5872,10 @@ function ScreenReferralManagement({ actorRole, setActorRole, onBackToHome, onNav
               <button
                 type="button"
                 onClick={confirmStatusUpdate}
-                className={`px-5 py-2 text-white text-xs font-bold rounded-xl shadow-md transition-colors ${
-                  targetStatus === 'CANCELLED'
-                    ? 'bg-rose-600 hover:bg-rose-700 shadow-rose-600/20'
-                    : 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20'
-                }`}
+                className={`px-5 py-2 text-white text-xs font-bold rounded-xl shadow-md transition-colors ${targetStatus === 'CANCELLED'
+                  ? 'bg-rose-600 hover:bg-rose-700 shadow-rose-600/20'
+                  : 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20'
+                  }`}
               >
                 {targetStatus === 'CANCELLED' ? 'Confirm Cancellation ✕' : 'Confirm Status Transition'}
               </button>
@@ -6318,11 +6264,10 @@ function ScreenHighRiskFollowUp({
                 setActiveTabRole(tab.id);
                 setActorRole(tab.id);
               }}
-              className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all flex items-center gap-2 ${
-                activeTabRole === tab.id
-                  ? 'bg-slate-900 text-white shadow-sm'
-                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
-              }`}
+              className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all flex items-center gap-2 ${activeTabRole === tab.id
+                ? 'bg-slate-900 text-white shadow-sm'
+                : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                }`}
             >
               <span>{tab.icon}</span>
               <span>{tab.label}</span>
@@ -6434,11 +6379,10 @@ function ScreenHighRiskFollowUp({
                       key={lvl}
                       type="button"
                       onClick={() => setRiskFilter(lvl)}
-                      className={`px-2.5 py-1 rounded-lg transition-all ${
-                        riskFilter === lvl
-                          ? 'bg-white text-slate-900 shadow-sm font-black'
-                          : 'text-slate-600 hover:text-slate-900'
-                      }`}
+                      className={`px-2.5 py-1 rounded-lg transition-all ${riskFilter === lvl
+                        ? 'bg-white text-slate-900 shadow-sm font-black'
+                        : 'text-slate-600 hover:text-slate-900'
+                        }`}
                     >
                       {lvl}
                     </button>
@@ -6482,13 +6426,12 @@ function ScreenHighRiskFollowUp({
                           <div className="flex items-center gap-2">
                             <span className="text-base font-black text-slate-900">{pat.latestScore}</span>
                             <span
-                              className={`px-2 py-0.5 rounded text-[10px] font-black uppercase ${
-                                isHigh
-                                  ? 'bg-critical-100 text-critical-800 border border-critical-300'
-                                  : pat.latestLevel === 'MODERATE'
+                              className={`px-2 py-0.5 rounded text-[10px] font-black uppercase ${isHigh
+                                ? 'bg-critical-100 text-critical-800 border border-critical-300'
+                                : pat.latestLevel === 'MODERATE'
                                   ? 'bg-amber-100 text-amber-800 border border-amber-300'
                                   : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                              }`}
+                                }`}
                             >
                               {pat.latestLevel}
                             </span>
@@ -6497,13 +6440,12 @@ function ScreenHighRiskFollowUp({
 
                         <td className="p-4">
                           <span
-                            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${
-                              isWorsening
-                                ? 'bg-critical-50 text-critical-700 border border-critical-200'
-                                : isImproving
+                            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${isWorsening
+                              ? 'bg-critical-50 text-critical-700 border border-critical-200'
+                              : isImproving
                                 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                                 : 'bg-slate-100 text-slate-700 border border-slate-200'
-                            }`}
+                              }`}
                           >
                             <span>{isWorsening ? '📈' : isImproving ? '📉' : '➖'}</span>
                             <span>{pat.trend}</span>
@@ -6563,21 +6505,19 @@ function ScreenHighRiskFollowUp({
               return (
                 <div
                   key={task.id}
-                  className={`p-6 rounded-3xl border transition-all flex flex-col justify-between ${
-                    isDue
-                      ? 'border-purple-300 bg-white shadow-md ring-2 ring-purple-500/20'
-                      : 'border-slate-200 bg-slate-50'
-                  }`}
+                  className={`p-6 rounded-3xl border transition-all flex flex-col justify-between ${isDue
+                    ? 'border-purple-300 bg-white shadow-md ring-2 ring-purple-500/20'
+                    : 'border-slate-200 bg-slate-50'
+                    }`}
                 >
                   <div>
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div>
                         <span
-                          className={`text-[10px] font-black uppercase px-2 py-0.5 rounded ${
-                            isDue
-                              ? 'bg-critical-100 text-critical-800 border border-critical-300 animate-pulse'
-                              : 'bg-slate-200 text-slate-700'
-                          }`}
+                          className={`text-[10px] font-black uppercase px-2 py-0.5 rounded ${isDue
+                            ? 'bg-critical-100 text-critical-800 border border-critical-300 animate-pulse'
+                            : 'bg-slate-200 text-slate-700'
+                            }`}
                         >
                           {task.status} &bull; Cycle #{task.taskIndex}
                         </span>
@@ -6889,11 +6829,10 @@ function ScreenHighRiskFollowUp({
                       key={adh.id}
                       type="button"
                       onClick={() => setReportForm({ ...reportForm, medicationAdherence: adh.id })}
-                      className={`p-2.5 rounded-xl border text-left transition-all ${
-                        reportForm.medicationAdherence === adh.id
-                          ? 'bg-purple-50 border-purple-600 text-purple-900 ring-2 ring-purple-600/20 font-bold'
-                          : 'bg-white border-slate-200 text-slate-700'
-                      }`}
+                      className={`p-2.5 rounded-xl border text-left transition-all ${reportForm.medicationAdherence === adh.id
+                        ? 'bg-purple-50 border-purple-600 text-purple-900 ring-2 ring-purple-600/20 font-bold'
+                        : 'bg-white border-slate-200 text-slate-700'
+                        }`}
                     >
                       <div className="font-extrabold text-xs">{adh.label}</div>
                       <div className="text-[10px] text-slate-500 mt-0.5">{adh.desc}</div>
@@ -6915,11 +6854,10 @@ function ScreenHighRiskFollowUp({
                       key={sym.id}
                       type="button"
                       onClick={() => setReportForm({ ...reportForm, symptomProgression: sym.id })}
-                      className={`p-2.5 rounded-xl border text-center transition-all ${
-                        reportForm.symptomProgression === sym.id
-                          ? 'bg-purple-50 border-purple-600 text-purple-900 ring-2 ring-purple-600/20 font-bold'
-                          : 'bg-white border-slate-200 text-slate-700'
-                      }`}
+                      className={`p-2.5 rounded-xl border text-center transition-all ${reportForm.symptomProgression === sym.id
+                        ? 'bg-purple-50 border-purple-600 text-purple-900 ring-2 ring-purple-600/20 font-bold'
+                        : 'bg-white border-slate-200 text-slate-700'
+                        }`}
                     >
                       <span className="text-sm">{sym.icon}</span>
                       <div className="font-extrabold text-xs mt-0.5">{sym.label}</div>
@@ -7637,11 +7575,10 @@ Advice: Weekly BP review by ASHA worker. Follow up in Cardiology OPD in 14 days.
                 setActiveRole(tab.id);
                 setActorRole(tab.id);
               }}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
-                activeRole === tab.id
-                  ? 'bg-slate-900 text-white shadow-sm font-black'
-                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
-              }`}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${activeRole === tab.id
+                ? 'bg-slate-900 text-white shadow-sm font-black'
+                : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                }`}
             >
               <span>{tab.icon}</span>
               <span>{tab.label}</span>
@@ -7673,11 +7610,10 @@ Advice: Weekly BP review by ASHA worker. Follow up in Cardiology OPD in 14 days.
       {/* Access Control Status Callout (if viewing as Doctor/Worker) */}
       {activeRole !== 'patient' && (
         <div
-          className={`p-4 rounded-2xl border flex items-center justify-between flex-wrap gap-4 ${
-            accessInfo.isAllowed
-              ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
-              : 'bg-critical-50 border-critical-300 text-critical-900'
-          }`}
+          className={`p-4 rounded-2xl border flex items-center justify-between flex-wrap gap-4 ${accessInfo.isAllowed
+            ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
+            : 'bg-critical-50 border-critical-300 text-critical-900'
+            }`}
         >
           <div className="flex items-center gap-3">
             <span className="text-xl">{accessInfo.isAllowed ? '🛡️' : '🔒'}</span>
@@ -7903,11 +7839,10 @@ Advice: Weekly BP review by ASHA worker. Follow up in Cardiology OPD in 14 days.
                   key={src.id}
                   type="button"
                   onClick={() => setSourceFilter(src.id)}
-                  className={`px-2.5 py-1 rounded-lg transition-all ${
-                    sourceFilter === src.id
-                      ? 'bg-white text-slate-900 shadow-sm font-black'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
+                  className={`px-2.5 py-1 rounded-lg transition-all ${sourceFilter === src.id
+                    ? 'bg-white text-slate-900 shadow-sm font-black'
+                    : 'text-slate-600 hover:text-slate-900'
+                    }`}
                 >
                   {src.label}
                 </button>
@@ -7933,15 +7868,14 @@ Advice: Weekly BP review by ASHA worker. Follow up in Cardiology OPD in 14 days.
                 <div key={rec.id} className="relative pl-10 space-y-2 group">
                   {/* Timeline Bullet Node */}
                   <div
-                    className={`absolute left-2 top-3 w-5 h-5 rounded-full border-2 border-white shadow-sm flex items-center justify-center text-[10px] text-white font-bold ${
-                      isManual
-                        ? 'bg-sky-600'
-                        : isAbha
+                    className={`absolute left-2 top-3 w-5 h-5 rounded-full border-2 border-white shadow-sm flex items-center justify-center text-[10px] text-white font-bold ${isManual
+                      ? 'bg-sky-600'
+                      : isAbha
                         ? 'bg-emerald-600'
                         : isCowin
-                        ? 'bg-amber-600'
-                        : 'bg-purple-600'
-                    }`}
+                          ? 'bg-amber-600'
+                          : 'bg-purple-600'
+                      }`}
                   >
                     {isManual ? '📷' : isAbha ? '🏥' : isCowin ? '💉' : '🩺'}
                   </div>
@@ -7951,15 +7885,14 @@ Advice: Weekly BP review by ASHA worker. Follow up in Cardiology OPD in 14 days.
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
                           <span
-                            className={`px-2 py-0.5 rounded text-[10px] font-black uppercase ${
-                              isManual
-                                ? 'bg-sky-100 text-sky-800 border border-sky-300'
-                                : isAbha
+                            className={`px-2 py-0.5 rounded text-[10px] font-black uppercase ${isManual
+                              ? 'bg-sky-100 text-sky-800 border border-sky-300'
+                              : isAbha
                                 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                                 : isCowin
-                                ? 'bg-amber-100 text-amber-800 border border-amber-300'
-                                : 'bg-purple-100 text-purple-800 border border-purple-300'
-                            }`}
+                                  ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                                  : 'bg-purple-100 text-purple-800 border border-purple-300'
+                              }`}
                           >
                             {isManual && 'Source: Manual (OCR)'}
                             {isAbha && 'Source: ABDM ABHA (FHIR HIP)'}
@@ -8139,11 +8072,10 @@ Advice: Weekly BP review by ASHA worker. Follow up in Cardiology OPD in 14 days.
                     key={pre.id}
                     type="button"
                     onClick={() => handleLoadOcrPreset(pre.id)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
-                      ocrRecordType === pre.id
-                        ? 'bg-sky-50 border-sky-500 text-sky-800 font-extrabold ring-1 ring-sky-500/20'
-                        : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                    }`}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${ocrRecordType === pre.id
+                      ? 'bg-sky-50 border-sky-500 text-sky-800 font-extrabold ring-1 ring-sky-500/20'
+                      : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                      }`}
                   >
                     {pre.label}
                   </button>
@@ -8351,13 +8283,12 @@ Advice: Weekly BP review by ASHA worker. Follow up in Cardiology OPD in 14 days.
                         <div className="flex items-center gap-2">
                           <span className="font-extrabold text-slate-900">{c.requesterName}</span>
                           <span
-                            className={`px-2 py-0.5 rounded text-[10px] font-black uppercase ${
-                              c.status === 'approved'
-                                ? 'bg-emerald-100 text-emerald-800'
-                                : c.status === 'pending'
+                            className={`px-2 py-0.5 rounded text-[10px] font-black uppercase ${c.status === 'approved'
+                              ? 'bg-emerald-100 text-emerald-800'
+                              : c.status === 'pending'
                                 ? 'bg-amber-100 text-amber-800'
                                 : 'bg-slate-200 text-slate-700'
-                            }`}
+                              }`}
                           >
                             {c.status}
                           </span>
@@ -8753,10 +8684,10 @@ function ScreenMedicineDiagnostics({
     actorRole === 'shop_owner'
       ? 'shop_owner'
       : actorRole === 'lab_staff'
-      ? 'lab_dashboard'
-      : actorRole === 'doctor'
-      ? 'doctor_orders'
-      : 'medicine_search'
+        ? 'lab_dashboard'
+        : actorRole === 'doctor'
+          ? 'doctor_orders'
+          : 'medicine_search'
   );
 
   const [notificationToast, setNotificationToast] = useState(null);
@@ -9243,11 +9174,10 @@ function ScreenMedicineDiagnostics({
         <button
           type="button"
           onClick={() => setActiveTab('medicine_search')}
-          className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${
-            activeTab === 'medicine_search'
-              ? 'bg-teal-600 text-white shadow-md font-black'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-          }`}
+          className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${activeTab === 'medicine_search'
+            ? 'bg-teal-600 text-white shadow-md font-black'
+            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+            }`}
         >
           <span>💊</span>
           <span>Medicine Search (Patient/Worker)</span>
@@ -9256,11 +9186,10 @@ function ScreenMedicineDiagnostics({
         <button
           type="button"
           onClick={() => setActiveTab('shop_owner')}
-          className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${
-            activeTab === 'shop_owner'
-              ? 'bg-slate-900 text-white shadow-md font-black'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-          }`}
+          className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${activeTab === 'shop_owner'
+            ? 'bg-slate-900 text-white shadow-md font-black'
+            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+            }`}
         >
           <span>🏪</span>
           <span>Medical Shop Dashboard (Owner CRUD)</span>
@@ -9269,11 +9198,10 @@ function ScreenMedicineDiagnostics({
         <button
           type="button"
           onClick={() => setActiveTab('diagnostic_search')}
-          className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${
-            activeTab === 'diagnostic_search'
-              ? 'bg-purple-600 text-white shadow-md font-black'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-          }`}
+          className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${activeTab === 'diagnostic_search'
+            ? 'bg-purple-600 text-white shadow-md font-black'
+            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+            }`}
         >
           <span>🔬</span>
           <span>Diagnostic Test Search (Direct Booking)</span>
@@ -9282,11 +9210,10 @@ function ScreenMedicineDiagnostics({
         <button
           type="button"
           onClick={() => setActiveTab('lab_dashboard')}
-          className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${
-            activeTab === 'lab_dashboard'
-              ? 'bg-indigo-600 text-white shadow-md font-black'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-          }`}
+          className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${activeTab === 'lab_dashboard'
+            ? 'bg-indigo-600 text-white shadow-md font-black'
+            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+            }`}
         >
           <span>🧪</span>
           <span>Diagnostic Center Staff Dashboard</span>
@@ -9295,11 +9222,10 @@ function ScreenMedicineDiagnostics({
         <button
           type="button"
           onClick={() => setActiveTab('doctor_orders')}
-          className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${
-            activeTab === 'doctor_orders'
-              ? 'bg-emerald-600 text-white shadow-md font-black'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-          }`}
+          className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${activeTab === 'doctor_orders'
+            ? 'bg-emerald-600 text-white shadow-md font-black'
+            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+            }`}
         >
           <span>📋</span>
           <span>Doctor-Ordered Lab Tracker</span>
@@ -9386,11 +9312,10 @@ function ScreenMedicineDiagnostics({
           {/* Search Feedback / Non-Empty Fallback Alert */}
           {medMessage && (
             <div
-              className={`p-4 rounded-2xl border flex items-center justify-between text-xs gap-3 ${
-                medIsFallback
-                  ? 'bg-amber-50 border-amber-300 text-amber-900'
-                  : 'bg-teal-50 border-teal-200 text-teal-900'
-              }`}
+              className={`p-4 rounded-2xl border flex items-center justify-between text-xs gap-3 ${medIsFallback
+                ? 'bg-amber-50 border-amber-300 text-amber-900'
+                : 'bg-teal-50 border-teal-200 text-teal-900'
+                }`}
             >
               <div className="flex items-center gap-2.5">
                 <span className="text-lg">{medIsFallback ? '⚠️' : '✓'}</span>
@@ -9414,9 +9339,8 @@ function ScreenMedicineDiagnostics({
               return (
                 <div
                   key={idx}
-                  className={`bg-white rounded-3xl p-6 border transition-all flex flex-col justify-between space-y-4 hover:shadow-md ${
-                    isInStock ? 'border-slate-200 hover:border-teal-400' : 'border-slate-200 bg-slate-50/50'
-                  }`}
+                  className={`bg-white rounded-3xl p-6 border transition-all flex flex-col justify-between space-y-4 hover:shadow-md ${isInStock ? 'border-slate-200 hover:border-teal-400' : 'border-slate-200 bg-slate-50/50'
+                    }`}
                 >
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-3">
@@ -9439,11 +9363,10 @@ function ScreenMedicineDiagnostics({
                           <div className="text-base font-black text-slate-900">₹{med.price.toFixed(2)}</div>
                         )}
                         <span
-                          className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full inline-block mt-0.5 ${
-                            isInStock
-                              ? 'bg-emerald-100 text-emerald-800'
-                              : 'bg-critical-100 text-critical-800'
-                          }`}
+                          className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full inline-block mt-0.5 ${isInStock
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : 'bg-critical-100 text-critical-800'
+                            }`}
                         >
                           {isInStock ? `✓ In Stock (${med.quantity})` : '✗ Out of Stock'}
                         </span>
@@ -9475,11 +9398,10 @@ function ScreenMedicineDiagnostics({
                         setSelectedMedItem(item);
                         setShowOrderModal(true);
                       }}
-                      className={`flex-1 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 ${
-                        isInStock
-                          ? 'bg-teal-600 hover:bg-teal-700 text-white shadow-sm'
-                          : 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                      }`}
+                      className={`flex-1 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 ${isInStock
+                        ? 'bg-teal-600 hover:bg-teal-700 text-white shadow-sm'
+                        : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                        }`}
                     >
                       <span>📦</span>
                       <span>Reserve for Counter Pickup</span>
@@ -9591,13 +9513,12 @@ function ScreenMedicineDiagnostics({
                         <strong className="text-slate-900">{ord.patientName}</strong>
                         <span className="font-mono text-slate-500">({ord.patientPhone})</span>
                         <span
-                          className={`text-[10px] font-black uppercase px-2 py-0.5 rounded ${
-                            ord.status === 'confirmed'
-                              ? 'bg-emerald-100 text-emerald-800'
-                              : ord.status === 'requested'
+                          className={`text-[10px] font-black uppercase px-2 py-0.5 rounded ${ord.status === 'confirmed'
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : ord.status === 'requested'
                               ? 'bg-amber-100 text-amber-800'
                               : 'bg-slate-200 text-slate-700'
-                          }`}
+                            }`}
                         >
                           {ord.status}
                         </span>
@@ -9676,11 +9597,10 @@ function ScreenMedicineDiagnostics({
                       <td className="py-3.5 px-4 font-mono font-bold text-slate-900">{item.quantity}</td>
                       <td className="py-3.5 px-4">
                         <span
-                          className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
-                            item.status === 'in_stock'
-                              ? 'bg-emerald-100 text-emerald-800'
-                              : 'bg-critical-100 text-critical-800'
-                          }`}
+                          className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${item.status === 'in_stock'
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : 'bg-critical-100 text-critical-800'
+                            }`}
                         >
                           {item.status === 'in_stock' ? 'In Stock' : 'Out of Stock'}
                         </span>
@@ -9806,11 +9726,10 @@ function ScreenMedicineDiagnostics({
           {/* Diagnostic Message */}
           {diagMessage && (
             <div
-              className={`p-4 rounded-2xl border flex items-center justify-between text-xs gap-3 ${
-                diagIsFallback
-                  ? 'bg-amber-50 border-amber-300 text-amber-900'
-                  : 'bg-purple-50 border-purple-200 text-purple-900'
-              }`}
+              className={`p-4 rounded-2xl border flex items-center justify-between text-xs gap-3 ${diagIsFallback
+                ? 'bg-amber-50 border-amber-300 text-amber-900'
+                : 'bg-purple-50 border-purple-200 text-purple-900'
+                }`}
             >
               <div className="flex items-center gap-2.5">
                 <span className="text-lg">{diagIsFallback ? '⚠️' : '✓'}</span>
@@ -10028,11 +9947,10 @@ function ScreenMedicineDiagnostics({
                   <div
                     key={ord.orderId}
                     onClick={() => setSelectedOrderForStatus(ord)}
-                    className={`p-4 rounded-2xl border-2 cursor-pointer transition-all ${
-                      selectedOrderForStatus?.orderId === ord.orderId
-                        ? 'border-emerald-500 bg-emerald-50/40 shadow-sm'
-                        : 'border-slate-200 hover:border-slate-300 bg-slate-50/50'
-                    }`}
+                    className={`p-4 rounded-2xl border-2 cursor-pointer transition-all ${selectedOrderForStatus?.orderId === ord.orderId
+                      ? 'border-emerald-500 bg-emerald-50/40 shadow-sm'
+                      : 'border-slate-200 hover:border-slate-300 bg-slate-50/50'
+                      }`}
                   >
                     <div className="flex items-center justify-between">
                       <strong className="text-slate-900 text-sm">{ord.testName}</strong>
@@ -10118,11 +10036,10 @@ function ScreenMedicineDiagnostics({
                   return (
                     <div
                       key={st.id}
-                      className={`p-3 rounded-2xl font-bold border transition-all ${
-                        isDone
-                          ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
-                          : 'bg-slate-50 border-slate-200 text-slate-400'
-                      }`}
+                      className={`p-3 rounded-2xl font-bold border transition-all ${isDone
+                        ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
+                        : 'bg-slate-50 border-slate-200 text-slate-400'
+                        }`}
                     >
                       <span>{isDone ? '✓ ' : ''}{st.label}</span>
                     </div>
@@ -10906,11 +10823,10 @@ function ScreenFacilityDashboard({
           <button
             type="button"
             onClick={() => setActiveSection('overview')}
-            className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${
-              activeSection === 'overview'
-                ? 'bg-slate-900 text-white shadow-md font-black'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-            }`}
+            className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${activeSection === 'overview'
+              ? 'bg-slate-900 text-white shadow-md font-black'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+              }`}
           >
             <span>📊</span>
             <span>1. Overview Summary</span>
@@ -10920,11 +10836,10 @@ function ScreenFacilityDashboard({
         <button
           type="button"
           onClick={() => setActiveSection('patient_care')}
-          className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${
-            activeSection === 'patient_care'
-              ? 'bg-brand-600 text-white shadow-md font-black'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-          }`}
+          className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${activeSection === 'patient_care'
+            ? 'bg-brand-600 text-white shadow-md font-black'
+            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+            }`}
         >
           <span>👥</span>
           <span>2. Patient &amp; Care Mgmt</span>
@@ -10934,11 +10849,10 @@ function ScreenFacilityDashboard({
           <button
             type="button"
             onClick={() => setActiveSection('appointments_queue')}
-            className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${
-              activeSection === 'appointments_queue'
-                ? 'bg-purple-600 text-white shadow-md font-black'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-            }`}
+            className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${activeSection === 'appointments_queue'
+              ? 'bg-purple-600 text-white shadow-md font-black'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+              }`}
           >
             <span>⏱️</span>
             <span>3. Appointments &amp; Queue</span>
@@ -10949,11 +10863,10 @@ function ScreenFacilityDashboard({
           <button
             type="button"
             onClick={() => setActiveSection('service_resource')}
-            className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${
-              activeSection === 'service_resource'
-                ? 'bg-teal-600 text-white shadow-md font-black'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-            }`}
+            className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${activeSection === 'service_resource'
+              ? 'bg-teal-600 text-white shadow-md font-black'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+              }`}
           >
             <span>🏥</span>
             <span>4. Service &amp; Resources</span>
@@ -10964,11 +10877,10 @@ function ScreenFacilityDashboard({
           <button
             type="button"
             onClick={() => setActiveSection('analytics')}
-            className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${
-              activeSection === 'analytics'
-                ? 'bg-emerald-600 text-white shadow-md font-black'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-            }`}
+            className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${activeSection === 'analytics'
+              ? 'bg-emerald-600 text-white shadow-md font-black'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+              }`}
           >
             <span>📈</span>
             <span>5. Analytics &amp; Reports</span>
@@ -10978,11 +10890,10 @@ function ScreenFacilityDashboard({
         <button
           type="button"
           onClick={() => setActiveSection('alerts')}
-          className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${
-            activeSection === 'alerts'
-              ? 'bg-critical-600 text-white shadow-md font-black'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-          }`}
+          className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shrink-0 ${activeSection === 'alerts'
+            ? 'bg-critical-600 text-white shadow-md font-black'
+            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+            }`}
         >
           <span>🚨</span>
           <span>6. Alerts &amp; Notifications</span>
@@ -11113,13 +11024,12 @@ function ScreenFacilityDashboard({
                         <strong className="text-slate-900 font-extrabold">{act.type}</strong>
                         {act.severity && (
                           <span
-                            className={`text-[9px] font-black uppercase px-2 py-0.5 rounded ${
-                              act.severity === 'critical'
-                                ? 'bg-critical-100 text-critical-800'
-                                : act.severity === 'warning'
+                            className={`text-[9px] font-black uppercase px-2 py-0.5 rounded ${act.severity === 'critical'
+                              ? 'bg-critical-100 text-critical-800'
+                              : act.severity === 'warning'
                                 ? 'bg-amber-100 text-amber-800'
                                 : 'bg-slate-200 text-slate-700'
-                            }`}
+                              }`}
                           >
                             {act.severity}
                           </span>
@@ -11181,13 +11091,12 @@ function ScreenFacilityDashboard({
                       <td className="py-3.5 px-4 text-slate-600">{p.primaryCondition}</td>
                       <td className="py-3.5 px-4">
                         <span
-                          className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${
-                            p.riskLevel === 'HIGH'
-                              ? 'bg-critical-100 text-critical-800'
-                              : p.riskLevel === 'MEDIUM'
+                          className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${p.riskLevel === 'HIGH'
+                            ? 'bg-critical-100 text-critical-800'
+                            : p.riskLevel === 'MEDIUM'
                               ? 'bg-amber-100 text-amber-800'
                               : 'bg-emerald-100 text-emerald-800'
-                          }`}
+                            }`}
                         >
                           {p.riskScore} / 100 ({p.riskLevel})
                         </span>
@@ -11266,16 +11175,14 @@ function ScreenFacilityDashboard({
               {patientCareData.careContinuityChains?.map((c) => (
                 <div
                   key={c.patientId}
-                  className={`p-4 rounded-2xl border ${
-                    c.chainComplete ? 'border-emerald-200 bg-emerald-50/40' : 'border-amber-200 bg-amber-50/40'
-                  }`}
+                  className={`p-4 rounded-2xl border ${c.chainComplete ? 'border-emerald-200 bg-emerald-50/40' : 'border-amber-200 bg-amber-50/40'
+                    }`}
                 >
                   <div className="flex items-center justify-between font-bold text-xs">
                     <span className="text-slate-900">{c.patientName}</span>
                     <span
-                      className={`text-[9px] font-black uppercase px-2 py-0.5 rounded ${
-                        c.chainComplete ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-                      }`}
+                      className={`text-[9px] font-black uppercase px-2 py-0.5 rounded ${c.chainComplete ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                        }`}
                     >
                       {c.chainComplete ? '✓ Complete Chain' : '⚠️ Gap in Follow-up'}
                     </span>
@@ -11365,13 +11272,12 @@ function ScreenFacilityDashboard({
                       <td className="py-3.5 px-4 font-black text-slate-900">{item.patientName}</td>
                       <td className="py-3.5 px-4">
                         <span
-                          className={`text-[9px] font-black uppercase px-2 py-0.5 rounded ${
-                            item.urgencyTier === 'CRITICAL'
-                              ? 'bg-critical-100 text-critical-800'
-                              : item.urgencyTier === 'URGENT'
+                          className={`text-[9px] font-black uppercase px-2 py-0.5 rounded ${item.urgencyTier === 'CRITICAL'
+                            ? 'bg-critical-100 text-critical-800'
+                            : item.urgencyTier === 'URGENT'
                               ? 'bg-amber-100 text-amber-800'
                               : 'bg-emerald-100 text-emerald-800'
-                          }`}
+                            }`}
                         >
                           {item.urgencyTier}
                         </span>
@@ -11465,9 +11371,8 @@ function ScreenFacilityDashboard({
               return (
                 <div
                   key={idx}
-                  className={`bg-white rounded-3xl p-6 border transition-all space-y-3 ${
-                    isLow ? 'border-critical-300 bg-critical-50/20' : 'border-slate-200'
-                  }`}
+                  className={`bg-white rounded-3xl p-6 border transition-all space-y-3 ${isLow ? 'border-critical-300 bg-critical-50/20' : 'border-slate-200'
+                    }`}
                 >
                   <div className="flex items-start justify-between">
                     <div>
@@ -11475,9 +11380,8 @@ function ScreenFacilityDashboard({
                       <span className="text-[10px] font-mono text-slate-400 uppercase">{res.resourceType}</span>
                     </div>
                     <span
-                      className={`text-[9px] font-black uppercase px-2 py-0.5 rounded ${
-                        isLow ? 'bg-critical-100 text-critical-800' : 'bg-emerald-100 text-emerald-800'
-                      }`}
+                      className={`text-[9px] font-black uppercase px-2 py-0.5 rounded ${isLow ? 'bg-critical-100 text-critical-800' : 'bg-emerald-100 text-emerald-800'
+                        }`}
                     >
                       {isLow ? '⚠️ Low Stock' : '✓ Normal'}
                     </span>
@@ -11651,11 +11555,10 @@ function ScreenFacilityDashboard({
                     key={sev}
                     type="button"
                     onClick={() => setAlertSeverityFilter(sev)}
-                    className={`px-3 py-1.5 rounded-lg transition-all ${
-                      alertSeverityFilter === sev
-                        ? 'bg-slate-900 text-white font-black shadow-sm'
-                        : 'text-slate-600 hover:text-slate-900'
-                    }`}
+                    className={`px-3 py-1.5 rounded-lg transition-all ${alertSeverityFilter === sev
+                      ? 'bg-slate-900 text-white font-black shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900'
+                      }`}
                   >
                     {sev}
                   </button>
@@ -11673,13 +11576,12 @@ function ScreenFacilityDashboard({
                 filteredAlerts.map((alt) => (
                   <div
                     key={alt.alertId}
-                    className={`p-5 rounded-2xl border transition-all flex items-start justify-between flex-wrap gap-3 ${
-                      alt.severity === 'critical'
-                        ? 'border-critical-300 bg-critical-50/40'
-                        : alt.severity === 'warning'
+                    className={`p-5 rounded-2xl border transition-all flex items-start justify-between flex-wrap gap-3 ${alt.severity === 'critical'
+                      ? 'border-critical-300 bg-critical-50/40'
+                      : alt.severity === 'warning'
                         ? 'border-amber-300 bg-amber-50/40'
                         : 'border-slate-200 bg-slate-50'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-start gap-3.5 max-w-2xl">
                       <span className="text-2xl mt-0.5">
@@ -11688,25 +11590,23 @@ function ScreenFacilityDashboard({
                       <div>
                         <div className="flex items-center gap-2">
                           <span
-                            className={`text-[9px] font-black uppercase px-2 py-0.5 rounded ${
-                              alt.severity === 'critical'
-                                ? 'bg-critical-200 text-critical-900'
-                                : alt.severity === 'warning'
+                            className={`text-[9px] font-black uppercase px-2 py-0.5 rounded ${alt.severity === 'critical'
+                              ? 'bg-critical-200 text-critical-900'
+                              : alt.severity === 'warning'
                                 ? 'bg-amber-200 text-amber-900'
                                 : 'bg-slate-200 text-slate-800'
-                            }`}
+                              }`}
                           >
                             {alt.severity}
                           </span>
                           <span className="text-[10px] font-mono text-slate-500 uppercase">{alt.alertType}</span>
                           <span
-                            className={`text-[9px] font-bold px-2 py-0.5 rounded ${
-                              alt.status === 'active'
-                                ? 'bg-critical-100 text-critical-800 font-black'
-                                : alt.status === 'acknowledged'
+                            className={`text-[9px] font-bold px-2 py-0.5 rounded ${alt.status === 'active'
+                              ? 'bg-critical-100 text-critical-800 font-black'
+                              : alt.status === 'acknowledged'
                                 ? 'bg-amber-100 text-amber-800'
                                 : 'bg-emerald-100 text-emerald-800'
-                            }`}
+                              }`}
                           >
                             {alt.status}
                           </span>
@@ -13675,7 +13575,7 @@ function ScreenSchemeFinder({
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wide uppercase bg-sky-100 text-[#0b2b82] border border-sky-200">
-              Module 08 • SIH26133
+
             </span>
             <span className="text-xs font-mono font-bold text-slate-400">
               Deterministic RAG Matching
@@ -13757,11 +13657,10 @@ function ScreenSchemeFinder({
                 key={key}
                 type="button"
                 onClick={() => handleSelectPreset(key)}
-                className={`p-2.5 rounded-xl text-left text-xs transition-all border ${
-                  isActive
-                    ? 'bg-sky-50 border-sky-400 text-[#0b2b82] font-black shadow-xs ring-1 ring-sky-300'
-                    : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700 font-medium'
-                }`}
+                className={`p-2.5 rounded-xl text-left text-xs transition-all border ${isActive
+                  ? 'bg-sky-50 border-sky-400 text-[#0b2b82] font-black shadow-xs ring-1 ring-sky-300'
+                  : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700 font-medium'
+                  }`}
               >
                 <div className="font-bold truncate">{p.name.split('(')[0]}</div>
                 <div className="text-[10px] text-slate-500 truncate mt-0.5">
@@ -13781,11 +13680,10 @@ function ScreenSchemeFinder({
         <button
           type="button"
           onClick={() => setActiveTab('recommendations')}
-          className={`pb-3 px-4 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
-            activeTab === 'recommendations'
-              ? 'border-[#0b2b82] text-[#0b2b82]'
-              : 'border-transparent text-slate-500 hover:text-slate-900'
-          }`}
+          className={`pb-3 px-4 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${activeTab === 'recommendations'
+            ? 'border-[#0b2b82] text-[#0b2b82]'
+            : 'border-transparent text-slate-500 hover:text-slate-900'
+            }`}
         >
           <span>🎯 Assessment &amp; Recommendations</span>
           {assessment?.ranked_recommendations?.length > 0 && (
@@ -13798,11 +13696,10 @@ function ScreenSchemeFinder({
         <button
           type="button"
           onClick={() => setActiveTab('all_schemes')}
-          className={`pb-3 px-4 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
-            activeTab === 'all_schemes'
-              ? 'border-[#0b2b82] text-[#0b2b82]'
-              : 'border-transparent text-slate-500 hover:text-slate-900'
-          }`}
+          className={`pb-3 px-4 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${activeTab === 'all_schemes'
+            ? 'border-[#0b2b82] text-[#0b2b82]'
+            : 'border-transparent text-slate-500 hover:text-slate-900'
+            }`}
         >
           <span>📚 All Official Schemes ({allSchemesList.length || 16})</span>
         </button>
@@ -13810,11 +13707,10 @@ function ScreenSchemeFinder({
         <button
           type="button"
           onClick={() => setActiveTab('ingestion_audit')}
-          className={`pb-3 px-4 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
-            activeTab === 'ingestion_audit'
-              ? 'border-[#0b2b82] text-[#0b2b82]'
-              : 'border-transparent text-slate-500 hover:text-slate-900'
-          }`}
+          className={`pb-3 px-4 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${activeTab === 'ingestion_audit'
+            ? 'border-[#0b2b82] text-[#0b2b82]'
+            : 'border-transparent text-slate-500 hover:text-slate-900'
+            }`}
         >
           <span>🛡️ Data Ingestion &amp; Verification Audit</span>
         </button>
@@ -13942,9 +13838,8 @@ function ScreenSchemeFinder({
                     return (
                       <label
                         key={doc}
-                        className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-colors ${
-                          checked ? 'bg-emerald-50 text-emerald-900 font-bold' : 'hover:bg-slate-50 text-slate-600'
-                        }`}
+                        className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-colors ${checked ? 'bg-emerald-50 text-emerald-900 font-bold' : 'hover:bg-slate-50 text-slate-600'
+                          }`}
                       >
                         <input
                           type="checkbox"
@@ -13985,13 +13880,12 @@ function ScreenSchemeFinder({
             {/* Notification Bar */}
             {clarificationNotice && (
               <div
-                className={`p-3.5 rounded-xl text-xs font-bold border flex items-center justify-between gap-3 ${
-                  clarificationNotice.type === 'success'
-                    ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
-                    : clarificationNotice.type === 'info'
+                className={`p-3.5 rounded-xl text-xs font-bold border flex items-center justify-between gap-3 ${clarificationNotice.type === 'success'
+                  ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
+                  : clarificationNotice.type === 'info'
                     ? 'bg-amber-50 border-amber-300 text-amber-900'
                     : 'bg-slate-100 border-slate-300 text-slate-800'
-                }`}
+                  }`}
               >
                 <span>{clarificationNotice.msg}</span>
                 <button
@@ -14107,29 +14001,26 @@ function ScreenSchemeFinder({
                 return (
                   <div
                     key={rec.scheme_id}
-                    className={`bg-white rounded-2xl border transition-all duration-300 overflow-hidden shadow-xs hover:shadow-md ${
-                      isTop ? 'border-sky-300 ring-2 ring-sky-100' : 'border-slate-200'
-                    }`}
+                    className={`bg-white rounded-2xl border transition-all duration-300 overflow-hidden shadow-xs hover:shadow-md ${isTop ? 'border-sky-300 ring-2 ring-sky-100' : 'border-slate-200'
+                      }`}
                   >
                     {/* Card Header Strip */}
                     <div className="p-4 sm:p-5 pb-3 border-b border-slate-100 flex items-start justify-between gap-3">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2 flex-wrap">
                           <span
-                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wide ${
-                              rec.match_score_pct >= 88
-                                ? 'bg-emerald-100 text-emerald-800'
-                                : rec.match_score_pct >= 75
+                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wide ${rec.match_score_pct >= 88
+                              ? 'bg-emerald-100 text-emerald-800'
+                              : rec.match_score_pct >= 75
                                 ? 'bg-sky-100 text-sky-800'
                                 : 'bg-slate-100 text-slate-700'
-                            }`}
+                              }`}
                           >
                             #{rec.rank} &bull; {rec.match_tier} — {rec.match_score_pct}% Match
                           </span>
                           <span
-                            className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                              isPassed ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'
-                            }`}
+                            className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${isPassed ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'
+                              }`}
                           >
                             {isPassed ? 'PASS (Fully Eligible)' : 'PARTIAL (Actionable Gap)'}
                           </span>
@@ -14606,7 +14497,7 @@ function HomepageBeatsBanner({ onLaunchFeature1, onLaunchFeature2, onLaunchFeatu
       <div className="absolute left-10 top-12 pointer-events-none opacity-20">
         <div className={`w-12 h-12 rounded-full border border-sky-400 flex items-center justify-center ${isBeating ? 'scale-125 transition-transform duration-200' : 'transition-transform duration-300'}`}>
           <svg viewBox="0 0 24 24" className="w-6 h-6 text-sky-300" fill="currentColor">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
           </svg>
         </div>
       </div>
@@ -14620,7 +14511,7 @@ function HomepageBeatsBanner({ onLaunchFeature1, onLaunchFeature2, onLaunchFeatu
 
       {/* 5. Main Center Content Container */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 py-16 sm:py-20 text-center flex flex-col items-center justify-center">
-        
+
         {/* Interactive Heartbeat Monitor Pill */}
         <button
           type="button"
@@ -14773,7 +14664,7 @@ function Footer({ setView, setScreen, setTeleconsultScreen, setActorRole }) {
       {/* Main Content Grid */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-14 pb-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-6 items-start">
-          
+
           {/* 1. MedVeda Logo & Mission */}
           <div className="sm:col-span-2 lg:col-span-4 pr-0 lg:pr-6">
             <div
